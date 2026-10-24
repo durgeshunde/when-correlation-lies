@@ -241,4 +241,18 @@ def evaluate_llm_pilot(
 
 
 if __name__ == "__main__":
-    evaluate_llm_pilot()
+    import argparse
+    parser = argparse.ArgumentParser(description="Evaluate LLM trajectories")
+    parser.add_argument("--raw-dir", default="data/raw_llm")
+    parser.add_argument("--eval-dir", default="data/eval_labels_llm")
+    parser.add_argument("--output-metrics", default="results/metrics/llm_pilot_metrics.json")
+    parser.add_argument("--output-table", default="results/tables/llm_pilot_summary.csv")
+    args = parser.parse_args()
+
+    evaluate_llm_pilot(
+        raw_dir=Path(args.raw_dir),
+        eval_dir=Path(args.eval_dir),
+        output_metrics=Path(args.output_metrics),
+        output_table=Path(args.output_table),
+    )
+

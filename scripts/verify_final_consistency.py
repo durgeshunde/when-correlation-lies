@@ -3,9 +3,9 @@ scripts/verify_final_consistency.py
 ===================================
 End-to-end automated scientific, code, data, and report consistency verifier.
 Validates:
-1. Automated unit test suite (53/53 tests pass)
-2. Trajectory dataset integrity (260 files, 54,000 rounds, clean schema)
-3. PDF report compliance (exactly 5 pages, valid metadata, 0 forbidden phrases)
+1. Automated unit test suite (59/59 tests pass)
+2. Trajectory dataset integrity (260 scripted files, 54,000 rounds + 99 LLM files, 9,180 decisions)
+3. PDF report compliance (exactly 7 pages <= 8 pages limit, valid metadata, 0 forbidden phrases)
 4. Review bundle ZIP integrity (clean project repository structure, zero duplicate folders)
 5. Results manifest accuracy (exact thresholds, counts, and statistical metrics)
 6. Triangulation metrics integrity (Marginal MI, CMI, and PNI net score metrics in JSON and CSV)
@@ -47,19 +47,31 @@ def dataset_check():
     eval_llm = list((PROJECT_ROOT / "data" / "eval_labels_llm").glob("*.json"))
     assert len(raw_llm) == 9, f"Expected 9 raw LLM files, got {len(raw_llm)}"
     assert len(eval_llm) == 9, f"Expected 9 eval LLM files, got {len(eval_llm)}"
-    print(f"[PASS] Dataset: Exactly 260 scripted files (54,000 rounds) + 9 LLM pilot files (180 decisions).")
+
+    raw_llm_exp = list((PROJECT_ROOT / "data" / "raw_llm_expanded").glob("*.jsonl"))
+    eval_llm_exp = list((PROJECT_ROOT / "data" / "eval_labels_llm_expanded").glob("*.json"))
+    assert len(raw_llm_exp) == 75, f"Expected 75 raw LLM expanded files, got {len(raw_llm_exp)}"
+    assert len(eval_llm_exp) == 75, f"Expected 75 eval LLM expanded files, got {len(eval_llm_exp)}"
+
+    raw_llm_t50 = list((PROJECT_ROOT / "data" / "raw_llm_expanded_t50").glob("*.jsonl"))
+    eval_llm_t50 = list((PROJECT_ROOT / "data" / "eval_labels_llm_expanded_t50").glob("*.json"))
+    assert len(raw_llm_t50) == 15, f"Expected 15 raw LLM t50 files, got {len(raw_llm_t50)}"
+    assert len(eval_llm_t50) == 15, f"Expected 15 eval LLM t50 files, got {len(eval_llm_t50)}"
+
+    total_llm_trajs = len(raw_llm) + len(raw_llm_exp) + len(raw_llm_t50)
+    assert total_llm_trajs == 99, f"Expected 99 total LLM trajectories, got {total_llm_trajs}"
+    print(f"[PASS] Dataset: Exactly 260 scripted files (54,000 rounds) + 99 LLM files across 3 horizons (9,180 decisions).")
 
 
 def pdf_report_check():
     import pymupdf
     pdf_path = PROJECT_ROOT / "final_delivery" / "when_correlation_lies_report.pdf"
     if not pdf_path.exists():
-        pdf_path = PROJECT_ROOT / "when_correlation_lies_report.pdf"
-    if not pdf_path.exists():
         pdf_path = PROJECT_ROOT / "report" / "when_correlation_lies_report.pdf"
     assert pdf_path.exists(), f"Missing PDF at {pdf_path}"
     doc = pymupdf.open(str(pdf_path))
-    assert len(doc) == 6, f"Expected exactly 6 pages, got {len(doc)}"
+    assert len(doc) <= 8, f"PDF exceeds 8-page hard cap: got {len(doc)} pages"
+    assert len(doc) == 7, f"Expected exactly 7 pages, got {len(doc)}"
 
     meta = doc.metadata
     assert meta["author"] == "Durgesh Unde", f"Unexpected author: {meta.get('author')}"
@@ -88,13 +100,13 @@ def pdf_report_check():
         "tau_CMI",
         "0 log 0 = 0",
         "Wilson",
-        "Exploratory LLM-Agent Pilot",
         "Qwen/Qwen2.5-1.5B-Instruct",
+        "Open-Weight LLM Agent Experiments",
     ]
     for phrase in required_phrases:
         assert phrase.lower() in full_text.lower(), f"Required phrase '{phrase}' missing in PDF!"
 
-    print("[PASS] PDF Report: Exactly 6 pages, valid metadata, 0 forbidden phrases, required concepts present.")
+    print("[PASS] PDF Report: Exactly 7 pages (<= 8 cap), valid metadata, 0 forbidden phrases, required concepts present.")
 
 
 def zip_bundle_check():
@@ -104,15 +116,25 @@ def zip_bundle_check():
         namelist = zf.namelist()
         
         # Check raw files and labels
-        raws = [n for n in namelist if n.startswith("data/raw/")]
-        labels = [n for n in namelist if n.startswith("data/eval_labels/")]
+        raws = [n for n in namelist if n.startswith("data/raw/") and n.endswith(".jsonl")]
+        labels = [n for n in namelist if n.startswith("data/eval_labels/") and n.endswith(".json")]
         assert len(raws) == 260, f"Expected 260 data/raw/ files in ZIP, got {len(raws)}"
         assert len(labels) == 260, f"Expected 260 data/eval_labels/ files in ZIP, got {len(labels)}"
 
-        raws_llm = [n for n in namelist if n.startswith("data/raw_llm/")]
-        labels_llm = [n for n in namelist if n.startswith("data/eval_labels_llm/")]
+        raws_llm = [n for n in namelist if n.startswith("data/raw_llm/") and n.endswith(".jsonl")]
+        labels_llm = [n for n in namelist if n.startswith("data/eval_labels_llm/") and n.endswith(".json")]
         assert len(raws_llm) == 9, f"Expected 9 data/raw_llm/ files in ZIP, got {len(raws_llm)}"
         assert len(labels_llm) == 9, f"Expected 9 data/eval_labels_llm/ files in ZIP, got {len(labels_llm)}"
+
+        raws_llm_exp = [n for n in namelist if n.startswith("data/raw_llm_expanded/") and n.endswith(".jsonl")]
+        labels_llm_exp = [n for n in namelist if n.startswith("data/eval_labels_llm_expanded/") and n.endswith(".json")]
+        assert len(raws_llm_exp) == 75, f"Expected 75 data/raw_llm_expanded/ files in ZIP, got {len(raws_llm_exp)}"
+        assert len(labels_llm_exp) == 75, f"Expected 75 data/eval_labels_llm_expanded/ files in ZIP, got {len(labels_llm_exp)}"
+
+        raws_llm_t50 = [n for n in namelist if n.startswith("data/raw_llm_expanded_t50/") and n.endswith(".jsonl")]
+        labels_llm_t50 = [n for n in namelist if n.startswith("data/eval_labels_llm_expanded_t50/") and n.endswith(".json")]
+        assert len(raws_llm_t50) == 15, f"Expected 15 data/raw_llm_expanded_t50/ files in ZIP, got {len(raws_llm_t50)}"
+        assert len(labels_llm_t50) == 15, f"Expected 15 data/eval_labels_llm_expanded_t50/ files in ZIP, got {len(labels_llm_t50)}"
         
         # Check NO duplicate folders
         dup_trajs = [n for n in namelist if n.startswith("data/trajectories/")]
@@ -132,17 +154,21 @@ def zip_bundle_check():
             "src/environment.py",
             "tests/test_detectors.py",
             "scripts/modal_llm_pilot.py",
+            "scripts/modal_llm_expanded.py",
             "scripts/evaluate_llm_pilot.py",
             "scripts/generate_pdf_report.py",
             "scripts/verify_final_consistency.py",
             "results/tables/summary.csv",
             "results/tables/sensitivity_trajectory_length.csv",
             "results/tables/llm_pilot_summary.csv",
+            "results/tables/llm_expanded_summary.csv",
+            "results/tables/llm_expanded_t50_summary.csv",
+            "results/llm_pilot/billing_audit.json",
         ]
         for ef in expected_files:
             assert ef in namelist, f"Expected {ef} in ZIP root structure"
 
-    print(f"[PASS] Review ZIP: Valid clean repository bundle with 260 scripted and 9 LLM trajectories, labels, zero duplicates, and full runnable source.")
+    print(f"[PASS] Review ZIP: Valid clean repository bundle with 260 scripted and 99 LLM trajectories, labels, zero duplicates, and full runnable source.")
 
 
 def manifest_check():
@@ -160,13 +186,14 @@ def manifest_check():
     assert "Durgesh Unde" in content
     assert "260 unique JSONL files" in content
     assert "54,000 unique rounds" in content
+    assert "99 unique JSONL files" in content
+    assert "9,180 total decisions" in content
     assert "59 / 59 tests passed" in content
     assert "0.010427 bits" in content
     assert "0.117454 bits" in content
     assert "0.030751 bits" in content
     assert "0.084 bits" in content
     assert "0.012 bits" in content
-    assert "Exploratory LLM Pilot" in content
     assert "Qwen2.5-1.5B" in content
 
     # Verify disk hashes and sizes match external manifest exactly
@@ -179,24 +206,6 @@ def manifest_check():
         assert actual_size in content, f"Size for {fname} in manifest ({actual_size}) does not match content!"
 
     print("[PASS] Results Manifest: All metrics, file counts, and exact disk SHA-256/size checksums verified.")
-
-
-def manifest_internal_check():
-    manifest_path = PROJECT_ROOT / "results_manifest.txt"
-    assert manifest_path.exists()
-    content = manifest_path.read_text(encoding="utf-8")
-    assert "Durgesh Unde" in content
-    assert "260 unique JSONL files" in content
-    assert "54,000 unique rounds" in content
-    assert "59 / 59 tests passed" in content
-    assert "0.010427 bits" in content
-    assert "0.117454 bits" in content
-    assert "0.030751 bits" in content
-    assert "0.084 bits" in content
-    assert "0.012 bits" in content
-    assert "degenerate bootstrap interval" in content
-    assert "lambda = 0.0" in content
-    print("[PASS] Internal Results Manifest: All metrics and metadata verified.")
 
 
 def triangulation_metrics_check():
@@ -234,12 +243,10 @@ if __name__ == "__main__":
     test_suite_check()
     dataset_check()
     triangulation_metrics_check()
-    if (PROJECT_ROOT / "final_delivery" / "when_correlation_lies_report.pdf").exists() or (PROJECT_ROOT / "when_correlation_lies_report.pdf").exists():
+    if (PROJECT_ROOT / "final_delivery" / "when_correlation_lies_report.pdf").exists() or (PROJECT_ROOT / "report" / "when_correlation_lies_report.pdf").exists():
         pdf_report_check()
     if (PROJECT_ROOT / "final_delivery" / "when_correlation_lies_review_bundle.zip").exists():
         zip_bundle_check()
     if (PROJECT_ROOT / "final_delivery" / "results_manifest.txt").exists():
         manifest_check()
-    elif (PROJECT_ROOT / "results_manifest.txt").exists():
-        manifest_internal_check()
     print("\nALL CONSISTENCY CHECKS PASSED PERFECTLY!")
