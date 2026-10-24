@@ -1,0 +1,98 @@
+================================================================================
+APART RESEARCH AI COLLUSION RESEARCH SPRINT 2026 — SUBMISSION MANIFEST
+Track 1.4: Markets and Collusion
+Project Title: When Correlation Lies: Stress-Testing Pairwise Net Influence
+Author: Durgesh Unde (Independent Researcher)
+Event: Apart Research AI Collusion Research Sprint (October 23–25, 2026)
+================================================================================
+
+AUTHOR CONTRIBUTIONS:
+--------------------------------------------------------------------------------
+Durgesh Unde (Independent Researcher): Project conceptualization, selection and formulation of research questions
+and experimental conditions, project direction, review of experimental outputs, qualitative interpretation
+of detection metrics, and final editorial responsibility for the manuscript.
+
+AI USAGE STATEMENT:
+--------------------------------------------------------------------------------
+ChatGPT (OpenAI) assisted with research ideation, paper explanation, methodology critique, independent review,
+and prompt drafting. Antigravity (Google DeepMind advanced agentic coding assistant) assisted with code implementation,
+unit test suites, experiment orchestration, statistical metric aggregations, visualizations, ReportLab PDF layout,
+and packaging under the author's iterative instructions and review. Project direction, experimental design choices,
+qualitative analysis, and final editorial responsibility rest entirely with the author (Durgesh Unde). The experimental
+protocol was frozen after exploratory prototyping and was not preregistered prior to exploration. Zero external API/LLM
+calls were made during primary benchmark runs ($0.00 spend).
+
+PRIMARY DELIVERABLES:
+--------------------------------------------------------------------------------
+File: when_correlation_lies_report.pdf
+  Size: 477,809 bytes
+  SHA-256: dfa6a7f4b2108014c4b9cf4ed91eb92666a689abdd909421a0e4929b19837fae
+
+File: when_correlation_lies_all_source_code.txt
+  Size: 297,409 bytes
+  SHA-256: 2a758cfd697b0f4b2b7697400392cd5914580b48fd2fd863125ae4bebe05ce19
+
+File: when_correlation_lies_review_bundle.zip
+  Size: 1,814,943 bytes
+  SHA-256: b4a72cc9ee55affb6e875788901eefa48216a51fd7b47c878bf68466a8f354a8
+
+
+CORE BENCHMARK FIGURES:
+--------------------------------------------------------------------------------
+Figure: fig0_experimental_setup.png (120,088 bytes)
+  SHA-256: b4bb75a7300d4340e5159cd5a2646dfbcba08971e74b043331e811bff9819269
+Figure: fig1_top1_accuracy.png (61,745 bytes)
+  SHA-256: ba4f3c2a3dc9f8c33a0ee8d5708df5424d09bfda1130183d6e8f679bc4f3a3a6
+Figure: fig2_false_positive_rates.png (47,822 bytes)
+  SHA-256: df7c9d2bc23ae3b6194ec89f908ffccb18d8937c8e3e0de9b8f3d7476749283c
+Figure: fig3_coordination_strength.png (58,629 bytes)
+  SHA-256: 6cc16f140dab5b9e03cc3af42903e66b19ed9f486b719684f02a34230d7f9091
+Figure: fig4_score_distributions.png (43,572 bytes)
+  SHA-256: 1566f9425fc747d0590719fb82b568b3ba313b0cdd40f5f3e6b9a99d68aaa7a6
+Figure: fig5_trajectory_length_sensitivity.png (88,517 bytes)
+  SHA-256: f648d6ee431fa3faa90bfc5a771b8b5350f62921df52baf7d0c1707ed4e8a35d
+
+KEY BENCHMARK CSV TABLES:
+--------------------------------------------------------------------------------
+Table: summary.csv (5,645 bytes)
+  SHA-256: af7041f99b67755130a6e135a9f2e87c29e5c1f9251f2906f4abd00277e4ded3
+Table: sensitivity_trajectory_length.csv (1,811 bytes)
+  SHA-256: 46e81f8dbccfafbbb32783f4c40c5827b1ab84f5b71a80381f05c4e99423b77c
+
+EXPERIMENTAL TELEMETRY & AUDIT SUMMARY:
+--------------------------------------------------------------------------------
+• Total Unique Trajectories: 260 unique JSONL files (140 primary T=200 + 120 sensitivity T in {50, 100, 500})
+• Total Game Rounds: 54,000 unique rounds (140 * 200 = 28,000; 40 * 50 = 2,000; 40 * 100 = 4,000; 40 * 500 = 20,000)
+• Total Evaluations: 300 evaluations across 4 experimental conditions and sensitivity sweeps (T=200 reuses primary B & C)
+• Primary Benchmark Seeds: 20 independent seeds per condition
+• Trajectory Lengths Evaluated: T in [50, 100, 200, 500] rounds
+• Automated Unit Test Suite: 57 / 57 tests passed (pytest 9.1.1, Python 3.13.7)
+• Cloud Compute / Billing: 0 billable API or GPU calls; verified 100% CPU-only reproducibility ($0.00 spent)
+• Decision Threshold Calibration: Small-sample exploratory calibration on Condition A validation seeds (seeds 0-4, 30 candidate pairs) targeting nominal 5% FPR
+  - Calibrated PNI Threshold (tau_PNI): 0.010427 bits
+  - Calibrated Conditional MI Threshold (tau_CMI): 0.117454 bits
+  - Calibrated Marginal MI Threshold (tau_MI): 0.030751 bits
+• Triangulation Analysis & Key Results (T=200 rounds, 20 seeds):
+  - Condition A (Independent Play, Held-Out Test n=15): PNI Top = 0.005 bits, PNI FPR = 0.022 [0.000, 0.056] (2/90 pairs flagged); CMI FPR = 0.111 (10/90); Marginal MI FPR = 0.033 (3/90)
+  - Condition A (Calibration n=5): PNI FPR = 0.067 (2/30), CMI FPR = 0.067 (2/30), Marginal MI FPR = 0.067 (2/30)
+  - Condition B (Shared Context Confounding n=20):
+      * Marginal MI: 0.958 bits [0.932, 0.984], FPR = 1.000 [1.000, 1.000] (120/120 pairs flagged, 38-fold surge)
+      * Conditional MI (CMI): 0.084 bits [0.081, 0.087], FPR = 0.000 [0.000, 0.000] (0/120 pairs flagged; state conditioning neutralizes broadcast shock)
+      * PNI Net Score: 0.012 bits [0.009, 0.015], FPR = 0.100 [0.050, 0.158] (12/120 pairs flagged; competitor subtraction provides directed isolation)
+  - Condition C (Shared-Private-Signal Coordination Positive Control n=20):
+      * PNI Top-1 Accuracy: 1.000 (Wilson 95% CI: [0.839, 1.000]), MRR = 1.000, True Pair Net Score = 0.755 bits [0.741, 0.769]
+      * PNI FPR: 0.200 [0.200, 0.200]* (20/100 negative pairs flagged; *degenerate bootstrap interval due to uniform outcome of exactly 1/5 negative pairs flagged per seed)
+      * CMI FPR: 0.020 [0.000, 0.050] (2/100); Marginal MI FPR = 0.240 (24/100)
+  - Condition D (Joint Gate Sweep n=20 each):
+      alpha = 0.25: PNI True Score = 0.264 bits, Top-1 = 1.000 [0.839, 1.000], PNI FPR = 0.100 (10/100); CMI FPR = 0.010 (1/100); Marginal MI FPR = 1.000 (100/100)
+      alpha = 0.50: PNI True Score = 0.469 bits, Top-1 = 1.000 [0.839, 1.000], PNI FPR = 0.180 (18/100); CMI FPR = 0.000 (0/100); Marginal MI FPR = 1.000 (100/100)
+      alpha = 0.75: PNI True Score = 0.623 bits, Top-1 = 1.000 [0.839, 1.000], PNI FPR = 0.200* (20/100); CMI FPR = 0.020 (2/100); Marginal MI FPR = 0.920 (92/100)
+      alpha = 1.00: PNI True Score = 0.771 bits, Top-1 = 1.000 [0.839, 1.000], PNI FPR = 0.200* (20/100); CMI FPR = 0.010 (1/100); Marginal MI FPR = 0.240 (24/100)
+  - Trajectory Length Sensitivity (T in [50, 500]):
+      * Cond C Top-1 = 1.000 across all T
+      * Cond B CMI Score declines: 0.144 (T=50) -> 0.112 (T=100) -> 0.084 (T=200) -> 0.056 (T=500); CMI FPR declines: 0.450 -> 0.042 -> 0.000 -> 0.000
+      * Cond B PNI Score declines: 0.0176 (T=50) -> 0.0131 (T=100) -> 0.0121 (T=200) -> 0.0074 (T=500); PNI FPR declines: 0.133 -> 0.108 -> 0.100 -> 0.050
+  - Estimator Regularization Sensitivity (Cond B, T=200):
+      * lambda = 0.0 (unsmoothed plug-in, 0 log 0 = 0): CMI = 0.062 bits
+      * lambda = 0.5 (Jeffreys Dirichlet): CMI = 0.084 bits
+      * lambda = 1.0 (Laplace Dirichlet): CMI = 0.096 bits

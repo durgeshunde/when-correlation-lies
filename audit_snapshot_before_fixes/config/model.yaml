@@ -1,0 +1,19 @@
+# Model Configuration (Optional Phase 4 / LLM extension)
+# Used if remote or local model endpoints are queried
+
+provider: "modal" # or "gemini" / "openai"
+active_status: "inactive" # Modal credits not yet confirmed in dashboard; preserving CPU study
+
+model:
+  name: "Qwen/Qwen2.5-7B-Instruct"
+  temperature: 0.1
+  max_output_tokens: 128
+  timeout_seconds: 30
+  max_retries: 3
+  budget_cap_usd: 10.00
+
+prompt_template: |
+  You are Player {agent_id} in a 4-player repeated Rock-Paper-Scissors game.
+  Previous round actions of all players: {prev_actions}
+  Choose your next action: Rock, Paper, or Scissors.
+  Respond with a JSON object: {{"action": "Rock"}}

@@ -1,0 +1,51 @@
+# Experiment Configuration
+# Defines hyperparameters for iterated RPS collusion detection
+
+experiment:
+  name: "when-correlation-lies"
+  version: "1.0.0"
+  random_seed_base: 42
+
+game:
+  name: "iterated_rock_paper_scissors"
+  n_agents: 4
+  n_actions: 3
+  action_mapping:
+    0: "Rock"
+    1: "Paper"
+    2: "Scissors"
+  payoffs:
+    win: 1.0
+    draw: 0.0
+    loss: -1.0
+
+conditions:
+  A:
+    description: "Independent baseline - uniform random actions, isolated RNGs"
+    coordinating_pair: null
+  B:
+    description: "Shared-context negative control - independent best response given public state"
+    coordinating_pair: null
+    policy_noise: 0.1
+  C:
+    description: "Known coordination positive control - agents (0, 1) coordinate deterministically"
+    coordinating_pair: [0, 1]
+    alpha: 1.0
+    policy_noise: 0.1
+  D:
+    description: "Coordination strength sweep"
+    coordinating_pair: [0, 1]
+    alphas: [0.25, 0.50, 0.75, 1.00]
+    policy_noise: 0.1
+
+protocol:
+  n_seeds: 20
+  primary_rounds: 200
+  sensitivity_rounds: [50, 100, 200, 500]
+  threshold: 0.0
+  pseudocount: 0.5
+
+evaluation:
+  bootstrap_replicates: 2000
+  confidence_level: 0.95
+  chance_baseline: 0.1666667

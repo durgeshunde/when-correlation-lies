@@ -1,0 +1,40 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Distribution / packaging
+.eggs/
+dist/
+build/
+*.egg-info/
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Environment variables (NEVER commit)
+.env
+
+# Data (raw trajectories can be large)
+data/raw/*.jsonl
+data/eval_labels/*.json
+
+# Results (committed selectively; large binary outputs excluded)
+results/figures/*.png
+# Keep CSV/JSON summary files
+
+# Jupyter
+.ipynb_checkpoints/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Model weights (never commit)
+*.bin
+*.safetensors
+*.gguf
+*.pt
+*.pth
