@@ -24,7 +24,7 @@ def test_suite_check():
     import pytest
     ret = pytest.main(["-q", str(PROJECT_ROOT / "tests")])
     assert ret == 0, f"pytest returned exit code {ret}"
-    print("[PASS] Test Suite: All 57 tests passed cleanly.")
+    print("[PASS] Test Suite: All 59 tests passed cleanly.")
 
 
 def dataset_check():
@@ -42,7 +42,12 @@ def dataset_check():
 
     assert total_rounds == 54000, f"Expected 54,000 rounds, got {total_rounds}"
     assert file_counts == {200: 140, 50: 40, 100: 40, 500: 40}, f"Unexpected count distribution: {file_counts}"
-    print(f"[PASS] Dataset: Exactly 260 unique files, 54,000 unique rounds {file_counts}.")
+
+    raw_llm = list((PROJECT_ROOT / "data" / "raw_llm").glob("*.jsonl"))
+    eval_llm = list((PROJECT_ROOT / "data" / "eval_labels_llm").glob("*.json"))
+    assert len(raw_llm) == 9, f"Expected 9 raw LLM files, got {len(raw_llm)}"
+    assert len(eval_llm) == 9, f"Expected 9 eval LLM files, got {len(eval_llm)}"
+    print(f"[PASS] Dataset: Exactly 260 scripted files (54,000 rounds) + 9 LLM pilot files (180 decisions).")
 
 
 def pdf_report_check():
@@ -54,7 +59,7 @@ def pdf_report_check():
         pdf_path = PROJECT_ROOT / "report" / "when_correlation_lies_report.pdf"
     assert pdf_path.exists(), f"Missing PDF at {pdf_path}"
     doc = pymupdf.open(str(pdf_path))
-    assert len(doc) == 5, f"Expected exactly 5 pages, got {len(doc)}"
+    assert len(doc) == 6, f"Expected exactly 6 pages, got {len(doc)}"
 
     meta = doc.metadata
     assert meta["author"] == "Durgesh Unde", f"Unexpected author: {meta.get('author')}"
@@ -83,11 +88,13 @@ def pdf_report_check():
         "tau_CMI",
         "0 log 0 = 0",
         "Wilson",
+        "Exploratory LLM-Agent Pilot",
+        "Qwen/Qwen2.5-1.5B-Instruct",
     ]
     for phrase in required_phrases:
         assert phrase.lower() in full_text.lower(), f"Required phrase '{phrase}' missing in PDF!"
 
-    print("[PASS] PDF Report: Exactly 5 pages, valid metadata, 0 forbidden phrases, required concepts present.")
+    print("[PASS] PDF Report: Exactly 6 pages, valid metadata, 0 forbidden phrases, required concepts present.")
 
 
 def zip_bundle_check():
@@ -101,6 +108,11 @@ def zip_bundle_check():
         labels = [n for n in namelist if n.startswith("data/eval_labels/")]
         assert len(raws) == 260, f"Expected 260 data/raw/ files in ZIP, got {len(raws)}"
         assert len(labels) == 260, f"Expected 260 data/eval_labels/ files in ZIP, got {len(labels)}"
+
+        raws_llm = [n for n in namelist if n.startswith("data/raw_llm/")]
+        labels_llm = [n for n in namelist if n.startswith("data/eval_labels_llm/")]
+        assert len(raws_llm) == 9, f"Expected 9 data/raw_llm/ files in ZIP, got {len(raws_llm)}"
+        assert len(labels_llm) == 9, f"Expected 9 data/eval_labels_llm/ files in ZIP, got {len(labels_llm)}"
         
         # Check NO duplicate folders
         dup_trajs = [n for n in namelist if n.startswith("data/trajectories/")]
@@ -119,15 +131,18 @@ def zip_bundle_check():
             "src/agents.py",
             "src/environment.py",
             "tests/test_detectors.py",
+            "scripts/modal_llm_pilot.py",
+            "scripts/evaluate_llm_pilot.py",
             "scripts/generate_pdf_report.py",
             "scripts/verify_final_consistency.py",
             "results/tables/summary.csv",
             "results/tables/sensitivity_trajectory_length.csv",
+            "results/tables/llm_pilot_summary.csv",
         ]
         for ef in expected_files:
             assert ef in namelist, f"Expected {ef} in ZIP root structure"
 
-    print(f"[PASS] Review ZIP: Valid clean repository bundle with 260 raw trajectories, 260 labels, zero duplicates, and full runnable source.")
+    print(f"[PASS] Review ZIP: Valid clean repository bundle with 260 scripted and 9 LLM trajectories, labels, zero duplicates, and full runnable source.")
 
 
 def manifest_check():
@@ -145,14 +160,14 @@ def manifest_check():
     assert "Durgesh Unde" in content
     assert "260 unique JSONL files" in content
     assert "54,000 unique rounds" in content
-    assert "57 / 57 tests passed" in content
+    assert "59 / 59 tests passed" in content
     assert "0.010427 bits" in content
     assert "0.117454 bits" in content
     assert "0.030751 bits" in content
     assert "0.084 bits" in content
     assert "0.012 bits" in content
-    assert "degenerate bootstrap interval" in content
-    assert "lambda = 0.0" in content
+    assert "Exploratory LLM Pilot" in content
+    assert "Qwen2.5-1.5B" in content
 
     # Verify disk hashes and sizes match external manifest exactly
     for fname in ["when_correlation_lies_report.pdf", "when_correlation_lies_all_source_code.txt", "when_correlation_lies_review_bundle.zip"]:
@@ -173,7 +188,7 @@ def manifest_internal_check():
     assert "Durgesh Unde" in content
     assert "260 unique JSONL files" in content
     assert "54,000 unique rounds" in content
-    assert "57 / 57 tests passed" in content
+    assert "59 / 59 tests passed" in content
     assert "0.010427 bits" in content
     assert "0.117454 bits" in content
     assert "0.030751 bits" in content

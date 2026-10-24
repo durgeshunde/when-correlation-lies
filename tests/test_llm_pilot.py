@@ -3,7 +3,7 @@ Unit tests for the exploratory Modal LLM pilot helper functions and state abstra
 """
 
 import pytest
-from scripts.modal_llm_pilot import determine_public_state, VALID_ACTIONS, COUNTER_ACTIONS
+from scripts.modal_llm_pilot import determine_public_state, parse_action, VALID_ACTIONS, COUNTER_ACTIONS
 
 
 def test_determine_public_state_start():
@@ -31,3 +31,21 @@ def test_counter_actions_validity():
         counter = COUNTER_ACTIONS[act]
         assert counter in VALID_ACTIONS
         assert counter != act
+
+
+def test_parse_action_valid():
+    assert parse_action('{"action": "ROCK"}') == "ROCK"
+    assert parse_action('{"action": "PAPER"}') == "PAPER"
+    assert parse_action('{"action": "SCISSORS"}') == "SCISSORS"
+    assert parse_action('```json\n{"action": "ROCK"}\n```') == "ROCK"
+    assert parse_action('{"action": "rock"}') == "ROCK"
+
+
+def test_parse_action_fallback_and_invalid():
+    assert parse_action("I choose ROCK for this round.") == "ROCK"
+    # Never silently default to ROCK if invalid
+    assert parse_action("I surrender and pass.") is None
+    assert parse_action("") is None
+    assert parse_action("invalid output") is None
+    # Ambiguous choices should return None
+    assert parse_action("Either ROCK or PAPER") is None

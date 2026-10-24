@@ -58,11 +58,12 @@ def generate_manifest_text(target_pdf: Path, concat_path: Path, zip_path: Path =
     lines.append(
         "ChatGPT (OpenAI) assisted with research ideation, paper explanation, methodology critique, independent review,\n"
         "and prompt drafting. Antigravity (Google DeepMind advanced agentic coding assistant) assisted with code implementation,\n"
-        "unit test suites, experiment orchestration, statistical metric aggregations, visualizations, ReportLab PDF layout,\n"
+        "unit test suites, experiment orchestration, Modal CPU pilot harness and execution, statistical metric aggregations, visualizations, ReportLab PDF layout,\n"
         "and packaging under the author's iterative instructions and review. Project direction, experimental design choices,\n"
-        "qualitative analysis, and final editorial responsibility rest entirely with the author (Durgesh Unde). The experimental\n"
-        "protocol was frozen after exploratory prototyping and was not preregistered prior to exploration. Zero external API/LLM\n"
-        "calls were made during primary benchmark runs ($0.00 spend).\n"
+        "qualitative analysis, and final editorial responsibility rest entirely with the author (Durgesh Unde). Canonical benchmark\n"
+        "evaluations used 260 scripted trajectories (54,000 rounds); exploratory LLM pilot evaluations used 9 trajectories (180 decisions)\n"
+        "executed on Modal CPU ($0.07 promotional credit, $0.00 out-of-pocket spend). Zero personal payment cards or external paid token APIs were used.\n"
+        "The experimental protocol was frozen after exploratory prototyping and was not preregistered prior to exploration.\n"
     )
 
     lines.append("PRIMARY DELIVERABLES:")
@@ -96,7 +97,8 @@ def generate_manifest_text(target_pdf: Path, concat_path: Path, zip_path: Path =
     lines.append("-" * 80)
     for tab in [
         PROJECT_ROOT / "results" / "tables" / "summary.csv",
-        PROJECT_ROOT / "results" / "tables" / "sensitivity_trajectory_length.csv"
+        PROJECT_ROOT / "results" / "tables" / "sensitivity_trajectory_length.csv",
+        PROJECT_ROOT / "results" / "tables" / "llm_pilot_summary.csv",
     ]:
         if tab.exists():
             h = sha256_file(tab)
@@ -105,18 +107,22 @@ def generate_manifest_text(target_pdf: Path, concat_path: Path, zip_path: Path =
 
     lines.append("\nEXPERIMENTAL TELEMETRY & AUDIT SUMMARY:")
     lines.append("-" * 80)
-    lines.append("• Total Unique Trajectories: 260 unique JSONL files (140 primary T=200 + 120 sensitivity T in {50, 100, 500})")
-    lines.append("• Total Game Rounds: 54,000 unique rounds (140 * 200 = 28,000; 40 * 50 = 2,000; 40 * 100 = 4,000; 40 * 500 = 20,000)")
-    lines.append("• Total Evaluations: 300 evaluations across 4 experimental conditions and sensitivity sweeps (T=200 reuses primary B & C)")
-    lines.append("• Primary Benchmark Seeds: 20 independent seeds per condition")
-    lines.append("• Trajectory Lengths Evaluated: T in [50, 100, 200, 500] rounds")
-    lines.append("• Automated Unit Test Suite: 57 / 57 tests passed (pytest 9.1.1, Python 3.13.7)")
-    lines.append("• Cloud Compute / Billing: 0 billable API or GPU calls; verified 100% CPU-only reproducibility ($0.00 spent)")
+    lines.append("• Canonical Scripted Trajectories: 260 unique JSONL files (140 primary T=200 + 120 sensitivity T in {50, 100, 500})")
+    lines.append("• Total Scripted Rounds: 54,000 unique rounds (140 * 200 = 28,000; 40 * 50 = 2,000; 40 * 100 = 4,000; 40 * 500 = 20,000)")
+    lines.append("• Total Evaluations: 300 evaluations across 4 experimental conditions and sensitivity sweeps")
+    lines.append("• Exploratory LLM Pilot Trajectories: 9 unique JSONL files (180 decisions across LLM-A, LLM-B, LLM-C; 3 seeds × 5 rounds)")
+    lines.append("• Automated Unit Test Suite: 59 / 59 tests passed (pytest 9.1.1, Python 3.13.7)")
+    lines.append("• Cloud Compute & Billing: Modal CPU execution consumed $0.07 of promotional compute credits; $0.00 billed out-of-pocket")
     lines.append("• Decision Threshold Calibration: Small-sample exploratory calibration on Condition A validation seeds (seeds 0-4, 30 candidate pairs) targeting nominal 5% FPR")
     lines.append("  - Calibrated PNI Threshold (tau_PNI): 0.010427 bits")
     lines.append("  - Calibrated Conditional MI Threshold (tau_CMI): 0.117454 bits")
     lines.append("  - Calibrated Marginal MI Threshold (tau_MI): 0.030751 bits")
-    lines.append("• Triangulation Analysis & Key Results (T=200 rounds, 20 seeds):")
+    lines.append("• Exploratory LLM Pilot Results (Qwen2.5-1.5B on Modal CPU, 180 decisions):")
+    lines.append("  - Valid Action Generation Rate: 100.0% (180/180 decisions valid JSON)")
+    lines.append("  - Mean Latency per Decision: ~1.4s (Qwen2.5-1.5B bfloat16 on 4 vCPU)")
+    lines.append("  - Condition LLM-C Signal Compliance: 100.0% (30/30 opportunities adhered to secret directive)")
+    lines.append("  - Condition LLM-C Top-1 Accuracy: Marginal MI = 1.000 (3/3), CMI = 0.667 (2/3), PNI = 0.667 (2/3)")
+    lines.append("• Canonical Scripted Benchmark Key Results (T=200 rounds, 20 seeds):")
     lines.append("  - Condition A (Independent Play, Held-Out Test n=15): PNI Top = 0.005 bits, PNI FPR = 0.022 [0.000, 0.056] (2/90 pairs flagged); CMI FPR = 0.111 (10/90); Marginal MI FPR = 0.033 (3/90)")
     lines.append("  - Condition A (Calibration n=5): PNI FPR = 0.067 (2/30), CMI FPR = 0.067 (2/30), Marginal MI FPR = 0.067 (2/30)")
     lines.append("  - Condition B (Shared Context Confounding n=20):")
@@ -174,6 +180,7 @@ def main():
         "tests/test_metrics.py",
         "tests/test_llm_pilot.py",
         "scripts/modal_llm_pilot.py",
+        "scripts/evaluate_llm_pilot.py",
         "scripts/run_sensitivity.py",
         "scripts/plot_setup_diagram.py",
         "scripts/generate_pdf_report.py",
@@ -187,6 +194,7 @@ def main():
         "report/report_draft.md",
         "results/tables/summary.csv",
         "results/tables/sensitivity_trajectory_length.csv",
+        "results/tables/llm_pilot_summary.csv",
     ]
 
     concat_path = DELIVERY_DIR / "when_correlation_lies_all_source_code.txt"
@@ -272,6 +280,16 @@ def main():
         label_files = sorted((PROJECT_ROOT / "data" / "eval_labels").glob("*.json"))
         for lf in label_files:
             zf.write(lf, arcname=f"data/eval_labels/{lf.name}")
+
+        # Include all exploratory LLM raw trajectories in data/raw_llm/
+        raw_llm_files = sorted((PROJECT_ROOT / "data" / "raw_llm").glob("*.jsonl"))
+        for rf in raw_llm_files:
+            zf.write(rf, arcname=f"data/raw_llm/{rf.name}")
+
+        # Include all exploratory LLM evaluation labels in data/eval_labels_llm/
+        label_llm_files = sorted((PROJECT_ROOT / "data" / "eval_labels_llm").glob("*.json"))
+        for lf in label_llm_files:
+            zf.write(lf, arcname=f"data/eval_labels_llm/{lf.name}")
 
     # ZIP is completely closed and sealed here!
     zip_size = zip_path.stat().st_size

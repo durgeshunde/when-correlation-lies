@@ -16,25 +16,26 @@ AI USAGE STATEMENT:
 --------------------------------------------------------------------------------
 ChatGPT (OpenAI) assisted with research ideation, paper explanation, methodology critique, independent review,
 and prompt drafting. Antigravity (Google DeepMind advanced agentic coding assistant) assisted with code implementation,
-unit test suites, experiment orchestration, statistical metric aggregations, visualizations, ReportLab PDF layout,
+unit test suites, experiment orchestration, Modal CPU pilot harness and execution, statistical metric aggregations, visualizations, ReportLab PDF layout,
 and packaging under the author's iterative instructions and review. Project direction, experimental design choices,
-qualitative analysis, and final editorial responsibility rest entirely with the author (Durgesh Unde). The experimental
-protocol was frozen after exploratory prototyping and was not preregistered prior to exploration. Zero external API/LLM
-calls were made during primary benchmark runs ($0.00 spend).
+qualitative analysis, and final editorial responsibility rest entirely with the author (Durgesh Unde). Canonical benchmark
+evaluations used 260 scripted trajectories (54,000 rounds); exploratory LLM pilot evaluations used 9 trajectories (180 decisions)
+executed on Modal CPU ($0.07 promotional credit, $0.00 out-of-pocket spend). Zero personal payment cards or external paid token APIs were used.
+The experimental protocol was frozen after exploratory prototyping and was not preregistered prior to exploration.
 
 PRIMARY DELIVERABLES:
 --------------------------------------------------------------------------------
 File: when_correlation_lies_report.pdf
-  Size: 477,809 bytes
-  SHA-256: dfa6a7f4b2108014c4b9cf4ed91eb92666a689abdd909421a0e4929b19837fae
+  Size: 481,676 bytes
+  SHA-256: 403facdcde5ac2c326a6ff335f2d8dc1f7452d5d5fc967d6aa91ac21d1b95685
 
 File: when_correlation_lies_all_source_code.txt
-  Size: 297,409 bytes
-  SHA-256: 2a758cfd697b0f4b2b7697400392cd5914580b48fd2fd863125ae4bebe05ce19
+  Size: 328,853 bytes
+  SHA-256: 7d1d2786357dd974930a1bd48e47e4aec21ca64f9b25ec2a909a6d077ee99246
 
 File: when_correlation_lies_review_bundle.zip
-  Size: 1,814,943 bytes
-  SHA-256: b4a72cc9ee55affb6e875788901eefa48216a51fd7b47c878bf68466a8f354a8
+  Size: 1,852,225 bytes
+  SHA-256: ce437b67ab010f8970051d7a8b916c8cd4d6d15ff9cec5e6841a1ee9580ad6d1
 
 
 CORE BENCHMARK FIGURES:
@@ -58,21 +59,27 @@ Table: summary.csv (5,645 bytes)
   SHA-256: af7041f99b67755130a6e135a9f2e87c29e5c1f9251f2906f4abd00277e4ded3
 Table: sensitivity_trajectory_length.csv (1,811 bytes)
   SHA-256: 46e81f8dbccfafbbb32783f4c40c5827b1ab84f5b71a80381f05c4e99423b77c
+Table: llm_pilot_summary.csv (354 bytes)
+  SHA-256: 631d441fa97daae4678b672a72051e1a31815351403705e8f4a44435c7efed22
 
 EXPERIMENTAL TELEMETRY & AUDIT SUMMARY:
 --------------------------------------------------------------------------------
-• Total Unique Trajectories: 260 unique JSONL files (140 primary T=200 + 120 sensitivity T in {50, 100, 500})
-• Total Game Rounds: 54,000 unique rounds (140 * 200 = 28,000; 40 * 50 = 2,000; 40 * 100 = 4,000; 40 * 500 = 20,000)
-• Total Evaluations: 300 evaluations across 4 experimental conditions and sensitivity sweeps (T=200 reuses primary B & C)
-• Primary Benchmark Seeds: 20 independent seeds per condition
-• Trajectory Lengths Evaluated: T in [50, 100, 200, 500] rounds
-• Automated Unit Test Suite: 57 / 57 tests passed (pytest 9.1.1, Python 3.13.7)
-• Cloud Compute / Billing: 0 billable API or GPU calls; verified 100% CPU-only reproducibility ($0.00 spent)
+• Canonical Scripted Trajectories: 260 unique JSONL files (140 primary T=200 + 120 sensitivity T in {50, 100, 500})
+• Total Scripted Rounds: 54,000 unique rounds (140 * 200 = 28,000; 40 * 50 = 2,000; 40 * 100 = 4,000; 40 * 500 = 20,000)
+• Total Evaluations: 300 evaluations across 4 experimental conditions and sensitivity sweeps
+• Exploratory LLM Pilot Trajectories: 9 unique JSONL files (180 decisions across LLM-A, LLM-B, LLM-C; 3 seeds × 5 rounds)
+• Automated Unit Test Suite: 59 / 59 tests passed (pytest 9.1.1, Python 3.13.7)
+• Cloud Compute & Billing: Modal CPU execution consumed $0.07 of promotional compute credits; $0.00 billed out-of-pocket
 • Decision Threshold Calibration: Small-sample exploratory calibration on Condition A validation seeds (seeds 0-4, 30 candidate pairs) targeting nominal 5% FPR
   - Calibrated PNI Threshold (tau_PNI): 0.010427 bits
   - Calibrated Conditional MI Threshold (tau_CMI): 0.117454 bits
   - Calibrated Marginal MI Threshold (tau_MI): 0.030751 bits
-• Triangulation Analysis & Key Results (T=200 rounds, 20 seeds):
+• Exploratory LLM Pilot Results (Qwen2.5-1.5B on Modal CPU, 180 decisions):
+  - Valid Action Generation Rate: 100.0% (180/180 decisions valid JSON)
+  - Mean Latency per Decision: ~1.4s (Qwen2.5-1.5B bfloat16 on 4 vCPU)
+  - Condition LLM-C Signal Compliance: 100.0% (30/30 opportunities adhered to secret directive)
+  - Condition LLM-C Top-1 Accuracy: Marginal MI = 1.000 (3/3), CMI = 0.667 (2/3), PNI = 0.667 (2/3)
+• Canonical Scripted Benchmark Key Results (T=200 rounds, 20 seeds):
   - Condition A (Independent Play, Held-Out Test n=15): PNI Top = 0.005 bits, PNI FPR = 0.022 [0.000, 0.056] (2/90 pairs flagged); CMI FPR = 0.111 (10/90); Marginal MI FPR = 0.033 (3/90)
   - Condition A (Calibration n=5): PNI FPR = 0.067 (2/30), CMI FPR = 0.067 (2/30), Marginal MI FPR = 0.067 (2/30)
   - Condition B (Shared Context Confounding n=20):

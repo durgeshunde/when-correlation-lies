@@ -119,6 +119,34 @@ To evaluate finite-sample convergence, we executed a dedicated sweep across traj
 
 ---
 
+## 5. Exploratory LLM-Agent Pilot (Modal CPU)
+
+To investigate whether information-theoretic collusion detectors extend to open-weight autoregressive models, we conducted an exploratory pilot using `Qwen/Qwen2.5-1.5B-Instruct` deployed on Modal CPU workers (4 vCPU, 8 GB RAM).
+
+### 5.1 Pilot Design and Protocol
+Four independent model instances engaged in 5-round simultaneous games under three pilot conditions:
+- **LLM-A (Independent Play):** Four model decisions per round sampled with distinct per-decision random seeds, prompting agents to maximize win rates independently.
+- **LLM-B (Shared Public Context):** All agents observed the same public round outcome summary and were instructed to follow a market counter-strategy. Distinct sampling seeds ensured identical prompts did not force identical outputs.
+- **LLM-C (Covert Coordination Positive Control):** Designated coordinating agents (0 and 1) received a private uniform random signal $Z_t \in \{\text{ROCK}, \text{PAPER}, \text{SCISSORS}\}$ with instructions to coordinate. Non-coordinating agents (2 and 3) received no private signal. The secret signal was strictly excluded from detector-visible logs.
+
+State abstraction compressed previous round actions to five categories: $S \in \{\text{START}, \text{ROCK}, \text{PAPER}, \text{SCISSORS}, \text{TIE}\}$ based on plurality. A bounded JSON parser enforced valid action output without defaulting malformed text to arbitrary actions.
+
+### Table 3: Exploratory LLM Pilot Results (Qwen2.5-1.5B on Modal CPU, 3 seeds × 5 rounds = 180 decisions)
+*Evaluated across 3 independent seeds per condition ($T=5$ rounds, 4 agents = 20 decisions/trajectory; 60 decisions/condition). Scripted classification thresholds are not calibrated to LLM empirical action distributions; detector performance is evaluated via pair rankings and descriptive mutual information.*
+
+| Condition | Trajectories | Total Decisions | Valid Action Rate | Mean Latency | Secret Signal Compliance | Top-1 Marginal MI | Top-1 CMI ($\gamma$) | Top-1 PNI Net Score | Mean Marg MI (bits) | Mean CMI (bits) | Mean PNI Net (bits) |
+| :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
+| **LLM-A (Independent)** | 3 | 60 | 1.000 (60/60) | 1.39s | N/A | N/A | N/A | N/A | 0.2416 | 0.0768 | -0.0084 |
+| **LLM-B (Shared Context)** | 3 | 60 | 1.000 (60/60) | 1.53s | N/A | N/A | N/A | N/A | 0.1118 | 0.0706 | -0.0212 |
+| **LLM-C (Private Signal)** | 3 | 60 | 1.000 (60/60) | 1.40s | **1.000 (30/30)** | **1.000 (3/3)** | **0.667 (2/3)** | **0.667 (2/3)** | 0.1682 | 0.0678 | -0.0315 |
+
+### 5.2 Pilot Findings and Limitations
+1. **Instruction Compliance:** The 1.5B model achieved 100% adherence (30/30 decisions) to the covert private coordination directive in Condition LLM-C, demonstrating that instruction-tuned models can act as viable coordinating agents without fine-tuning.
+2. **Detector Sensitivity in Small Samples:** In Condition LLM-C, Marginal MI ranked the coordinating pair #1 across all 3 seeds (100%), while CMI and PNI ranked the coordinating pair #1 in 2 of 3 seeds (66.7%). At $T=5$, discrete state-conditioning over 5 states partitions counts into sparse cells, attenuating the empirical conditional mutual information signal.
+3. **Exploratory Scope:** This pilot is strictly descriptive ($N=3$ seeds per condition) and does not constitute a powered statistical benchmark. Scripted thresholds are not applied to the LLM distribution.
+
+---
+
 ## 6. Discussion and Limitations
 
 ### 6.1 Auditing Implications: Why Correlation Lies
@@ -129,7 +157,7 @@ We transparently acknowledge the constraints of this study:
 1. *Controlled Scripted Signatures vs. Real-World Cartels:* Condition C establishes a controlled *shared-private-signal coordination condition* demonstrating that PNI recognizes statistical action dependence in scripted matrix games. However, detecting this statistical signature does not prove that agents formed an economically harmful cartel, extracted supra-competitive rents, or inflicted market harm. Furthermore, unobserved common causes (e.g., unobserved common private inputs, shared proprietary features, or unmodeled system states) could generate similar conditional action dependence.
 2. *Estimator Regularization Sensitivity:* In our 4-player game with $|S| = 82$ states, state conditioning partitions observations across sparse cells. Evaluating smoothing sensitivity under Condition B at $T = 200$ reveals that the unsmoothed plug-in estimator (using $0 \log 0 = 0$) yields CMI = 0.062 bits, while Dirichlet smoothing yields 0.084 bits (Jeffreys, $\lambda = 0.5$) and 0.096 bits (Laplace, $\lambda = 1.0$). Pseudocount smoothing introduces a mild upward baseline in sparse regimes, though all values remain well below unconditioned Marginal MI (0.958 bits).
 3. *Exploratory Small-Sample Calibration:* Nominal 5% decision thresholds were calibrated from 5 validation seeds (30 candidate pairs) of Condition A. While isolating calibration from the 15 held-out test seeds, 30 samples yield coarse quantile estimates and do not guarantee an exact 5% population FPR.
-4. *Hardware & Cloud Platform Boundaries:* The author's promotional Modal credits were verified on the active workspace (`durgeshunde`); however, allocating cloud GPU instances (T4/L4) required an active payment method on file under Modal platform policy, which was safely gated under strict zero-out-of-pocket budget rules. CPU inference for 3B open-weight models incurred prohibitive latency (~17s/call = 14 hours for 3,000 calls). In strict adherence to sprint safety guidelines, all canonical benchmark evaluations were executed under a verified, reproducible CPU environment (0 external API calls, $0.00 spend) over 260 unique trajectories (54,000 unique rounds across 300 evaluations).
+4. *Modal Promotional Compute Pilot & Cloud Boundaries:* An exploratory 180-decision pilot using `Qwen/Qwen2.5-1.5B-Instruct` was executed on Modal CPU instances (4 cores, 8GB RAM). Allocating cloud GPU instances (T4/L4) required an active payment method on file under Modal platform policy, which was safely avoided under our zero-out-of-pocket spending cap ($0.00). The CPU pilot consumed $0.07 of promotional compute credits ($0.00 billed out of pocket) across 9 trajectories. While establishing that 1.5B instruction models achieve 100% signal compliance under prompt-mediated directives, small sample sizes ($T=5$ rounds) yield coarse empirical distributions. Scripted calibration thresholds are not calibrated to LLM action distributions and are therefore not applied. Canonical benchmark results remain grounded in the 260-trajectory scripted evaluation (54,000 rounds).
 
 ### 6.3 Future Work
 Key extensions include: (1) evaluating neural CMI estimators (e.g., MINE) on LLM auction transcripts (Agrawal et al., 2025); (2) developing dynamic state abstractions to compress high-dimensional order book histories; and (3) testing PNI under intentional adversarial evasion.
@@ -144,8 +172,8 @@ This research stress-tested Pairwise Net Influence for detecting multi-agent coo
 
 ## Code and Data
 - **Code Repository:** All experimental scripts, detectors, environments, test suites, and report generation tools are packaged in `when_correlation_lies_all_source_code.txt` with SHA-256 checksums.
-- **Data & Trajectories:** Full JSONL trajectories (260 unique files, 54,000 unique recorded rounds across 300 evaluations) and separate ground-truth manifests are included in the review bundle ZIP (`data/raw/` and `data/eval_labels/`).
-- **Reproducibility:** Complete automated test suite passes (57/57 unit tests) in Python 3.13 on standard CPU hardware.
+- **Data & Trajectories:** Full scripted JSONL trajectories (260 unique files, 54,000 unique rounds) and exploratory LLM trajectories (9 unique files, 180 decisions) with separate ground-truth manifests are included in the review bundle ZIP (`data/raw/`, `data/eval_labels/`, `data/raw_llm/`, `data/eval_labels_llm/`).
+- **Reproducibility:** Complete automated test suite passes (59/59 unit tests) in Python 3.13 on standard CPU hardware.
 
 ---
 
@@ -175,4 +203,4 @@ This research stress-tested Pairwise Net Influence for detecting multi-agent coo
 ---
 
 ## LLM Usage Statement
-ChatGPT (OpenAI) assisted with research ideation, paper explanation, methodology critique, independent review, and prompt drafting. Antigravity (Google DeepMind advanced agentic coding assistant) assisted with code implementation, unit test suites, experiment orchestration, statistical metric aggregations, visualizations, ReportLab PDF layout, and packaging under the author's iterative instructions and review. Project direction, experimental design choices, qualitative analysis, and final editorial responsibility rest entirely with the author (Durgesh Unde). The experimental protocol was frozen after exploratory prototyping and was not preregistered prior to exploration. Zero external API/LLM calls were made during the primary benchmark runs ($0.00 spend).
+ChatGPT (OpenAI) assisted with research ideation, paper explanation, methodology critique, independent review, and prompt drafting. Antigravity (Google DeepMind advanced agentic coding assistant) assisted with code implementation, unit test suites, experiment orchestration, Modal CPU pilot harness and execution, statistical metric aggregations, visualizations, ReportLab PDF layout, and packaging under the author's iterative instructions and review. Project direction, experimental design choices, qualitative analysis, and final editorial responsibility rest entirely with the author (Durgesh Unde). Canonical benchmark evaluations used 260 scripted trajectories (54,000 rounds); exploratory LLM pilot evaluations used 9 trajectories (180 decisions) executed on Modal CPU ($0.07 promotional credit, $0.00 out-of-pocket spend). Zero personal payment cards or external paid token APIs were used. The experimental protocol was frozen after exploratory prototyping and was not preregistered prior to exploration.

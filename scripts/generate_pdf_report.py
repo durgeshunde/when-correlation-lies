@@ -592,11 +592,73 @@ def build_pdf():
         "PNI achieves 100% Top-1 accuracy across all tested lengths in Condition C.",
         body_style
     ))
+
+    # =========================================================================
+    # PAGE 5: Exploratory LLM Pilot, Table 3, Discussion & Limitations, Conclusion
+    # =========================================================================
+    story.append(PageBreak())
+
+    story.append(Paragraph("5. Exploratory LLM-Agent Pilot (Modal CPU)", h1_style))
+    story.append(Paragraph(
+        "To explore whether information-theoretic collusion detection applies to open-weight generative agents, we executed an exploratory "
+        "pilot using <b>Qwen/Qwen2.5-1.5B-Instruct</b> deployed on Modal CPU workers (4 vCPU, 8 GB RAM). Four independent model instances "
+        "engaged in simultaneous games under three conditions: (1) <b>LLM-A</b> (independent action selection, per-decision sampling seeds); "
+        "(2) <b>LLM-B</b> (shared public plurality state counter-strategy); and (3) <b>LLM-C</b> (private coordination signal delivered to pair (0, 1) "
+        "and excluded from detector logs). Observable public state was abstracted to 5 states: S in {START, ROCK, PAPER, SCISSORS, TIE}. "
+        "A bounded parser enforced valid action output without defaulting malformed text to arbitrary actions.",
+        body_style
+    ))
+
+    headers3 = [
+        "Condition", "Traj.", "Decisions", "Valid Rate", "Latency",
+        "Signal\nCompliance", "Top-1\nMarg. MI", "Top-1\nCMI", "Top-1\nPNI Net",
+        "Mean Marg.\nMI (bits)", "Mean CMI\n(bits)", "Mean PNI\nNet (bits)"
+    ]
+    data3 = [
+        [Paragraph(h, table_header) for h in headers3],
+        [
+            Paragraph("<b>LLM-A (Independent)</b>", table_cell), Paragraph("3", table_cell),
+            Paragraph("60", table_cell), Paragraph("1.000 (60/60)", table_cell), Paragraph("1.39s", table_cell),
+            Paragraph("—", table_cell), Paragraph("—", table_cell), Paragraph("—", table_cell), Paragraph("—", table_cell),
+            Paragraph("0.2416", table_cell), Paragraph("0.0768", table_cell), Paragraph("-0.0084", table_cell)
+        ],
+        [
+            Paragraph("<b>LLM-B (Shared Context)</b>", table_cell), Paragraph("3", table_cell),
+            Paragraph("60", table_cell), Paragraph("1.000 (60/60)", table_cell), Paragraph("1.53s", table_cell),
+            Paragraph("—", table_cell), Paragraph("—", table_cell), Paragraph("—", table_cell), Paragraph("—", table_cell),
+            Paragraph("0.1118", table_cell), Paragraph("0.0706", table_cell), Paragraph("-0.0212", table_cell)
+        ],
+        [
+            Paragraph("<b>LLM-C (Private Signal)</b>", table_cell), Paragraph("3", table_cell),
+            Paragraph("60", table_cell), Paragraph("1.000 (60/60)", table_cell), Paragraph("1.40s", table_cell),
+            Paragraph("<b>1.000 (30/30)</b>", table_cell), Paragraph("<b>1.000 (3/3)</b>", table_cell),
+            Paragraph("<b>0.667 (2/3)</b>", table_cell), Paragraph("<b>0.667 (2/3)</b>", table_cell),
+            Paragraph("0.1682", table_cell), Paragraph("0.0678", table_cell), Paragraph("-0.0315", table_cell)
+        ],
+    ]
+    t3 = Table(data3, colWidths=[1.15*inch, 0.35*inch, 0.50*inch, 0.65*inch, 0.45*inch, 0.65*inch, 0.55*inch, 0.50*inch, 0.55*inch, 0.60*inch, 0.55*inch, 0.60*inch])
+    t3.setStyle(TableStyle([
+        ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor("#0D47A1")),
+        ('GRID', (0, 0), (-1, -1), 0.5, colors.HexColor("#CCCCCC")),
+        ('ROWBACKGROUNDS', (0, 1), (-1, -1), [colors.white, colors.HexColor("#F8F9FA")]),
+        ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+        ('PADDING', (0, 0), (-1, -1), 1.2),
+    ]))
+    story.append(t3)
+    story.append(Paragraph("<b>Table 3: Exploratory LLM Pilot Results.</b> Evaluated across 3 seeds per condition (T=5 rounds, 4 agents = 20 decisions/trajectory; 180 total decisions). Scripted calibration thresholds are not applied to LLM traces; performance is evaluated via pair rankings and descriptive mutual information.", caption_style))
+    story.append(Spacer(1, 1))
+
+    story.append(Paragraph(
+        "<b>Pilot Findings & Scope:</b> (1) <i>Signal Adherence:</i> Qwen2.5-1.5B achieved 100% adherence (30/30 opportunities) to the secret coordination directive in Condition LLM-C, confirming that instruction-tuned LLMs can reliably execute covert coordination rules. "
+        "(2) <i>Detector Rankings:</i> Marginal MI ranked the coordinating pair #1 in 3/3 seeds (100%), while CMI and PNI ranked the pair #1 in 2/3 seeds (66.7%). In ultra-short horizons (T=5), discrete state conditioning over 5 states fragments counts, dampening the empirical CMI signal. "
+        "(3) <i>Exploratory Boundary:</i> This pilot is strictly descriptive (N=3 seeds) and is not powered for statistical significance or calibrated thresholded FPR estimation.",
+        body_style
+    ))
     story.append(Spacer(1, 2))
 
-    story.append(Paragraph("5. Discussion and Limitations", h1_style))
+    story.append(Paragraph("6. Discussion and Limitations", h1_style))
     story.append(Paragraph(
-        "<b>5.1 Auditing Implications: Why Correlation Lies:</b> In algorithmic markets, autonomous pricing agents, high-frequency execution bots, "
+        "<b>6.1 Auditing Implications: Why Correlation Lies:</b> In algorithmic markets, autonomous pricing agents, high-frequency execution bots, "
         "and procurement models continuously observe common economic shocks (e.g., benchmark interest rates, commodity prices, wholesale tariffs). "
         "Our empirical results demonstrate that unconditioned correlation metrics (e.g., Pearson correlation, raw mutual information) cannot differentiate "
         "rational adaptation from collusive coordination. Regulators relying on unconditioned metrics would commit severe Type I errors, "
@@ -604,7 +666,7 @@ def build_pdf():
         body_style
     ))
     story.append(Paragraph(
-        "<b>5.2 Limitations:</b> We transparently acknowledge the constraints of this study:<br/>"
+        "<b>6.2 Limitations:</b> We transparently acknowledge the constraints of this study:<br/>"
         "1. <i>Controlled Scripted Signatures vs. Real-World Cartels:</i> Condition C establishes a controlled <i>shared-private-signal coordination condition</i> "
         "demonstrating that PNI recognizes statistical action dependence in scripted matrix games. However, detecting this statistical signature does not prove "
         "that agents formed an economically harmful cartel, extracted supra-competitive rents, or inflicted market harm. Furthermore, unobserved common causes "
@@ -615,18 +677,21 @@ def build_pdf():
         "in sparse regimes, though all values remain well below unconditioned Marginal MI (0.958 bits).<br/>"
         "3. <i>Exploratory Small-Sample Calibration:</i> Nominal 5% decision thresholds were calibrated from 5 validation seeds (30 candidate pairs) of Condition A. "
         "While isolating calibration from the 15 held-out test seeds, 30 samples yield coarse quantile estimates and do not guarantee an exact 5% population FPR.<br/>"
-        "4. <i>Hardware & Cloud Boundaries:</i> Modal promotional cloud credits were not activated; in strict compliance with sprint rules, "
-        "we executed a fully verified, zero-cost CPU study (0 API calls, $0.00 spent) over 260 unique trajectories (54,000 unique rounds across 300 evaluations).",
+        "4. <i>Modal Promotional Compute Pilot & Cloud Boundaries:</i> An exploratory 180-decision pilot using Qwen2.5-1.5B-Instruct was executed on Modal CPU instances (4 cores, 8GB RAM). "
+        "Allocating cloud GPU instances (T4/L4) required an active payment method on file under Modal platform policy, which was safely avoided under our zero-out-of-pocket spending cap ($0.00). "
+        "The CPU pilot consumed $0.07 of promotional compute credits ($0.00 billed out of pocket) across 9 trajectories. While establishing that 1.5B instruction models achieve 100% signal compliance, "
+        "small sample sizes (T=5 rounds) yield coarse empirical distributions. Scripted calibration thresholds are not calibrated to LLM action distributions and are therefore not applied. "
+        "Canonical benchmark results remain grounded in the 260-trajectory scripted evaluation (54,000 rounds).",
         body_style
     ))
     story.append(Paragraph(
-        "<b>5.3 Future Work:</b> Key extensions include: (1) evaluating neural CMI estimators (e.g., MINE) on LLM auction transcripts (Agrawal et al., 2025); "
+        "<b>6.3 Future Work:</b> Key extensions include: (1) evaluating neural CMI estimators (e.g., MINE) on LLM auction transcripts (Agrawal et al., 2025); "
         "(2) developing dynamic state abstractions to compress high-dimensional order book histories; and (3) testing PNI under intentional adversarial evasion.",
         body_style
     ))
     story.append(Spacer(1, 2))
 
-    story.append(Paragraph("6. Conclusion", h1_style))
+    story.append(Paragraph("7. Conclusion", h1_style))
     story.append(Paragraph(
         "This research stress-tested Pairwise Net Influence for detecting multi-agent coordination. We demonstrated that shared observable context "
         "induces a 38-fold surge in unconditioned mutual information, causing naive detectors to suffer a 100% false positive rate. "
@@ -636,7 +701,7 @@ def build_pdf():
     ))
 
     # =========================================================================
-    # PAGE 5: Code & Data, Contributions, References, Mandatory Appendix
+    # PAGE 6: Code & Data, Contributions, References, Mandatory Appendix
     # =========================================================================
     story.append(PageBreak())
 
@@ -644,9 +709,10 @@ def build_pdf():
     story.append(Paragraph(
         "• <b>Code Repository:</b> All experimental scripts, detectors, environments, test suites, and report generation tools are packaged in "
         "<font face='Courier'>when_correlation_lies_all_source_code.txt</font> with SHA-256 checksums.<br/>"
-        "• <b>Data & Trajectories:</b> Full JSONL trajectories (260 unique files, 54,000 unique recorded rounds across 300 evaluations) and separate ground-truth "
-        "manifests are included in the review bundle ZIP (<font face='Courier'>data/raw/</font> and <font face='Courier'>data/eval_labels/</font>).<br/>"
-        "• <b>Reproducibility:</b> Complete automated test suite passes (57/57 unit tests) in Python 3.13 on standard CPU hardware.",
+        "• <b>Data & Trajectories:</b> Full scripted JSONL trajectories (260 unique files, 54,000 rounds) and exploratory LLM trajectories (9 unique files, 180 decisions) "
+        "with separate ground-truth manifests are included in the review bundle ZIP (<font face='Courier'>data/raw/</font>, <font face='Courier'>data/eval_labels/</font>, "
+        "<font face='Courier'>data/raw_llm/</font>, <font face='Courier'>data/eval_labels_llm/</font>).<br/>"
+        "• <b>Reproducibility:</b> Complete automated test suite passes (59/59 unit tests) in Python 3.13 on standard CPU hardware.",
         body_style
     ))
     story.append(Spacer(1, 2))
@@ -692,11 +758,9 @@ def build_pdf():
     story.append(Paragraph(
         "ChatGPT (OpenAI) assisted with research ideation, paper explanation, methodology critique, independent review, "
         "and prompt drafting. Antigravity (Google DeepMind advanced agentic coding assistant) assisted with code implementation, "
-        "unit test suites, experiment orchestration, statistical metric aggregations, visualizations, ReportLab PDF layout, "
+        "unit test suites, experiment orchestration, Modal CPU pilot harness and execution, statistical metric aggregations, visualizations, ReportLab PDF layout, "
         "and packaging under the author's iterative instructions and review. Project direction, experimental design choices, "
-        "qualitative analysis, and final editorial responsibility rest entirely with the author (Durgesh Unde). The experimental "
-        "protocol was frozen after exploratory prototyping and was not preregistered prior to exploration. Zero external API/LLM "
-        "calls were made during the primary benchmark runs ($0.00 spend).",
+        "qualitative analysis, and final editorial responsibility rest entirely with the author (Durgesh Unde). Canonical benchmark evaluations used 260 scripted trajectories (54,000 rounds); exploratory LLM pilot evaluations used 9 trajectories (180 decisions) executed on Modal CPU ($0.07 promotional credit, $0.00 out-of-pocket spend). Zero personal payment cards or external paid token APIs were used. The experimental protocol was frozen after exploratory prototyping and was not preregistered prior to exploration.",
         body_style
     ))
     story.append(Spacer(1, 2))

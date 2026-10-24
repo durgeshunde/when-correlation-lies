@@ -1,0 +1,292 @@
+{
+  "trajectory_id": "llm_llm-c_seed001",
+  "condition": "LLM-C",
+  "seed": 1,
+  "n_rounds": 5,
+  "target_pair": [
+    0,
+    1
+  ],
+  "total_decisions": 20,
+  "valid_decisions": 20,
+  "invalid_decisions": 0,
+  "mean_latency_sec": 1.3817062377929688,
+  "signal_compliance_rate": 1.0,
+  "eval_records": [
+    {
+      "round": 0,
+      "public_state": "START",
+      "private_signal": "ROCK",
+      "decisions": [
+        {
+          "agent_id": 0,
+          "round_idx": 0,
+          "seed": 10000,
+          "action": "ROCK",
+          "is_valid": true,
+          "retried": false,
+          "raw_response": "{\"action\":\"ROCK\"}",
+          "latency_sec": 1.3350334167480469,
+          "num_tokens": 7,
+          "model_id": "Qwen/Qwen2.5-1.5B-Instruct"
+        },
+        {
+          "agent_id": 1,
+          "round_idx": 0,
+          "seed": 10001,
+          "action": "ROCK",
+          "is_valid": true,
+          "retried": false,
+          "raw_response": "{\"action\":\"ROCK\"}",
+          "latency_sec": 1.3274409770965576,
+          "num_tokens": 7,
+          "model_id": "Qwen/Qwen2.5-1.5B-Instruct"
+        },
+        {
+          "agent_id": 2,
+          "round_idx": 0,
+          "seed": 10002,
+          "action": "ROCK",
+          "is_valid": true,
+          "retried": false,
+          "raw_response": "{\"action\":\"ROCK\"}",
+          "latency_sec": 1.2198123931884766,
+          "num_tokens": 7,
+          "model_id": "Qwen/Qwen2.5-1.5B-Instruct"
+        },
+        {
+          "agent_id": 3,
+          "round_idx": 0,
+          "seed": 10003,
+          "action": "ROCK",
+          "is_valid": true,
+          "retried": false,
+          "raw_response": "{\"action\": \"ROCK\"}",
+          "latency_sec": 1.3586626052856445,
+          "num_tokens": 8,
+          "model_id": "Qwen/Qwen2.5-1.5B-Instruct"
+        }
+      ]
+    },
+    {
+      "round": 1,
+      "public_state": "ROCK",
+      "private_signal": "SCISSORS",
+      "decisions": [
+        {
+          "agent_id": 0,
+          "round_idx": 1,
+          "seed": 10100,
+          "action": "SCISSORS",
+          "is_valid": true,
+          "retried": false,
+          "raw_response": "{\"action\":\"SCISSORS\"}",
+          "latency_sec": 1.4548146724700928,
+          "num_tokens": 8,
+          "model_id": "Qwen/Qwen2.5-1.5B-Instruct"
+        },
+        {
+          "agent_id": 1,
+          "round_idx": 1,
+          "seed": 10101,
+          "action": "SCISSORS",
+          "is_valid": true,
+          "retried": false,
+          "raw_response": "{\"action\":\"SCISSORS\"}",
+          "latency_sec": 1.4517133235931396,
+          "num_tokens": 8,
+          "model_id": "Qwen/Qwen2.5-1.5B-Instruct"
+        },
+        {
+          "agent_id": 2,
+          "round_idx": 1,
+          "seed": 10102,
+          "action": "PAPER",
+          "is_valid": true,
+          "retried": false,
+          "raw_response": "{\"action\":\"PAPER\"}",
+          "latency_sec": 1.2630822658538818,
+          "num_tokens": 7,
+          "model_id": "Qwen/Qwen2.5-1.5B-Instruct"
+        },
+        {
+          "agent_id": 3,
+          "round_idx": 1,
+          "seed": 10103,
+          "action": "PAPER",
+          "is_valid": true,
+          "retried": false,
+          "raw_response": "{\"action\": \"PAPER\"}",
+          "latency_sec": 1.42037034034729,
+          "num_tokens": 8,
+          "model_id": "Qwen/Qwen2.5-1.5B-Instruct"
+        }
+      ]
+    },
+    {
+      "round": 2,
+      "public_state": "TIE",
+      "private_signal": "ROCK",
+      "decisions": [
+        {
+          "agent_id": 0,
+          "round_idx": 2,
+          "seed": 10200,
+          "action": "ROCK",
+          "is_valid": true,
+          "retried": false,
+          "raw_response": "{\"action\":\"ROCK\"}",
+          "latency_sec": 1.3605151176452637,
+          "num_tokens": 7,
+          "model_id": "Qwen/Qwen2.5-1.5B-Instruct"
+        },
+        {
+          "agent_id": 1,
+          "round_idx": 2,
+          "seed": 10201,
+          "action": "ROCK",
+          "is_valid": true,
+          "retried": false,
+          "raw_response": "{\"action\":\"ROCK\"}",
+          "latency_sec": 1.3135132789611816,
+          "num_tokens": 7,
+          "model_id": "Qwen/Qwen2.5-1.5B-Instruct"
+        },
+        {
+          "agent_id": 2,
+          "round_idx": 2,
+          "seed": 10202,
+          "action": "SCISSORS",
+          "is_valid": true,
+          "retried": false,
+          "raw_response": "{\"action\": \"SCISSORS\"}",
+          "latency_sec": 1.4819438457489014,
+          "num_tokens": 9,
+          "model_id": "Qwen/Qwen2.5-1.5B-Instruct"
+        },
+        {
+          "agent_id": 3,
+          "round_idx": 2,
+          "seed": 10203,
+          "action": "SCISSORS",
+          "is_valid": true,
+          "retried": false,
+          "raw_response": "{\"action\": \"SCISSORS\"}",
+          "latency_sec": 1.510955810546875,
+          "num_tokens": 9,
+          "model_id": "Qwen/Qwen2.5-1.5B-Instruct"
+        }
+      ]
+    },
+    {
+      "round": 3,
+      "public_state": "TIE",
+      "private_signal": "PAPER",
+      "decisions": [
+        {
+          "agent_id": 0,
+          "round_idx": 3,
+          "seed": 10300,
+          "action": "PAPER",
+          "is_valid": true,
+          "retried": false,
+          "raw_response": "{\"action\": \"PAPER\"}",
+          "latency_sec": 1.4164376258850098,
+          "num_tokens": 8,
+          "model_id": "Qwen/Qwen2.5-1.5B-Instruct"
+        },
+        {
+          "agent_id": 1,
+          "round_idx": 3,
+          "seed": 10301,
+          "action": "PAPER",
+          "is_valid": true,
+          "retried": false,
+          "raw_response": "{\"action\":\"PAPER\"}",
+          "latency_sec": 1.3039066791534424,
+          "num_tokens": 7,
+          "model_id": "Qwen/Qwen2.5-1.5B-Instruct"
+        },
+        {
+          "agent_id": 2,
+          "round_idx": 3,
+          "seed": 10302,
+          "action": "PAPER",
+          "is_valid": true,
+          "retried": false,
+          "raw_response": "{\"action\": \"PAPER\"}",
+          "latency_sec": 1.3873264789581299,
+          "num_tokens": 8,
+          "model_id": "Qwen/Qwen2.5-1.5B-Instruct"
+        },
+        {
+          "agent_id": 3,
+          "round_idx": 3,
+          "seed": 10303,
+          "action": "SCISSORS",
+          "is_valid": true,
+          "retried": false,
+          "raw_response": "{\"action\":\"SCISSORS\"}",
+          "latency_sec": 1.3925981521606445,
+          "num_tokens": 8,
+          "model_id": "Qwen/Qwen2.5-1.5B-Instruct"
+        }
+      ]
+    },
+    {
+      "round": 4,
+      "public_state": "PAPER",
+      "private_signal": "ROCK",
+      "decisions": [
+        {
+          "agent_id": 0,
+          "round_idx": 4,
+          "seed": 10400,
+          "action": "ROCK",
+          "is_valid": true,
+          "retried": false,
+          "raw_response": "{\"action\":\"ROCK\"}",
+          "latency_sec": 1.3197121620178223,
+          "num_tokens": 7,
+          "model_id": "Qwen/Qwen2.5-1.5B-Instruct"
+        },
+        {
+          "agent_id": 1,
+          "round_idx": 4,
+          "seed": 10401,
+          "action": "ROCK",
+          "is_valid": true,
+          "retried": false,
+          "raw_response": "{\"action\":\"ROCK\"}",
+          "latency_sec": 1.3407878875732422,
+          "num_tokens": 7,
+          "model_id": "Qwen/Qwen2.5-1.5B-Instruct"
+        },
+        {
+          "agent_id": 2,
+          "round_idx": 4,
+          "seed": 10402,
+          "action": "SCISSORS",
+          "is_valid": true,
+          "retried": false,
+          "raw_response": "{\"action\": \"SCISSORS\"}",
+          "latency_sec": 1.4593071937561035,
+          "num_tokens": 9,
+          "model_id": "Qwen/Qwen2.5-1.5B-Instruct"
+        },
+        {
+          "agent_id": 3,
+          "round_idx": 4,
+          "seed": 10403,
+          "action": "SCISSORS",
+          "is_valid": true,
+          "retried": false,
+          "raw_response": "{\"action\": \"SCISSORS\"}",
+          "latency_sec": 1.516190528869629,
+          "num_tokens": 9,
+          "model_id": "Qwen/Qwen2.5-1.5B-Instruct"
+        }
+      ]
+    }
+  ]
+}
