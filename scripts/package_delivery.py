@@ -61,8 +61,8 @@ def generate_manifest_text(target_pdf: Path, concat_path: Path, zip_path: Path =
         "unit test suites, experiment orchestration, Modal CPU cloud infrastructure harness and execution, statistical metric aggregations, visualizations, ReportLab PDF layout,\n"
         "and packaging under the author's iterative instructions and review. Project direction, experimental design choices,\n"
         "qualitative analysis, and final editorial responsibility rest entirely with the author (Durgesh Unde). Canonical benchmark\n"
-        "evaluations used 260 scripted trajectories (54,000 rounds); open-weight LLM evaluations used 300 trajectories (28,500 decisions)\n"
-        "executed on Modal CPU ($17.24 metered promotional compute credit, $0.00 out-of-pocket spend). Zero personal payment cards or external paid token APIs were used.\n"
+        "evaluations used 260 scripted trajectories (54,000 rounds); open-weight LLM evaluations used 630 trajectories (68,400 decisions)\n"
+        "executed on Modal CPU ($40.63 metered compute: $40.12 promotional credits applied, $0.51 network egress allowance; $0.00 out-of-pocket spend). Zero personal payment cards or external paid token APIs were used.\n"
         "The experimental protocol was frozen after exploratory prototyping and was not preregistered prior to exploration.\n"
     )
 
@@ -118,7 +118,7 @@ def generate_manifest_text(target_pdf: Path, concat_path: Path, zip_path: Path =
     lines.append("  - Expanded Primary (T=20): 300 files (24,000 decisions across 100 seeds)")
     lines.append("  - Extended Horizon (T=50): 210 files (42,000 decisions across 70 seeds)")
     lines.append("• Automated Unit Test Suite: 59 / 59 tests passed (pytest 9.1.1, Python 3.13.7)")
-    lines.append("• Cloud Compute & Billing: Modal CPU execution consumed $40.63 in metered compute, offset by $40.12 promotional credits and $0.51 network egress allowance; $0.00 billed out-of-pocket")
+    lines.append("• Cloud Compute & Billing: Modal CPU metered usage was $40.63 ($40.12 promotional credits applied, $0.51 network egress allowance; $0.00 billed out-of-pocket)")
     lines.append("• Decision Threshold Calibration: Small-sample exploratory calibration on Condition A validation seeds (seeds 0-4, 30 candidate pairs) targeting nominal 5% FPR")
     lines.append("  - Calibrated PNI Threshold (tau_PNI): 0.010427 bits")
     lines.append("  - Calibrated Conditional MI Threshold (tau_CMI): 0.117454 bits")

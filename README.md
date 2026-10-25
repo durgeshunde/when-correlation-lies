@@ -37,7 +37,7 @@ shared context, and how does detector performance scale with coordination streng
 - Statistical rigor: Wilson score confidence intervals for bounded proportions (Top-1 accuracy) and non-parametric bootstrap CIs over independent seeds for continuous metrics.
 - Comprehensive trajectory length sweep ($T \in [50, 100, 200, 500]$) using fixed primary calibrated thresholds.
 - Zero LLM/API calls in primary benchmark ($0.00 spent): 100% reproducible CPU evaluation over 260 unique trajectories (54,000 unique rounds).
-- Multi-horizon open-weight LLM agent experiment on Modal CPU: 300 trajectories (28,500 decisions) executed with `Qwen/Qwen2.5-1.5B-Instruct` across $T \in \{5, 20, 50\}$ rounds using authorized promotional credits ($17.24 metered cost, $17.01 credits, $0.23 network allowance, $0.00 billed out of pocket), demonstrating 100% valid parsed action rate (28,500/28,500) and 100% secret signal compliance (4,750/4,750 opportunities), and revealing the finite-sample horizon sparsity effect (68.0% Top-1 accuracy and 20.0% binary recall at $T=5$, restored to 100.0% Top-1 accuracy and 100.0% recall at $T \ge 20$ under calibrated decision thresholds).
+- Multi-horizon open-weight LLM agent experiment on Modal CPU: 630 trajectories (68,400 decisions) executed with `Qwen/Qwen2.5-1.5B-Instruct` across $T \in \{5, 20, 50\}$ rounds using authorized promotional credits ($40.63 metered compute: $40.12 promotional credits applied, $0.51 network egress allowance; $0.00 billed out of pocket), demonstrating 100% valid parsed action rate (68,400/68,400) and 100% secret signal compliance (11,400/11,400 opportunities), and revealing the finite-sample horizon sparsity effect (70.0% Top-1 accuracy and 36.7% binary recall at $T=5$, restored to 100.0% Top-1 accuracy and 100.0% recall at $T \ge 20$ under calibrated decision thresholds).
 
 ---
 
@@ -73,12 +73,12 @@ when-correlation-lies/
 ├── data/
 │   ├── raw/                    # 260 canonical scripted JSONL game trajectories (54,000 rounds)
 │   ├── eval_labels/            # 260 evaluation ground-truth label files
-│   ├── raw_llm/                # 75 pilot LLM JSONL trajectories (1,500 decisions, T=5, 25 seeds)
-│   ├── eval_labels_llm/        # 75 pilot LLM evaluation label files
-│   ├── raw_llm_expanded/       # 150 expanded LLM JSONL trajectories (12,000 decisions, T=20, 50 seeds)
-│   ├── eval_labels_llm_expanded/# 150 expanded LLM evaluation label files
-│   ├── raw_llm_expanded_t50/   # 75 extended LLM JSONL trajectories (15,000 decisions, T=50, 25 seeds)
-│   └── eval_labels_llm_expanded_t50/# 75 extended LLM evaluation label files
+│   ├── raw_llm/                # 120 pilot LLM JSONL trajectories (2,400 decisions, T=5, 40 seeds)
+│   ├── eval_labels_llm/        # 120 pilot LLM evaluation label files
+│   ├── raw_llm_expanded/       # 300 expanded LLM JSONL trajectories (24,000 decisions, T=20, 100 seeds)
+│   ├── eval_labels_llm_expanded/# 300 expanded LLM evaluation label files
+│   ├── raw_llm_expanded_t50/   # 210 extended LLM JSONL trajectories (42,000 decisions, T=50, 70 seeds)
+│   └── eval_labels_llm_expanded_t50/# 210 extended LLM evaluation label files
 ├── archive/
 │   ├── ARCHIVE_README.md       # Provenance documentation of historical/superseded runs
 │   ├── historical_metrics/     # Archived intermediate and pre-repair metric runs
@@ -104,12 +104,23 @@ when-correlation-lies/
 
 **Requirements:** Python 3.11+ (verified on Python 3.13.7)
 
+### Option 1: Local Development, Benchmark Testing & Report Compilation (Recommended)
+The primary scripted benchmark, all statistical detectors, all 59 automated unit tests, metric evaluation of all trajectories (both scripted and LLM), and formal PDF report compilation run 100% locally on standard CPU hardware with zero cloud or API dependencies:
+
 ```bash
 # Clone or navigate to the repository
 cd when-correlation-lies
 
-# Editable install with test and report dependencies
+# Install core dependencies with test and report extras (zero cloud dependencies)
 pip install -e ".[dev,report]"
+```
+
+### Option 2: Full Cloud LLM Inference Pipeline (Optional)
+If you wish to re-execute open-weight model inference on Modal cloud CPU workers (`scripts/modal_llm_expanded.py`), install the optional `[cloud]` extra (requires an authorized Modal account):
+
+```bash
+# Install with optional cloud dependencies
+pip install -e ".[dev,report,cloud]"
 ```
 
 ---
@@ -180,21 +191,21 @@ python scripts/package_delivery.py
 
 ## Multi-Horizon Open-Weight LLM Empirical Results
 
-To evaluate whether instruction-tuned language models follow coordination directives and how sample horizon impacts detection, we deployed open-weight `Qwen/Qwen2.5-1.5B-Instruct` on Modal CPU instances across 300 trajectories (28,500 total decisions across horizons $T \in \{5, 20, 50\}$):
+To evaluate whether instruction-tuned language models follow coordination directives and how sample horizon impacts detection, we deployed open-weight `Qwen/Qwen2.5-1.5B-Instruct` on Modal CPU instances across 630 trajectories (68,400 total decisions across horizons $T \in \{5, 20, 50\}$):
 
 ### Table 3: Multi-Horizon Open-Weight LLM Primary Ranking Metrics
 
 | Horizon | Condition | Trajectories | Total Decisions | Valid Parse Rate | Signal Adherence | Top-1 Marg. MI | Top-1 CMI | Top-1 PNI | Mean CMI (bits) |
 | :---: | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| **$T=5$** | **LLM-A (Ind.)** | 25 | 500 | 100.0% (500/500) | N/A | N/A | N/A | N/A | 0.0697 |
-|  | **LLM-B (Cont.)** | 25 | 500 | 100.0% (500/500) | N/A | N/A | N/A | N/A | 0.0650 |
-|  | **LLM-C (Coord.)** | 25 | 500 | 100.0% (500/500) | **100.0% (250/250)** | **1.000 (25/25)** | **0.680 (17/25)** | **0.680 (17/25)** | 0.0737 |
-| **$T=20$** | **LLM-A (Ind.)** | 50 | 4,000 | 100.0% (4000/4000) | N/A | N/A | N/A | N/A | 0.0992 |
-|  | **LLM-B (Cont.)** | 50 | 4,000 | 100.0% (4000/4000) | N/A | N/A | N/A | N/A | 0.0976 |
-|  | **LLM-C (Coord.)** | 50 | 4,000 | 100.0% (4000/4000) | **100.0% (2000/2000)** | **1.000 (50/50)** | **1.000 (50/50)** | **1.000 (50/50)** | 0.1343 |
-| **$T=50$** | **LLM-A (Ind.)** | 25 | 5,000 | 100.0% (5000/5000) | N/A | N/A | N/A | N/A | 0.0821 |
-|  | **LLM-B (Cont.)** | 25 | 5,000 | 100.0% (5000/5000) | N/A | N/A | N/A | N/A | 0.0806 |
-|  | **LLM-C (Coord.)** | 25 | 5,000 | 100.0% (5000/5000) | **100.0% (2500/2500)** | **1.000 (25/25)** | **1.000 (25/25)** | **1.000 (25/25)** | 0.1724 |
+| **$T=5$** | **LLM-A (Ind.)** | 40 | 800 | 100.0% (800/800) | N/A | N/A | N/A | N/A | 0.0693 |
+|  | **LLM-B (Cont.)** | 40 | 800 | 100.0% (800/800) | N/A | N/A | N/A | N/A | 0.0666 |
+|  | **LLM-C (Coord.)** | 40 | 800 | 100.0% (800/800) | **100.0% (400/400)** | **1.000 (40/40)** | **0.700 (28/40)** | **0.700 (28/40)** | 0.0696 |
+| **$T=20$** | **LLM-A (Ind.)** | 100 | 8,000 | 100.0% (8000/8000) | N/A | N/A | N/A | N/A | 0.0997 |
+|  | **LLM-B (Cont.)** | 100 | 8,000 | 100.0% (8000/8000) | N/A | N/A | N/A | N/A | 0.0981 |
+|  | **LLM-C (Coord.)** | 100 | 8,000 | 100.0% (4000/4000) | **100.0% (4000/4000)** | **1.000 (100/100)** | **1.000 (100/100)** | **1.000 (100/100)** | 0.1333 |
+| **$T=50$** | **LLM-A (Ind.)** | 70 | 14,000 | 100.0% (14000/14000) | N/A | N/A | N/A | N/A | 0.0835 |
+|  | **LLM-B (Cont.)** | 70 | 14,000 | 100.0% (14000/14000) | N/A | N/A | N/A | N/A | 0.0833 |
+|  | **LLM-C (Coord.)** | 70 | 14,000 | 100.0% (14000/14000) | **100.0% (7000/7000)** | **1.000 (70/70)** | **1.000 (70/70)** | **1.000 (70/70)** | 0.1770 |
 
 ### Table 4: Held-Out Classification and Threshold Evaluation
 
@@ -216,7 +227,7 @@ Thresholds calibrated on LLM-A validation episodes targeting nominal 5% FPR ($\\
 - `Qwen2.5-1.5B-Instruct` achieved 100.0% valid action generation rate (68,400/68,400 decisions parsed as ROCK, PAPER, or SCISSORS) and 100.0% adherence to private coordination directives across all 11,400 opportunities in Condition LLM-C without fine-tuning.
 - **Finite-Sample Horizon Sparsity Effect:** At short horizon ($T=5$ rounds), conditioning on discrete states causes sample fragmentation, reducing CMI and PNI Top-1 ranking accuracy to 70.0% (28/40 seeds). Crucially, under frozen calibrated thresholds, binary recall is only 36.7% (11/30 test episodes detected), with 33.3% of episodes being ranked #1 but failing threshold detection. Expanding the horizon to $T=20$ rounds restores **100.0% Top-1 ranking accuracy** (100/100 seeds, Wilson 95% CI: [0.951, 1.000]) and **100.0% binary recall** (75/75 test episodes detected), which remains 100% at $T=50$ (70/70 seeds; 60/60 test episodes) with mean CMI rising to 0.1770 bits.
 - **Negative Mean PNI Net Scores:** In Condition LLM-C, competitor subtraction ($\\max_{k \\neq i,j} \\gamma(k,j)$) subtracts the coordinating pair's elevated mutual information from other candidate pairs, driving rival net influence negative (mean -0.140 bits at $T=20$, -0.321 bits at $T=50$).
-- **Resource and Cloud Accounting:** The entire cloud suite ran on Modal CPU ($40.63 metered compute, offset by $40.12 promotional credit and $0.51 network egress allowance; exactly $0.00 billed out-of-pocket).
+- **Resource and Cloud Accounting:** The entire cloud suite ran on Modal CPU ($40.63 metered compute: $40.12 promotional credits applied, $0.51 network egress allowance; exactly $0.00 billed out of pocket).
 
 ---
 
@@ -225,7 +236,7 @@ Thresholds calibrated on LLM-A validation episodes targeting nominal 5% FPR ($\\
 1. **Scripted Benchmark vs. Real-World Cartels:** The canonical evaluation was conducted on controlled scripted agents in a 4-player discrete iterated RPS game ($|\mathcal{S}| = 82$). Zero LLM/API calls were made during the primary benchmark ($0.00 spent). Statistical action dependence demonstrates detector sensitivity, but does not prove real-world economic harm or spontaneous collusion.
 2. **Exploratory Small-Sample Calibration:** Nominal 5% decision thresholds were calibrated from 5 validation seeds (30 candidate pairs) of Condition A. While isolating calibration from held-out test seeds, small samples yield coarse empirical quantiles rather than population guarantees.
 3. **State Sparsity:** Conditioning on discrete game history partitions observations across state-action cells. Condition B PNI False Positive Rate is 0.100 (substantially reduced from Marginal MI's 1.000, but finite-sample variance prevents an exact zero FPR).
-4. **Cloud Platform & LLM Execution:** Allocating cloud GPU instances on Modal requires an active payment method on file per platform policy; in strict adherence to zero-out-of-pocket rules ($0.00 billed), GPU calls were safely bypassed. Instead, an optimized CPU pipeline was executed on Modal (4 vCPU, 8GB RAM, `torch.bfloat16`, 12 max tokens) with `Qwen/Qwen2.5-1.5B-Instruct`. The suite executed 630 trajectories (68,400 decisions) across 3 conditions and 3 horizons at a metered compute cost of $40.63, offset 100% by promotional credits and network allowance ($0.00 billed out of pocket).
+4. **Cloud Platform & LLM Execution:** Allocating cloud GPU instances on Modal requires an active payment method on file per platform policy; in strict adherence to zero-out-of-pocket rules ($0.00 billed), GPU calls were safely bypassed. Instead, an optimized CPU pipeline was executed on Modal (4 vCPU, 8GB RAM, `torch.bfloat16`, 12 max tokens) with `Qwen/Qwen2.5-1.5B-Instruct`. The suite executed 630 trajectories (68,400 decisions) across 3 conditions and 3 horizons at a metered compute cost of $40.63 ($40.12 promotional credits applied, $0.51 network egress allowance; $0.00 billed out of pocket).
 
 ---
 

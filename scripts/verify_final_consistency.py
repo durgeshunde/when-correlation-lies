@@ -87,6 +87,10 @@ def pdf_report_check():
         "Anonymous AI Safety Researcher",
         "With: Apart Research",
         "Affiliation: Independent Researcher (With",
+        "300 trajectories",
+        "28,500",
+        "$17.24",
+        "$17.01",
     ]
     for phrase in forbidden:
         assert phrase.lower() not in full_text.lower(), f"Forbidden phrase '{phrase}' found in PDF!"
@@ -102,11 +106,16 @@ def pdf_report_check():
         "Wilson",
         "Qwen/Qwen2.5-1.5B-Instruct",
         "Open-Weight LLM Agent Experiments",
+        "630 trajectories",
+        "68,400 decisions",
+        "$40.63",
+        "$40.12",
+        "$0.51",
     ]
     for phrase in required_phrases:
         assert phrase.lower() in full_text.lower(), f"Required phrase '{phrase}' missing in PDF!"
 
-    print("[PASS] PDF Report: Exactly 7 pages (<= 8 cap), valid metadata, 0 forbidden phrases, required concepts present.")
+    print("[PASS] PDF Report: Exactly 7 pages (<= 8 cap), valid metadata, 0 forbidden phrases, required concepts and final metrics present.")
 
 
 def zip_bundle_check():
@@ -191,6 +200,14 @@ def manifest_check():
     assert "54,000 unique rounds" in content
     assert "630 unique JSONL files" in content
     assert "68,400 total decisions" in content
+    assert "11,400/11,400" in content
+    assert "$40.63" in content
+    assert "$40.12" in content
+    assert "$0.51" in content
+    assert "$17.24" not in content
+    assert "28,500" not in content
+    assert "300 trajectories" not in content
+    assert "300 unique JSONL files" not in content
     assert "59 / 59 tests passed" in content
     assert "0.010427 bits" in content
     assert "0.117454 bits" in content
@@ -241,11 +258,47 @@ def triangulation_metrics_check():
     print("[PASS] Triangulation Metrics: CMI, PNI, and Marginal MI verified across all conditions.")
 
 
+def current_facing_consistency_check():
+    current_files = [
+        PROJECT_ROOT / "README.md",
+        PROJECT_ROOT / "report" / "report_draft.md",
+        PROJECT_ROOT / "scripts" / "package_delivery.py",
+        PROJECT_ROOT / "scripts" / "generate_pdf_report.py",
+    ]
+    if (PROJECT_ROOT / "final_delivery" / "results_manifest.txt").exists():
+        current_files.append(PROJECT_ROOT / "final_delivery" / "results_manifest.txt")
+    if (PROJECT_ROOT / "results_manifest.txt").exists():
+        current_files.append(PROJECT_ROOT / "results_manifest.txt")
+
+    stale_forbidden = [
+        "300 trajectories",
+        "28,500",
+        "$17.24",
+        "$17.01",
+        "4,750",
+    ]
+
+    for p in current_files:
+        assert p.exists(), f"File {p} does not exist"
+        txt = p.read_text(encoding="utf-8")
+        for term in stale_forbidden:
+            assert term not in txt, f"Found stale current-run term '{term}' in {p.relative_to(PROJECT_ROOT)}"
+
+    # Ensure root manifest and final_delivery manifest are byte-identical
+    root_man = PROJECT_ROOT / "results_manifest.txt"
+    deliv_man = PROJECT_ROOT / "final_delivery" / "results_manifest.txt"
+    if root_man.exists() and deliv_man.exists():
+        assert root_man.read_bytes() == deliv_man.read_bytes(), "root results_manifest.txt and final_delivery/results_manifest.txt are not byte-identical!"
+
+    print("[PASS] Current-Facing Consistency: Zero stale current-run terms in README, scripts, report draft, or manifests; root manifest matches delivery manifest byte-for-byte.")
+
+
 if __name__ == "__main__":
     print("Running comprehensive consistency verification...")
     test_suite_check()
     dataset_check()
     triangulation_metrics_check()
+    current_facing_consistency_check()
     if (PROJECT_ROOT / "final_delivery" / "when_correlation_lies_report.pdf").exists() or (PROJECT_ROOT / "report" / "when_correlation_lies_report.pdf").exists():
         pdf_report_check()
     if (PROJECT_ROOT / "final_delivery" / "when_correlation_lies_review_bundle.zip").exists():

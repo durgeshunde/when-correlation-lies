@@ -803,7 +803,7 @@ def build_pdf():
         "While isolating calibration from the 15 held-out test seeds, 30 samples yield coarse quantile estimates and do not guarantee an exact 5% population FPR.<br/>"
         "4. <i>Modal Promotional Compute Telemetry & Cloud Boundaries:</i> An extensive 68,400-decision study using Qwen2.5-1.5B-Instruct was executed on Modal CPU instances (4 cores, 8GB RAM). "
         "Allocating cloud GPU instances (T4/L4) required an active payment method on file under Modal platform policy, which was safely avoided under our zero-out-of-pocket spending cap ($0.00). "
-        "The CPU pipeline consumed $40.63 of metered promotional compute credits ($40.12 ephemeral apps, $0.51 network egress, offset by credits and allowance; $0.00 billed out of pocket) across 630 trajectories. While establishing that 1.5B instruction models achieve 100% signal compliance "
+        "The CPU pipeline logged $40.63 in metered compute ($40.12 promotional credits applied for ephemeral apps, $0.51 network egress allowance; $0.00 billed out of pocket) across 630 trajectories (68,400 decisions). While establishing that 1.5B instruction models achieve 100% signal compliance "
         "and that T >= 20 restores 100% ranking accuracy and threshold recall, canonical benchmark results remain grounded in the 260-trajectory scripted evaluation (54,000 rounds).",
         body_style
     ))
@@ -885,7 +885,7 @@ def build_pdf():
         "and prompt drafting. Antigravity (Google DeepMind advanced agentic coding assistant) assisted with code implementation, "
         "unit test suites, experiment orchestration, Modal CPU cloud infrastructure harness and execution, statistical metric aggregations, visualizations, ReportLab PDF layout, "
         "and packaging under the author's iterative instructions and review. Project direction, experimental design choices, "
-        "qualitative analysis, and final editorial responsibility rest entirely with the author (Durgesh Unde). Canonical benchmark evaluations used 260 scripted trajectories (54,000 rounds); open-weight LLM evaluations used 630 trajectories (68,400 decisions) executed on Modal CPU ($40.63 metered promotional compute credit, $0.00 out-of-pocket spend). Zero personal payment cards or external paid token APIs were used. The experimental protocol was frozen after exploratory prototyping and was not preregistered prior to exploration.",
+        "qualitative analysis, and final editorial responsibility rest entirely with the author (Durgesh Unde). Canonical benchmark evaluations used 260 scripted trajectories (54,000 rounds); open-weight LLM evaluations used 630 trajectories (68,400 decisions) executed on Modal CPU ($40.63 metered compute: $40.12 promotional credits applied, $0.51 network egress allowance; $0.00 out-of-pocket spend). Zero personal payment cards or external paid token APIs were used. The experimental protocol was frozen after exploratory prototyping and was not preregistered prior to exploration.",
         body_style
     ))
     story.append(Spacer(1, 1))
