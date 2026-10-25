@@ -79,7 +79,8 @@ def pdf_report_check():
     assert "Apart Research" in meta["subject"], f"Unexpected subject: {meta.get('subject')}"
 
     # Verify no illegal strings on any page
-    full_text = "\n".join(p.get_text() for p in doc)
+    raw_full_text = "\n".join(p.get_text() for p in doc)
+    full_text_normalized = " ".join(raw_full_text.split()).lower()
     forbidden = [
         "pre-registered",
         "hash(state)",
@@ -95,9 +96,14 @@ def pdf_report_check():
         "0.076 ± 0.003",
         "0.998 ± 0.009",
         "0.684 ± 0.008",
+        "preserving low false positives while attaining 100%",
+        "essential requirement for auditing",
+        "essential for behavioral auditing",
+        "prove that independent agents reacting",
     ]
     for phrase in forbidden:
-        assert phrase.lower() not in full_text.lower(), f"Forbidden phrase '{phrase}' found in PDF!"
+        p_norm = " ".join(phrase.split()).lower()
+        assert p_norm not in full_text_normalized, f"Forbidden phrase '{phrase}' found in PDF!"
 
     # Verify key phrases present
     required_phrases = [
@@ -124,9 +130,13 @@ def pdf_report_check():
         "2/100",
         "20/100",
         "20/20",
+        "20/100 non-target pairs",
+        "pair ranking and threshold-based false-positive control are distinct outcomes",
+        "useful safeguard in the tested setting",
     ]
     for phrase in required_phrases:
-        assert phrase.lower() in full_text.lower(), f"Required phrase '{phrase}' missing in PDF!"
+        p_norm = " ".join(phrase.split()).lower()
+        assert p_norm in full_text_normalized, f"Required phrase '{phrase}' missing in PDF!"
 
     print(f"[PASS] PDF Report: Exactly {len(doc)} pages (<= 8 cap), valid metadata, 0 forbidden phrases, required concepts and canonical counts present.")
 
@@ -193,7 +203,16 @@ def zip_bundle_check():
         for ef in expected_files:
             assert ef in namelist, f"Expected {ef} in ZIP root structure"
 
-    print(f"[PASS] Review ZIP: Valid clean repository bundle with 260 scripted and 630 LLM trajectories, labels, zero duplicates, and full runnable source.")
+        # Confirm standalone PDF and PDF inside ZIP are byte-identical
+        standalone_pdf = PROJECT_ROOT / "final_delivery" / "when_correlation_lies_report.pdf"
+        if standalone_pdf.exists():
+            zip_pdf_bytes = zf.read("when_correlation_lies_report.pdf")
+            disk_pdf_bytes = standalone_pdf.read_bytes()
+            assert zip_pdf_bytes == disk_pdf_bytes, "Standalone PDF and PDF inside ZIP are not byte-identical!"
+            zip_report_pdf_bytes = zf.read("report/when_correlation_lies_report.pdf")
+            assert zip_report_pdf_bytes == disk_pdf_bytes, "report/ PDF inside ZIP is not byte-identical to standalone PDF!"
+
+    print(f"[PASS] Review ZIP: Valid clean repository bundle with 260 scripted and 630 LLM trajectories, labels, zero duplicates, and full runnable source (PDF byte-identical confirmed).")
 
 
 def manifest_check():

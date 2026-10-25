@@ -250,7 +250,7 @@ def build_pdf():
         "while PNI competitor subtraction isolates coordinating pairs with 100% Top-1 ranking accuracy (Wilson 95% CI: [0.839, 1.000], MRR = 1.000). "
         "Furthermore, expanding evaluations to 68,400 open-weight LLM decisions (Qwen2.5-1.5B, 630 trajectories) across horizons T in {5, 20, 50} reveals an empirical finite-sample sparsity effect: "
         "ultra-short horizons (T=5) attenuate CMI ranking accuracy (70.0%), whereas sufficient history (T >= 20) restores 100% Top-1 identification accuracy under controlled ranking evidence. "
-        "Our findings demonstrate that state conditioning is essential for behavioral auditing while highlighting critical sample horizon boundaries."
+        "Our findings support state conditioning as a useful safeguard in the tested setting while highlighting critical sample horizon boundaries."
     )
     abstract_content = [
         [Paragraph("<b>ABSTRACT</b>", abstract_heading)],
@@ -816,11 +816,12 @@ def build_pdf():
 
     story.append(Paragraph("8. Conclusion", h1_style))
     story.append(Paragraph(
-        "This research stress-tested Pairwise Net Influence for detecting multi-agent coordination. We demonstrated that shared observable context "
-        "induces a 38-fold surge in unconditioned mutual information, causing naive detectors to suffer a 100% false positive rate. "
-        "Conditioning on observable state neutralizes this broadcast shock, while competitor subtraction provides directed isolation, preserving low false positives while attaining 100% Top-1 ranking accuracy under genuine coordination. "
+        "This research stress-tested Pairwise Net Influence for detecting multi-agent coordination. "
+        "In this controlled shared-context condition, independent agents reacting to the same observable state produced a 38-fold increase in estimated marginal mutual information and a 100% false-positive rate under the evaluated threshold. "
+        "Conditioning on observable state neutralizes this broadcast shock. Under genuine scripted coordination, PNI ranked the designated coordinating pair first in all 20 scripted positive-control trajectories. "
+        "However, at the calibrated decision threshold it flagged 20/100 non-target pairs in this condition, compared with 2/100 for CMI, illustrating that pair ranking and threshold-based false-positive control are distinct outcomes. "
         "Furthermore, across open-weight language model decisions, state-conditioned detectors achieve 100% identification accuracy once trajectory length reaches T &gt;= 20 rounds, overcoming finite-sample state sparsity in controlled settings. "
-        "These empirical findings suggest that state conditioning is an essential requirement for auditing multi-agent algorithmic systems.",
+        "These results support state conditioning as a useful safeguard in the tested setting; its performance in richer environments and under adversarial or unobserved confounding requires further evaluation.",
         body_style
     ))
 

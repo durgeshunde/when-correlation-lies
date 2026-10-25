@@ -220,7 +220,7 @@ def build_official_report():
         "while PNI competitor subtraction isolates coordinating pairs with 100% Top-1 ranking accuracy (Wilson 95% CI: [0.839, 1.000], MRR = 1.000). "
         "Furthermore, expanding evaluations to 68,400 open-weight LLM decisions (Qwen2.5-1.5B, 630 trajectories) across horizons T in {5, 20, 50} reveals an empirical finite-sample sparsity effect: "
         "ultra-short horizons (T=5) attenuate CMI ranking accuracy (70.0%), whereas sufficient history (T >= 20) restores 100% Top-1 identification accuracy under controlled ranking evidence. "
-        "Our findings demonstrate that state conditioning is essential for behavioral auditing while highlighting critical sample horizon boundaries."
+        "Our findings support state conditioning as a useful safeguard in the tested setting while highlighting critical sample horizon boundaries."
     )
     p_abs_body = c_abs.add_paragraph()
     p_abs_body.paragraph_format.line_spacing = 1.08
@@ -235,68 +235,68 @@ def build_official_report():
     # Typography Helpers
     def add_h1(text):
         p = doc.add_paragraph(style="Heading 2")
-        p.paragraph_format.space_before = Pt(7)
-        p.paragraph_format.space_after = Pt(2)
+        p.paragraph_format.space_before = Pt(5.5)
+        p.paragraph_format.space_after = Pt(1.5)
         p.paragraph_format.keep_with_next = True
         r = p.add_run(text)
         r.font.name = "Old Standard TT"
-        r.font.size = Pt(11.0)
+        r.font.size = Pt(10.8)
         r.font.bold = True
         r.font.color.rgb = RGBColor(0x1F, 0x3A, 0x52)
         return p
 
     def add_h2(text):
         p = doc.add_paragraph(style="Heading 3")
-        p.paragraph_format.space_before = Pt(5)
-        p.paragraph_format.space_after = Pt(1.5)
+        p.paragraph_format.space_before = Pt(3.5)
+        p.paragraph_format.space_after = Pt(1.0)
         p.paragraph_format.keep_with_next = True
         r = p.add_run(text)
         r.font.name = "Old Standard TT"
-        r.font.size = Pt(9.8)
+        r.font.size = Pt(9.5)
         r.font.bold = True
         r.font.color.rgb = RGBColor(0x2E, 0x5A, 0x7E)
         return p
 
-    def add_p(text, bold_prefix=None, space_after=2):
+    def add_p(text, bold_prefix=None, space_after=1.5, font_size=8.8, line_spacing=1.05):
         p = doc.add_paragraph()
-        p.paragraph_format.line_spacing = 1.08
+        p.paragraph_format.line_spacing = line_spacing
         p.paragraph_format.space_before = Pt(0)
         p.paragraph_format.space_after = Pt(space_after)
         if bold_prefix:
             r_b = p.add_run(bold_prefix)
             r_b.font.name = "Old Standard TT"
-            r_b.font.size = Pt(9.0)
+            r_b.font.size = Pt(font_size)
             r_b.font.bold = True
         r_t = p.add_run(text)
         r_t.font.name = "Old Standard TT"
-        r_t.font.size = Pt(9.0)
+        r_t.font.size = Pt(font_size)
         return p
 
-    def add_bullet(text, bold_prefix=None):
+    def add_bullet(text, bold_prefix=None, space_after=1.0, font_size=8.8, line_spacing=1.05):
         p = doc.add_paragraph()
-        p.paragraph_format.left_indent = Inches(0.18)
-        p.paragraph_format.line_spacing = 1.08
+        p.paragraph_format.left_indent = Inches(0.16)
+        p.paragraph_format.line_spacing = line_spacing
         p.paragraph_format.space_before = Pt(0)
-        p.paragraph_format.space_after = Pt(1.5)
+        p.paragraph_format.space_after = Pt(space_after)
         r_b = p.add_run("• ")
         r_b.font.name = "Old Standard TT"
-        r_b.font.size = Pt(9.0)
+        r_b.font.size = Pt(font_size)
         r_b.font.bold = True
         if bold_prefix:
             r_bp = p.add_run(bold_prefix)
             r_bp.font.name = "Old Standard TT"
-            r_bp.font.size = Pt(9.0)
+            r_bp.font.size = Pt(font_size)
             r_bp.font.bold = True
         r_t = p.add_run(text)
         r_t.font.name = "Old Standard TT"
-        r_t.font.size = Pt(9.0)
+        r_t.font.size = Pt(font_size)
         return p
 
     def add_caption(text):
         p = doc.add_paragraph()
         p.alignment = WD_ALIGN_PARAGRAPH.CENTER
-        p.paragraph_format.space_before = Pt(1.5)
-        p.paragraph_format.space_after = Pt(4)
+        p.paragraph_format.space_before = Pt(1.0)
+        p.paragraph_format.space_after = Pt(3.0)
         r = p.add_run(text)
         r.font.name = "Old Standard TT"
         r.font.size = Pt(7.8)
@@ -327,7 +327,7 @@ def build_official_report():
     )
     add_p("Our main contributions are:")
     add_bullet(
-        " We formally formulate shared-context confounding in multi-agent collusion detection and prove that independent agents reacting to identical public histories produce a 38-fold surge in unconditioned mutual information, inducing a catastrophic 100% false positive rate.",
+        " We formally formulate shared-context confounding in multi-agent collusion detection; in this controlled shared-context condition, independent agents reacting to the same observable state produced a 38-fold increase in estimated marginal mutual information and a 100% false-positive rate under the evaluated threshold.",
         bold_prefix="1. Formulation of Context Confounding:"
     )
     add_bullet(
@@ -418,12 +418,12 @@ def build_official_report():
 
     # Figures 1 and 2
     if (FIGURES_DIR / "fig2_false_positive_rates.png").exists():
-        doc.add_picture(str(FIGURES_DIR / "fig2_false_positive_rates.png"), width=Inches(3.85))
+        doc.add_picture(str(FIGURES_DIR / "fig2_false_positive_rates.png"), width=Inches(3.55))
         doc.paragraphs[-1].alignment = WD_ALIGN_PARAGRAPH.CENTER
         add_caption("Figure 1: False Positive Rates across conditions. Marginal MI fails catastrophically under Condition B (100% FPR), whereas state conditioning restores 0% FPR.")
 
     if (FIGURES_DIR / "fig5_trajectory_length_sensitivity.png").exists():
-        doc.add_picture(str(FIGURES_DIR / "fig5_trajectory_length_sensitivity.png"), width=Inches(3.85))
+        doc.add_picture(str(FIGURES_DIR / "fig5_trajectory_length_sensitivity.png"), width=Inches(3.55))
         doc.paragraphs[-1].alignment = WD_ALIGN_PARAGRAPH.CENTER
         add_caption("Figure 2: Trajectory length sensitivity (T in [50, 500]). Small sample sizes exhibit upward estimator bias under discrete state conditioning.")
 
@@ -472,7 +472,7 @@ def build_official_report():
 
     # Figure 3
     if (FIGURES_DIR / "fig6_llm_horizon_scaling.png").exists():
-        doc.add_picture(str(FIGURES_DIR / "fig6_llm_horizon_scaling.png"), width=Inches(4.1))
+        doc.add_picture(str(FIGURES_DIR / "fig6_llm_horizon_scaling.png"), width=Inches(3.7))
         doc.paragraphs[-1].alignment = WD_ALIGN_PARAGRAPH.CENTER
         add_caption("Figure 3: Multi-Horizon LLM Metric Evolution across horizons T in {5, 20, 50}. Short horizons suffer sample sparsity; T >= 20 restores perfect ranking accuracy and threshold recall.")
 
@@ -517,10 +517,12 @@ def build_official_report():
     # --- 6. CONCLUSION ---
     add_h1("6. Conclusion")
     add_p(
-        "This research stress-tested Pairwise Net Influence for detecting multi-agent coordination. We demonstrated that shared observable context induces a 38-fold surge in unconditioned mutual information, "
-        "causing naive detectors to suffer a 100% false positive rate. Conditioning on observable state neutralizes this broadcast shock, while competitor subtraction provides directed isolation, "
-        "preserving low false positives while attaining 100% Top-1 ranking accuracy under genuine coordination. Furthermore, across open-weight language model decisions, state-conditioned detectors achieve "
-        "100% identification accuracy once trajectory length reaches T >= 20 rounds, overcoming finite-sample state sparsity in controlled settings. These empirical findings suggest that state conditioning is an essential requirement for auditing multi-agent algorithmic systems."
+        "This research stress-tested Pairwise Net Influence for detecting multi-agent coordination. "
+        "In this controlled shared-context condition, independent agents reacting to the same observable state produced a 38-fold increase in estimated marginal mutual information and a 100% false-positive rate under the evaluated threshold. "
+        "Conditioning on observable state neutralizes this broadcast shock. Under genuine scripted coordination, PNI ranked the designated coordinating pair first in all 20 scripted positive-control trajectories. "
+        "However, at the calibrated decision threshold it flagged 20/100 non-target pairs in this condition, compared with 2/100 for CMI, illustrating that pair ranking and threshold-based false-positive control are distinct outcomes. "
+        "Furthermore, across open-weight language model decisions, state-conditioned detectors achieve 100% identification accuracy once trajectory length reaches T >= 20 rounds, overcoming finite-sample state sparsity in controlled settings. "
+        "These results support state conditioning as a useful safeguard in the tested setting; its performance in richer environments and under adversarial or unobserved confounding requires further evaluation."
     )
 
     # --- CODE AND DATA ---
@@ -548,24 +550,36 @@ def build_official_report():
         "Schwalbe, U. (2018). Algorithms, machine learning, and collusion. Journal of Competition Law & Economics, 14(4), 568–607.",
     ]
     for i, ref in enumerate(references, 1):
-        add_p(f"{i}. {ref}", space_after=1.5)
+        add_p(f"{i}. {ref}", space_after=1.0, font_size=7.8, line_spacing=1.02)
 
     # --- APPENDIX ---
     add_h1("Appendix: Limitations and Dual-Use / Ethical Considerations")
     add_p(
-        "Mandatory Ethical & Dual-Use Analysis: Auditing multi-agent systems for collusion possesses significant dual-use implications:"
+        "Mandatory Ethical & Dual-Use Analysis: Auditing multi-agent systems for collusion possesses significant dual-use implications:",
+        space_after=1.0,
+        font_size=8.2,
+        line_spacing=1.04
     )
     add_bullet(
         " Information-theoretic detectors empower market regulators, exchange operators, and platform architects to continuously monitor high-frequency trading and procurement markets for tacit cartels without requiring invasive access to proprietary model weights.",
-        bold_prefix="1. Defensive Regulatory Oversight:"
+        bold_prefix="1. Defensive Regulatory Oversight:",
+        space_after=1.0,
+        font_size=8.2,
+        line_spacing=1.04
     )
     add_bullet(
         " Conversely, adversarial agent developers could incorporate PNI as an explicit penalty term in multi-agent reinforcement learning objectives. By penalizing conditional mutual information, malicious actors could train stealthy collusive policies that sustain supracompetitive markups while remaining statistically undetectable under state-conditioned audits.",
-        bold_prefix="2. Adversarial Exploitation & Stealth Evasion:"
+        bold_prefix="2. Adversarial Exploitation & Stealth Evasion:",
+        space_after=1.0,
+        font_size=8.2,
+        line_spacing=1.04
     )
     add_bullet(
         " Our Condition B results demonstrate the catastrophic risk of unconditioned metrics: a 100% false accusation rate against competitive agents responding to shared context. Auditing architectures must mandate state conditioning and calibrated uncertainty intervals before initiating punitive regulatory actions.",
-        bold_prefix="3. Harms of False Accusations:"
+        bold_prefix="3. Harms of False Accusations:",
+        space_after=1.0,
+        font_size=8.2,
+        line_spacing=1.04
     )
 
     # --- LLM USAGE STATEMENT ---
@@ -577,7 +591,10 @@ def build_official_report():
         "Project direction, experimental design choices, qualitative analysis, and final editorial responsibility rest entirely with the author (Durgesh Unde). "
         "Canonical benchmark evaluations used 260 scripted trajectories (54,000 rounds); open-weight LLM evaluations used 630 trajectories (68,400 decisions) executed on Modal CPU "
         "($40.63 metered compute: $40.12 promotional credits applied, $0.51 network egress allowance; $0.00 out-of-pocket spend). "
-        "Zero personal payment cards or external paid token APIs were used. The experimental protocol was frozen after exploratory prototyping and was not preregistered prior to exploration."
+        "Zero personal payment cards or external paid token APIs were used. The experimental protocol was frozen after exploratory prototyping and was not preregistered prior to exploration.",
+        space_after=1.0,
+        font_size=8.2,
+        line_spacing=1.04
     )
 
     # Save populated DOCX
