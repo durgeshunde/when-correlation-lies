@@ -7,6 +7,33 @@ Apart Research AI Collusion Research Sprint (October 23-25, 2026)
 ================================================================================
 
 ================================================================================
+FILE: .gitattributes
+SHA-256: 27f692b17767844054081e8030b8399e5e8c405e7b512b65af51217d44840ab2
+SIZE: 449 bytes | LINES: 20
+================================================================================
+
+# Auto-normalize line endings to LF across all platforms
+* text=auto eol=lf
+
+# Strict LF line endings for all text deliverables, scripts, and documentation
+*.txt text eol=lf
+*.md text eol=lf
+*.py text eol=lf
+*.yaml text eol=lf
+*.yml text eol=lf
+*.csv text eol=lf
+*.jsonl text eol=lf
+*.json text eol=lf
+
+# Binary deliverables and assets (do not touch line endings or corrupt headers)
+*.pdf binary
+*.docx binary
+*.zip binary
+*.png binary
+*.ico binary
+
+
+================================================================================
 FILE: .github/workflows/ci.yml
 SHA-256: a6097922130611856eca67e5e5ca27801f561a8e89ef111802471c3b2abc1972
 SIZE: 816 bytes | LINES: 39
@@ -7599,8 +7626,8 @@ if __name__ == "__main__":
 
 ================================================================================
 FILE: scripts/package_delivery.py
-SHA-256: 27ca4f563c2b0ba51ae2b10285466dc8be9f25d9013f2734e6afb813e81acea2
-SIZE: 19909 bytes | LINES: 355
+SHA-256: 8f117baad69d0c9bc6e9f90e3fe8c0c781d392868475d8564dbafdc1870dfb99
+SIZE: 20075 bytes | LINES: 358
 ================================================================================
 
 """
@@ -7780,6 +7807,7 @@ def main():
 
     # 2. Collect all source code, tests, scripts, configs, documentation
     files_to_bundle = [
+        ".gitattributes",
         ".github/workflows/ci.yml",
         "pyproject.toml",
         "README.md",
@@ -7830,7 +7858,7 @@ def main():
     total_files = 0
     total_lines = 0
 
-    with open(concat_path, "w", encoding="utf-8") as out_f:
+    with open(concat_path, "w", encoding="utf-8", newline="\n") as out_f:
         out_f.write("=" * 80 + "\n")
         out_f.write("WHEN CORRELATION LIES: AI COLLUSION RESEARCH SPRINT 2026\n")
         out_f.write("CONCATENATED SOURCE CODE AND REPRODUCIBILITY REPOSITORY\n")
@@ -7848,7 +7876,7 @@ def main():
             file_hash = sha256_file(p)
             file_bytes = p.stat().st_size
             try:
-                content = p.read_text(encoding="utf-8", errors="replace")
+                content = p.read_text(encoding="utf-8", errors="replace").replace("\r\n", "\n")
             except Exception as e:
                 print(f"Error reading {p}: {e}")
                 continue
@@ -7946,11 +7974,13 @@ def main():
     print(f"  SHA-256: {zip_hash}")
 
     # 5. Generate EXTERNAL results_manifest.txt (includes the final sealed ZIP's checksum and size)
-    external_manifest_content = generate_manifest_text(target_pdf, concat_path, zip_path=zip_path)
+    external_manifest_content = generate_manifest_text(target_pdf, concat_path, zip_path=zip_path).replace("\r\n", "\n")
     manifest_path = DELIVERY_DIR / "results_manifest.txt"
-    manifest_path.write_text(external_manifest_content, encoding="utf-8")
+    with open(manifest_path, "w", encoding="utf-8", newline="\n") as f:
+        f.write(external_manifest_content)
     root_manifest_path = PROJECT_ROOT / "results_manifest.txt"
-    root_manifest_path.write_text(external_manifest_content, encoding="utf-8")
+    with open(root_manifest_path, "w", encoding="utf-8", newline="\n") as f:
+        f.write(external_manifest_content)
     print(f"Generated external results manifest -> {manifest_path} ({manifest_path.stat().st_size:,} bytes)")
     print(f"Synced results manifest to root -> {root_manifest_path}")
 

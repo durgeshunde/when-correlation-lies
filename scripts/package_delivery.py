@@ -175,6 +175,7 @@ def main():
 
     # 2. Collect all source code, tests, scripts, configs, documentation
     files_to_bundle = [
+        ".gitattributes",
         ".github/workflows/ci.yml",
         "pyproject.toml",
         "README.md",
@@ -225,7 +226,7 @@ def main():
     total_files = 0
     total_lines = 0
 
-    with open(concat_path, "w", encoding="utf-8") as out_f:
+    with open(concat_path, "w", encoding="utf-8", newline="\n") as out_f:
         out_f.write("=" * 80 + "\n")
         out_f.write("WHEN CORRELATION LIES: AI COLLUSION RESEARCH SPRINT 2026\n")
         out_f.write("CONCATENATED SOURCE CODE AND REPRODUCIBILITY REPOSITORY\n")
@@ -243,7 +244,7 @@ def main():
             file_hash = sha256_file(p)
             file_bytes = p.stat().st_size
             try:
-                content = p.read_text(encoding="utf-8", errors="replace")
+                content = p.read_text(encoding="utf-8", errors="replace").replace("\r\n", "\n")
             except Exception as e:
                 print(f"Error reading {p}: {e}")
                 continue
@@ -341,11 +342,13 @@ def main():
     print(f"  SHA-256: {zip_hash}")
 
     # 5. Generate EXTERNAL results_manifest.txt (includes the final sealed ZIP's checksum and size)
-    external_manifest_content = generate_manifest_text(target_pdf, concat_path, zip_path=zip_path)
+    external_manifest_content = generate_manifest_text(target_pdf, concat_path, zip_path=zip_path).replace("\r\n", "\n")
     manifest_path = DELIVERY_DIR / "results_manifest.txt"
-    manifest_path.write_text(external_manifest_content, encoding="utf-8")
+    with open(manifest_path, "w", encoding="utf-8", newline="\n") as f:
+        f.write(external_manifest_content)
     root_manifest_path = PROJECT_ROOT / "results_manifest.txt"
-    root_manifest_path.write_text(external_manifest_content, encoding="utf-8")
+    with open(root_manifest_path, "w", encoding="utf-8", newline="\n") as f:
+        f.write(external_manifest_content)
     print(f"Generated external results manifest -> {manifest_path} ({manifest_path.stat().st_size:,} bytes)")
     print(f"Synced results manifest to root -> {root_manifest_path}")
 
