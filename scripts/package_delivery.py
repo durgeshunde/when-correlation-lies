@@ -175,6 +175,7 @@ def main():
 
     # 2. Collect all source code, tests, scripts, configs, documentation
     files_to_bundle = [
+        ".github/workflows/ci.yml",
         "pyproject.toml",
         "README.md",
         "config/experiment.yaml",
@@ -281,6 +282,11 @@ def main():
             p = PROJECT_ROOT / rel_path
             if p.exists():
                 zf.write(p, arcname=rel_path)
+
+        # Include official template in docs/
+        template_doc = PROJECT_ROOT / "docs" / "template.docx"
+        if template_doc.exists():
+            zf.write(template_doc, arcname="docs/template.docx")
 
         # Include PDF and DOCX in report/
         zf.write(target_pdf, arcname="report/when_correlation_lies_report.pdf")

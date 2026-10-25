@@ -2,6 +2,8 @@
 
 **Stress-Testing Pairwise Net Influence for Detecting Coordination Among Agents**
 
+[![CI](https://github.com/durgeshunde/when-correlation-lies/actions/workflows/ci.yml/badge.svg)](https://github.com/durgeshunde/when-correlation-lies/actions/workflows/ci.yml)
+
 *Apart Research AI Collusion Research Sprint — October 23–25, 2026 (Track 1.4: Markets and Collusion)*  
 **Author:** Durgesh Unde (Independent Researcher)
 
@@ -161,8 +163,11 @@ python scripts/evaluate_llm_thresholds.py
 python scripts/plot_llm_results.py
 
 # 8. Compile official submission report (DOCX and PDF using official Apart Research template)
-# Note: On Windows, exports to PDF via Microsoft Word COM automation. In non-Windows/headless environments,
-# report/when_correlation_lies_report.docx can be compiled or converted using LibreOffice/docx2pdf.
+# Note: docs/template.docx is bundled directly in the repository for 100% self-contained reproduction.
+# On Windows with Microsoft Word installed, the script exports the final PDF via Word COM automation.
+# In non-Windows, headless, or CI environments, it populates report/when_correlation_lies_report.docx cleanly
+# without failure; PDF conversion can be performed via LibreOffice (`soffice --headless --convert-to pdf`).
+# The pre-compiled canonical 8-page PDF is already included in report/ and final_delivery/.
 python scripts/build_official_template_report.py
 
 # (Legacy reference) Standalone ReportLab generator:
@@ -256,9 +261,10 @@ Thresholds calibrated on LLM-A validation episodes targeting nominal 5% FPR ($\\
 ## Scope & Limitations
 
 1. **Scripted Benchmark vs. Real-World Cartels:** The canonical evaluation was conducted on controlled scripted agents in a 4-player discrete iterated RPS game ($|\mathcal{S}| = 82$). Zero LLM/API calls were made during the primary benchmark ($0.00 spent). Statistical action dependence demonstrates detector sensitivity, but does not prove real-world economic harm or spontaneous collusion.
-2. **Exploratory Small-Sample Calibration:** Nominal 5% decision thresholds were calibrated from 5 validation seeds (30 candidate pairs) of Condition A. While isolating calibration from held-out test seeds, small samples yield coarse empirical quantiles rather than population guarantees.
-3. **State Sparsity:** Conditioning on discrete game history partitions observations across state-action cells. Condition B PNI False Positive Rate is 0.100 (substantially reduced from Marginal MI's 1.000, but finite-sample variance prevents an exact zero FPR).
-4. **Cloud Platform & LLM Execution:** Allocating cloud GPU instances on Modal requires an active payment method on file per platform policy; in strict adherence to zero-out-of-pocket rules ($0.00 billed), GPU calls were safely bypassed. Instead, an optimized CPU pipeline was executed on Modal (4 vCPU, 8GB RAM, `torch.bfloat16`, 12 max tokens) with `Qwen/Qwen2.5-1.5B-Instruct`. The suite executed 630 trajectories (68,400 decisions) across 3 conditions and 3 horizons at a metered compute cost of $40.63 ($40.12 promotional credits applied, $0.51 network egress allowance; $0.00 billed out of pocket).
+2. **Prompted Signal Adherence vs. Autonomous Emergence:** In the LLM experiments, coordinating agents were provided an unobservable private coordination directive ($Z_t$) via prompt injection. The 100% Top-1 ranking results at $T \ge 20$ demonstrate detector sensitivity when agents comply with coordinated instructions; they do *not* imply that LLMs spontaneously originate, negotiate, or maintain collusive pacts without explicit guidance.
+3. **Relative Ranking vs. Absolute Threshold Detection:** Pairwise relative ranking and fixed decision-threshold classification represent distinct operational properties. Under genuine coordination in scripted Condition C, PNI ranked the designated coordinating pair first in all 20 seeds (100% Top-1 accuracy), but flagged 20/100 non-target pairs at the decision threshold compared to 2/100 for CMI. Similarly, in LLM trials at $T=5$, PNI achieved 70.0% Top-1 ranking while binary recall under the frozen threshold was 36.7% (11/30 detected), as small samples depress absolute score magnitudes below calibration cutoffs.
+4. **Exploratory Small-Sample Calibration & State Sparsity:** Nominal 5% decision thresholds were calibrated from 5 validation seeds (30 candidate pairs) of Condition A. While isolating calibration from held-out test seeds, small samples yield empirical quantiles rather than population guarantees. Furthermore, conditioning on discrete game history partitions observations across state-action cells, introducing finite-sample variance (e.g., Condition B PNI False Positive Rate of 0.100).
+5. **Cloud Platform & LLM Execution:** Allocating cloud GPU instances on Modal requires an active payment method on file per platform policy; in strict adherence to zero-out-of-pocket rules ($0.00 billed), GPU calls were safely bypassed. Instead, an optimized CPU pipeline was executed on Modal (4 vCPU, 8GB RAM, `torch.bfloat16`, 12 max tokens) with `Qwen/Qwen2.5-1.5B-Instruct`. The suite executed 630 trajectories (68,400 decisions) across 3 conditions and 3 horizons at a metered compute cost of $40.63 ($40.12 promotional credits applied, $0.51 network egress allowance; $0.00 billed out of pocket).
 
 ---
 

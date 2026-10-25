@@ -23,8 +23,9 @@ from docx.oxml import parse_xml
 from docx.oxml.ns import nsdecls
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
-SCRATCH_DIR = PROJECT_ROOT.parent
-TEMPLATE_PATH = SCRATCH_DIR / "template.docx"
+LOCAL_TEMPLATE = PROJECT_ROOT / "docs" / "template.docx"
+SCRATCH_TEMPLATE = PROJECT_ROOT.parent / "template.docx"
+TEMPLATE_PATH = LOCAL_TEMPLATE if LOCAL_TEMPLATE.exists() else SCRATCH_TEMPLATE
 REPORT_DIR = PROJECT_ROOT / "report"
 OUTPUT_DOCX = REPORT_DIR / "when_correlation_lies_report.docx"
 OUTPUT_PDF = REPORT_DIR / "when_correlation_lies_report.pdf"
@@ -602,24 +603,32 @@ def build_official_report():
     doc.save(str(OUTPUT_DOCX))
     print(f"Successfully saved populated DOCX to: {OUTPUT_DOCX} ({OUTPUT_DOCX.stat().st_size:,} bytes)")
 
-    # Export to PDF via Microsoft Word COM
+    # Export to PDF via Microsoft Word COM (Windows) with headless/CI fallback
     print("Exporting PDF via Microsoft Word COM automation...")
-    import win32com.client
-    word = win32com.client.Dispatch("Word.Application")
-    word.Visible = False
     try:
-        w_doc = word.Documents.Open(str(OUTPUT_DOCX.resolve()))
-        w_doc.BuiltInDocumentProperties("Title").Value = "When Correlation Lies: Stress-Testing Pairwise Net Influence for Detecting Coordination Among Agents"
-        w_doc.BuiltInDocumentProperties("Author").Value = "Durgesh Unde"
-        w_doc.BuiltInDocumentProperties("Subject").Value = "Apart Research AI Collusion Research Sprint 2026 - Track 1.4: Markets and Collusion"
-        w_doc.SaveAs(str(OUTPUT_PDF.resolve()), FileFormat=17) # 17 = wdFormatPDF
-        w_doc.Close(False)
-        print(f"Successfully exported PDF to: {OUTPUT_PDF} ({OUTPUT_PDF.stat().st_size:,} bytes)")
-    finally:
+        import win32com.client
+        word = win32com.client.Dispatch("Word.Application")
+        word.Visible = False
         try:
-            word.Quit()
-        except Exception:
-            pass
+            w_doc = word.Documents.Open(str(OUTPUT_DOCX.resolve()))
+            w_doc.BuiltInDocumentProperties("Title").Value = "When Correlation Lies: Stress-Testing Pairwise Net Influence for Detecting Coordination Among Agents"
+            w_doc.BuiltInDocumentProperties("Author").Value = "Durgesh Unde"
+            w_doc.BuiltInDocumentProperties("Subject").Value = "Apart Research AI Collusion Research Sprint 2026 - Track 1.4: Markets and Collusion"
+            w_doc.SaveAs(str(OUTPUT_PDF.resolve()), FileFormat=17) # 17 = wdFormatPDF
+            w_doc.Close(False)
+            print(f"Successfully exported PDF to: {OUTPUT_PDF} ({OUTPUT_PDF.stat().st_size:,} bytes)")
+        finally:
+            try:
+                word.Quit()
+            except Exception:
+                pass
+    except Exception as e:
+        print(f"[Notice] Microsoft Word COM automation unavailable or failed: {e}")
+        print(f"Populated DOCX report is ready at: {OUTPUT_DOCX}")
+        print("To export PDF on headless/Linux environments, use LibreOffice:")
+        print(f"  soffice --headless --convert-to pdf {OUTPUT_DOCX} --outdir {REPORT_DIR}")
+        if OUTPUT_PDF.exists():
+            print(f"Pre-compiled canonical PDF is preserved at: {OUTPUT_PDF} ({OUTPUT_PDF.stat().st_size:,} bytes)")
 
 
 if __name__ == "__main__":
