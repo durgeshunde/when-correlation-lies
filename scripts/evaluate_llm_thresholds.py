@@ -377,22 +377,22 @@ def main():
             "horizon": 5,
             "raw_dir": Path("data/raw_llm"),
             "eval_dir": Path("data/eval_labels_llm"),
-            "cal_seeds": list(range(0, 10)),      # seeds 0-9 (10 seeds)
-            "test_seeds": list(range(10, 25)),    # seeds 10-24 (15 seeds)
+            "cal_seeds": list(range(0, 10)),      # seeds 0-9 (10 seeds, frozen)
+            "test_seeds": list(range(10, 25)) + list(range(125, 140)),    # seeds 10-24 + 125-139 (30 test seeds)
         },
         {
             "horizon": 20,
             "raw_dir": Path("data/raw_llm_expanded"),
             "eval_dir": Path("data/eval_labels_llm_expanded"),
-            "cal_seeds": list(range(100, 125)),   # available calibration seeds (up to 50 if generated)
-            "test_seeds": list(range(125, 150)),   # test seeds
+            "cal_seeds": list(range(100, 125)),   # seeds 100-124 (25 seeds, frozen)
+            "test_seeds": list(range(125, 200)),   # seeds 125-199 (75 test seeds)
         },
         {
             "horizon": 50,
             "raw_dir": Path("data/raw_llm_expanded_t50"),
             "eval_dir": Path("data/eval_labels_llm_expanded_t50"),
-            "cal_seeds": list(range(100, 110)),   # seeds 100-109 (10 calibration seeds)
-            "test_seeds": list(range(110, 125)),   # seeds 110-124 (15 test seeds)
+            "cal_seeds": list(range(100, 110)),   # seeds 100-109 (10 seeds, frozen)
+            "test_seeds": list(range(110, 170)),   # seeds 110-169 (60 test seeds)
         },
     ]
 

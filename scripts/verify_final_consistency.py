@@ -4,7 +4,7 @@ scripts/verify_final_consistency.py
 End-to-end automated scientific, code, data, and report consistency verifier.
 Validates:
 1. Automated unit test suite (59/59 tests pass)
-2. Trajectory dataset integrity (260 scripted files, 54,000 rounds + 300 LLM files, 28,500 decisions)
+2. Trajectory dataset integrity (260 scripted files, 54,000 rounds + 630 LLM files, 68,400 decisions)
 3. PDF report compliance (exactly 7 pages <= 8 pages limit, valid metadata, 0 forbidden phrases)
 4. Review bundle ZIP integrity (clean project repository structure, zero duplicate folders)
 5. Results manifest accuracy (exact thresholds, counts, and statistical metrics)
@@ -45,22 +45,22 @@ def dataset_check():
 
     raw_llm = list((PROJECT_ROOT / "data" / "raw_llm").glob("*.jsonl"))
     eval_llm = list((PROJECT_ROOT / "data" / "eval_labels_llm").glob("*.json"))
-    assert len(raw_llm) == 75, f"Expected 75 raw LLM files, got {len(raw_llm)}"
-    assert len(eval_llm) == 75, f"Expected 75 eval LLM files, got {len(eval_llm)}"
+    assert len(raw_llm) == 120, f"Expected 120 raw LLM files, got {len(raw_llm)}"
+    assert len(eval_llm) == 120, f"Expected 120 eval LLM files, got {len(eval_llm)}"
 
     raw_llm_exp = list((PROJECT_ROOT / "data" / "raw_llm_expanded").glob("*.jsonl"))
     eval_llm_exp = list((PROJECT_ROOT / "data" / "eval_labels_llm_expanded").glob("*.json"))
-    assert len(raw_llm_exp) == 150, f"Expected 150 raw LLM expanded files, got {len(raw_llm_exp)}"
-    assert len(eval_llm_exp) == 150, f"Expected 150 eval LLM expanded files, got {len(eval_llm_exp)}"
+    assert len(raw_llm_exp) == 300, f"Expected 300 raw LLM expanded files, got {len(raw_llm_exp)}"
+    assert len(eval_llm_exp) == 300, f"Expected 300 eval LLM expanded files, got {len(eval_llm_exp)}"
 
     raw_llm_t50 = list((PROJECT_ROOT / "data" / "raw_llm_expanded_t50").glob("*.jsonl"))
     eval_llm_t50 = list((PROJECT_ROOT / "data" / "eval_labels_llm_expanded_t50").glob("*.json"))
-    assert len(raw_llm_t50) == 75, f"Expected 75 raw LLM t50 files, got {len(raw_llm_t50)}"
-    assert len(eval_llm_t50) == 75, f"Expected 75 eval LLM t50 files, got {len(eval_llm_t50)}"
+    assert len(raw_llm_t50) == 210, f"Expected 210 raw LLM t50 files, got {len(raw_llm_t50)}"
+    assert len(eval_llm_t50) == 210, f"Expected 210 eval LLM t50 files, got {len(eval_llm_t50)}"
 
     total_llm_trajs = len(raw_llm) + len(raw_llm_exp) + len(raw_llm_t50)
-    assert total_llm_trajs == 300, f"Expected 300 total LLM trajectories, got {total_llm_trajs}"
-    print(f"[PASS] Dataset: Exactly 260 scripted files (54,000 rounds) + 300 LLM files across 3 horizons (28,500 decisions).")
+    assert total_llm_trajs == 630, f"Expected 630 total LLM trajectories, got {total_llm_trajs}"
+    print(f"[PASS] Dataset: Exactly 260 scripted files (54,000 rounds) + 630 LLM files across 3 horizons (68,400 decisions).")
 
 
 def pdf_report_check():
@@ -123,18 +123,18 @@ def zip_bundle_check():
 
         raws_llm = [n for n in namelist if n.startswith("data/raw_llm/") and n.endswith(".jsonl")]
         labels_llm = [n for n in namelist if n.startswith("data/eval_labels_llm/") and n.endswith(".json")]
-        assert len(raws_llm) == 75, f"Expected 75 data/raw_llm/ files in ZIP, got {len(raws_llm)}"
-        assert len(labels_llm) == 75, f"Expected 75 data/eval_labels_llm/ files in ZIP, got {len(labels_llm)}"
+        assert len(raws_llm) == 120, f"Expected 120 data/raw_llm/ files in ZIP, got {len(raws_llm)}"
+        assert len(labels_llm) == 120, f"Expected 120 data/eval_labels_llm/ files in ZIP, got {len(labels_llm)}"
 
         raws_llm_exp = [n for n in namelist if n.startswith("data/raw_llm_expanded/") and n.endswith(".jsonl")]
         labels_llm_exp = [n for n in namelist if n.startswith("data/eval_labels_llm_expanded/") and n.endswith(".json")]
-        assert len(raws_llm_exp) == 150, f"Expected 150 data/raw_llm_expanded/ files in ZIP, got {len(raws_llm_exp)}"
-        assert len(labels_llm_exp) == 150, f"Expected 150 data/eval_labels_llm_expanded/ files in ZIP, got {len(labels_llm_exp)}"
+        assert len(raws_llm_exp) == 300, f"Expected 300 data/raw_llm_expanded/ files in ZIP, got {len(raws_llm_exp)}"
+        assert len(labels_llm_exp) == 300, f"Expected 300 data/eval_labels_llm_expanded/ files in ZIP, got {len(labels_llm_exp)}"
 
         raws_llm_t50 = [n for n in namelist if n.startswith("data/raw_llm_expanded_t50/") and n.endswith(".jsonl")]
         labels_llm_t50 = [n for n in namelist if n.startswith("data/eval_labels_llm_expanded_t50/") and n.endswith(".json")]
-        assert len(raws_llm_t50) == 75, f"Expected 75 data/raw_llm_expanded_t50/ files in ZIP, got {len(raws_llm_t50)}"
-        assert len(labels_llm_t50) == 75, f"Expected 75 data/eval_labels_llm_expanded_t50/ files in ZIP, got {len(labels_llm_t50)}"
+        assert len(raws_llm_t50) == 210, f"Expected 210 data/raw_llm_expanded_t50/ files in ZIP, got {len(raws_llm_t50)}"
+        assert len(labels_llm_t50) == 210, f"Expected 210 data/eval_labels_llm_expanded_t50/ files in ZIP, got {len(labels_llm_t50)}"
         
         # Check NO duplicate folders
         dup_trajs = [n for n in namelist if n.startswith("data/trajectories/")]
@@ -171,7 +171,7 @@ def zip_bundle_check():
         for ef in expected_files:
             assert ef in namelist, f"Expected {ef} in ZIP root structure"
 
-    print(f"[PASS] Review ZIP: Valid clean repository bundle with 260 scripted and 300 LLM trajectories, labels, zero duplicates, and full runnable source.")
+    print(f"[PASS] Review ZIP: Valid clean repository bundle with 260 scripted and 630 LLM trajectories, labels, zero duplicates, and full runnable source.")
 
 
 def manifest_check():
@@ -189,8 +189,8 @@ def manifest_check():
     assert "Durgesh Unde" in content
     assert "260 unique JSONL files" in content
     assert "54,000 unique rounds" in content
-    assert "300 unique JSONL files" in content
-    assert "28,500 total decisions" in content
+    assert "630 unique JSONL files" in content
+    assert "68,400 total decisions" in content
     assert "59 / 59 tests passed" in content
     assert "0.010427 bits" in content
     assert "0.117454 bits" in content

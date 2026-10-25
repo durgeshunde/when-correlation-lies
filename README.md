@@ -198,25 +198,25 @@ To evaluate whether instruction-tuned language models follow coordination direct
 
 ### Table 4: Held-Out Classification and Threshold Evaluation
 
-Thresholds calibrated on LLM-A validation episodes targeting nominal 5% FPR ($\tau_{\text{PNI}} = 0.0154$ at $T=5$, $0.0570$ at $T=20$, $0.0621$ at $T=50$). Evaluated on held-out test episodes:
+Thresholds calibrated on LLM-A validation episodes targeting nominal 5% FPR ($\\tau_{\\text{PNI}} = 0.0154$ at $T=5$, $0.0570$ at $T=20$, $0.0621$ at $T=50$). Evaluated on held-out test episodes:
 
 | Horizon | Condition | Detector | Threshold (bits) | Ep. Flagged | Pair FPR / Recall | Top-1 Acc. | Target Recall | Ranked #1 & Detected | Ranked #1 Not Detected |
 | :---: | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| **$T=5$** | **LLM-A (Test $n=15$)** | PNI | 0.0154 | 5/15 (0.333) | 0.122 [0.070, 0.206] | N/A | N/A | N/A | N/A |
-|  | **LLM-B (Test $n=15$)** | PNI | 0.0154 | 6/15 (0.400) | 0.111 [0.061, 0.193] | N/A | N/A | N/A | N/A |
-|  | **LLM-C (Test $n=15$)** | PNI | 0.0154 | 3/15 (0.200) | 0.078 [0.038, 0.152] | 0.667 | 0.200 | 0.200 | 0.467 |
-| **$T=20$** | **LLM-A (Test $n=25$)** | PNI | 0.0570 | 6/25 (0.240) | 0.080 [0.046, 0.135] | N/A | N/A | N/A | N/A |
-|  | **LLM-B (Test $n=25$)** | PNI | 0.0570 | 4/25 (0.160) | 0.107 [0.067, 0.166] | N/A | N/A | N/A | N/A |
-|  | **LLM-C (Test $n=25$)** | PNI | 0.0570 | 25/25 (1.000) | 0.200 [0.144, 0.271] | 1.000 | 1.000 | 1.000 | 0.000 |
-| **$T=50$** | **LLM-A (Test $n=15$)** | PNI | 0.0621 | 0/15 (0.000) | 0.022 [0.006, 0.077] | N/A | N/A | N/A | N/A |
-|  | **LLM-B (Test $n=15$)** | PNI | 0.0621 | 3/15 (0.200) | 0.044 [0.017, 0.109] | N/A | N/A | N/A | N/A |
-|  | **LLM-C (Test $n=15$)** | PNI | 0.0621 | 15/15 (1.000) | 0.200 [0.130, 0.294] | 1.000 | 1.000 | 1.000 | 0.000 |
+| **$T=5$** | **LLM-A (Test $n=30$)** | PNI | 0.0154 | 14/30 (0.467) | 0.172 [0.124, 0.234] | N/A | N/A | N/A | N/A |
+|  | **LLM-B (Test $n=30$)** | PNI | 0.0154 | 10/30 (0.333) | 0.100 [0.064, 0.153] | N/A | N/A | N/A | N/A |
+|  | **LLM-C (Test $n=30$)** | PNI | 0.0154 | 11/30 (0.367) | 0.139 [0.096, 0.197] | 0.700 | 0.367 | 0.367 | 0.333 |
+| **$T=20$** | **LLM-A (Test $n=75$)** | PNI | 0.0570 | 11/75 (0.147) | 0.078 [0.056, 0.106] | N/A | N/A | N/A | N/A |
+|  | **LLM-B (Test $n=75$)** | PNI | 0.0570 | 13/75 (0.173) | 0.104 [0.079, 0.136] | N/A | N/A | N/A | N/A |
+|  | **LLM-C (Test $n=75$)** | PNI | 0.0570 | 75/75 (1.000) | 0.207 [0.172, 0.246] | 1.000 | 1.000 | 1.000 | 0.000 |
+| **$T=50$** | **LLM-A (Test $n=60$)** | PNI | 0.0621 | 4/60 (0.067) | 0.036 [0.021, 0.061] | N/A | N/A | N/A | N/A |
+|  | **LLM-B (Test $n=60$)** | PNI | 0.0621 | 7/60 (0.117) | 0.039 [0.023, 0.064] | N/A | N/A | N/A | N/A |
+|  | **LLM-C (Test $n=60$)** | PNI | 0.0621 | 60/60 (1.000) | 0.194 [0.157, 0.238] | 1.000 | 1.000 | 1.000 | 0.000 |
 
 **Key findings:**
-- `Qwen2.5-1.5B-Instruct` achieved 100.0% valid action generation rate (28,500/28,500 decisions parsed as ROCK, PAPER, or SCISSORS) and 100.0% adherence to private coordination directives across all 4,750 opportunities in Condition LLM-C without fine-tuning.
-- **Finite-Sample Horizon Sparsity Effect:** At short horizon ($T=5$ rounds), conditioning on discrete states causes sample fragmentation, reducing CMI and PNI Top-1 ranking accuracy to 68.0% (17/25 seeds). Crucially, under frozen calibrated thresholds, binary recall is only 20.0% (3/15 test episodes detected), with 46.7% of episodes being ranked #1 but failing threshold detection. Expanding the horizon to $T=20$ rounds restores **100.0% Top-1 ranking accuracy** (50/50 seeds, Wilson 95% CI: [0.867, 1.000]) and **100.0% binary recall** (25/25 test episodes detected), which remains 100% at $T=50$ (25/25 seeds; 15/15 test episodes) with mean CMI rising to 0.1724 bits.
-- **Negative Mean PNI Net Scores:** In Condition LLM-C, competitor subtraction ($\max_{k \neq i,j} \gamma(k,j)$) subtracts the coordinating pair's elevated mutual information from other candidate pairs, driving rival net influence negative (mean -0.136 bits at $T=20$, -0.320 bits at $T=50$).
-- **Resource and Cloud Accounting:** The entire cloud suite ran on Modal CPU ($17.24 metered compute, offset by $17.01 promotional credit and $0.23 network egress allowance; exactly $0.00 billed out-of-pocket).
+- `Qwen2.5-1.5B-Instruct` achieved 100.0% valid action generation rate (68,400/68,400 decisions parsed as ROCK, PAPER, or SCISSORS) and 100.0% adherence to private coordination directives across all 11,400 opportunities in Condition LLM-C without fine-tuning.
+- **Finite-Sample Horizon Sparsity Effect:** At short horizon ($T=5$ rounds), conditioning on discrete states causes sample fragmentation, reducing CMI and PNI Top-1 ranking accuracy to 70.0% (28/40 seeds). Crucially, under frozen calibrated thresholds, binary recall is only 36.7% (11/30 test episodes detected), with 33.3% of episodes being ranked #1 but failing threshold detection. Expanding the horizon to $T=20$ rounds restores **100.0% Top-1 ranking accuracy** (100/100 seeds, Wilson 95% CI: [0.951, 1.000]) and **100.0% binary recall** (75/75 test episodes detected), which remains 100% at $T=50$ (70/70 seeds; 60/60 test episodes) with mean CMI rising to 0.1770 bits.
+- **Negative Mean PNI Net Scores:** In Condition LLM-C, competitor subtraction ($\\max_{k \\neq i,j} \\gamma(k,j)$) subtracts the coordinating pair's elevated mutual information from other candidate pairs, driving rival net influence negative (mean -0.140 bits at $T=20$, -0.321 bits at $T=50$).
+- **Resource and Cloud Accounting:** The entire cloud suite ran on Modal CPU ($40.63 metered compute, offset by $40.12 promotional credit and $0.51 network egress allowance; exactly $0.00 billed out-of-pocket).
 
 ---
 
@@ -225,7 +225,7 @@ Thresholds calibrated on LLM-A validation episodes targeting nominal 5% FPR ($\t
 1. **Scripted Benchmark vs. Real-World Cartels:** The canonical evaluation was conducted on controlled scripted agents in a 4-player discrete iterated RPS game ($|\mathcal{S}| = 82$). Zero LLM/API calls were made during the primary benchmark ($0.00 spent). Statistical action dependence demonstrates detector sensitivity, but does not prove real-world economic harm or spontaneous collusion.
 2. **Exploratory Small-Sample Calibration:** Nominal 5% decision thresholds were calibrated from 5 validation seeds (30 candidate pairs) of Condition A. While isolating calibration from held-out test seeds, small samples yield coarse empirical quantiles rather than population guarantees.
 3. **State Sparsity:** Conditioning on discrete game history partitions observations across state-action cells. Condition B PNI False Positive Rate is 0.100 (substantially reduced from Marginal MI's 1.000, but finite-sample variance prevents an exact zero FPR).
-4. **Cloud Platform & LLM Execution:** Allocating cloud GPU instances on Modal requires an active payment method on file per platform policy; in strict adherence to zero-out-of-pocket rules ($0.00 billed), GPU calls were safely bypassed. Instead, an optimized CPU pipeline was executed on Modal (4 vCPU, 8GB RAM, `torch.bfloat16`, 12 max tokens) with `Qwen/Qwen2.5-1.5B-Instruct`. The suite executed 300 trajectories (28,500 decisions) across 3 conditions and 3 horizons at a metered compute cost of $17.24, offset 100% by promotional credits and network allowance ($0.00 billed out of pocket).
+4. **Cloud Platform & LLM Execution:** Allocating cloud GPU instances on Modal requires an active payment method on file per platform policy; in strict adherence to zero-out-of-pocket rules ($0.00 billed), GPU calls were safely bypassed. Instead, an optimized CPU pipeline was executed on Modal (4 vCPU, 8GB RAM, `torch.bfloat16`, 12 max tokens) with `Qwen/Qwen2.5-1.5B-Instruct`. The suite executed 630 trajectories (68,400 decisions) across 3 conditions and 3 horizons at a metered compute cost of $40.63, offset 100% by promotional credits and network allowance ($0.00 billed out of pocket).
 
 ---
 

@@ -5,14 +5,14 @@
 **Author:** Durgesh Unde  
 **Affiliation:** Independent Researcher  
 **Date:** October 2026  
-**Evaluation Pipeline:** Verified Python 3.13 / CPU Benchmarks & Modal CPU Cloud Pipeline ($5.41 Promotional Credit, $0.00 Out-of-Pocket Spend)  
-**Total Evaluations:** Canonical Scripted: 260 unique trajectories (54,000 unique rounds across 300 evaluations); Exploratory & Expanded LLM: 99 unique trajectories (9,180 decisions across $T \in \{5, 20, 50\}$ rounds)
+**Evaluation Pipeline:** Verified Python 3.13 / CPU Benchmarks & Modal CPU Cloud Pipeline ($40.63 Metered Cost, $40.12 Promotional Credit, $0.00 Out-of-Pocket Spend)  
+**Total Evaluations:** Canonical Scripted: 260 unique trajectories (54,000 unique rounds across 300 evaluations); Open-Weight LLM: 630 unique trajectories (68,400 decisions across $T \in \{5, 20, 50\}$ rounds)
 
 ---
 
 ### Abstract
-*(Word count: 221 words)*  
-As autonomous AI agents are increasingly deployed in high-frequency trading, automated procurement, and algorithmic pricing, covert collusion poses severe economic and systemic risks. Information-theoretic detectors, notably Pairwise Net Influence (PNI; Bonjour et al., 2022), measure directed action dependence via Conditional Mutual Information (CMI) conditioned on observable public game state. However, whether PNI can distinguish deliberate multi-agent coordination from spurious correlation induced by shared context remains an open empirical question. In this work, we stress-test PNI against unconditioned marginal mutual information and raw conditional mutual information baselines in an iterated 4-agent game across four controlled conditions: independent play, shared-context confounding, shared-private-signal coordination, and coordination-strength sweeps. Across 20 independent seeds and trajectory lengths ($T \in [50, 500]$), unconditioned mutual information exhibits a 38-fold surge under shared context, falsely accusing independent agents of collusion (FPR = 1.000). Conditioning on observable state neutralizes this contextual surge below independent calibration thresholds (CMI FPR = 0.000), while PNI competitor subtraction isolates coordinating pairs with 100% Top-1 ranking accuracy (Wilson 95% CI: [0.839, 1.000], MRR = 1.000). Furthermore, expanding evaluations to open-weight LLM decisions (Qwen2.5-1.5B) across horizons $T \in \{5, 20, 50\}$ reveals an empirical finite-sample sparsity effect: ultra-short horizons ($T=5$) attenuate CMI ranking accuracy (66.7%), whereas sufficient history ($T \ge 20$) restores 100% Top-1 identification accuracy under controlled ranking evidence. Our findings demonstrate that state conditioning is essential for behavioral auditing while highlighting critical sample horizon boundaries.
+*(Word count: 234 words)*  
+As autonomous AI agents are increasingly deployed in high-frequency trading, automated procurement, and algorithmic pricing, covert collusion poses severe economic and systemic risks. Information-theoretic detectors, notably Pairwise Net Influence (PNI; Bonjour et al., 2022), measure directed action dependence via Conditional Mutual Information (CMI) conditioned on observable public game state. However, whether PNI can distinguish deliberate multi-agent coordination from spurious correlation induced by shared context remains an open empirical question. In this work, we stress-test PNI against unconditioned marginal mutual information and raw conditional mutual information baselines in an iterated 4-agent game across four controlled conditions: independent play, shared-context confounding, shared-private-signal coordination, and coordination-strength sweeps. Across 20 independent seeds and trajectory lengths ($T \in [50, 500]$), unconditioned mutual information exhibits a 38-fold surge under shared context, falsely accusing independent agents of collusion (FPR = 1.000). Conditioning on observable state neutralizes this contextual surge below independent calibration thresholds (CMI FPR = 0.000), while PNI competitor subtraction isolates coordinating pairs with 100% Top-1 ranking accuracy (Wilson 95% CI: [0.839, 1.000], MRR = 1.000). Furthermore, expanding evaluations to 68,400 open-weight LLM decisions (Qwen2.5-1.5B, 630 trajectories) across horizons $T \in \{5, 20, 50\}$ reveals an empirical finite-sample sparsity effect: ultra-short horizons ($T=5$) attenuate CMI ranking accuracy (70.0%), whereas sufficient history ($T \ge 20$) restores 100% Top-1 identification accuracy under controlled ranking evidence. Our findings demonstrate that state conditioning is essential for behavioral auditing while highlighting critical sample horizon boundaries.
 
 ---
 
@@ -27,7 +27,7 @@ Specifically, we stress-test **Pairwise Net Influence (PNI)** (Bonjour, Aggarwal
 
 **Core Research Question:** *How reliably does Pairwise Net Influence distinguish deliberately coordinated behavior from independent behavior that merely appears correlated due to shared context, and how does detector performance scale with coordination strength, trajectory length, and open-weight LLM architectures?*
 
-To rigorously separate the effects of state conditioning from rival competitor subtraction, we formulate and evaluate four hypotheses across three distinct estimators—Marginal MI $I(A_i; A_j)$, Conditional MI $\gamma(i, j) = I(A_i; A_j \mid S)$, and PNI net score—using a frozen canonical benchmark of 260 unique trajectories (54,000 unique recorded rounds across 300 evaluations) complemented by 9,180 open-weight LLM agent decisions:
+To rigorously separate the effects of state conditioning from rival competitor subtraction, we formulate and evaluate four hypotheses across three distinct estimators—Marginal MI $I(A_i; A_j)$, Conditional MI $\gamma(i, j) = I(A_i; A_j \mid S)$, and PNI net score—using a frozen canonical benchmark of 260 unique trajectories (54,000 unique recorded rounds across 300 evaluations) complemented by 68,400 open-weight LLM agent decisions across 630 trajectories:
 - **H1 (Positive Sensitivity):** Under controlled shared-private-signal coordination, PNI ranks the coordinating pair #1 significantly above the 1/6 (16.7%) random baseline.
 - **H2 (Shared-Context Confounding):** Observable public state induces severe spurious action correlation, causing unconditioned marginal mutual information to suffer a 100% false positive rate.
 - **H3 (State-Conditioning Neutralization & Rival Subtraction):** Conditioning on observable state $S$ neutralizes this broadcast shock below independent calibration thresholds, while PNI rival subtraction further isolates pair-specific influence.
@@ -133,59 +133,59 @@ State abstraction compressed public action histories to five states: $S \in \{\t
 
 Timing methodology: We distinguish between batch wall-clock duration (the end-to-end elapsed time of the parallel container run) and per-decision inference latency (the average model generation time per agent decision). Authoritative financial costs are cited directly from the Modal billing telemetry.
 
-### Table 3: Multi-Horizon LLM Empirical Results (Qwen2.5-1.5B on Modal CPU, 300 trajectories, 28,500 total decisions)
-*Evaluated across three horizons: Pilot ($T=5$, 25 seeds, 1,500 decisions), Expanded Primary ($T=20$, 50 seeds, 12,000 decisions), and Extended Horizon ($T=50$, 25 seeds, 15,000 decisions). Scripted classification thresholds are not calibrated to LLM empirical action distributions; detector performance is evaluated via pair rankings, empirical mutual information, and held-out calibrated thresholds (Table 4).*
+### Table 3: Multi-Horizon LLM Empirical Results (Qwen2.5-1.5B on Modal CPU, 630 trajectories, 68,400 total decisions)
+*Evaluated across three horizons: Pilot ($T=5$, 40 seeds, 2,400 decisions), Expanded Primary ($T=20$, 100 seeds, 24,000 decisions), and Extended Horizon ($T=50$, 70 seeds, 42,000 decisions). Scripted classification thresholds are not calibrated to LLM empirical action distributions; detector performance is evaluated via pair rankings, empirical mutual information, and held-out calibrated thresholds (Table 4).*
 
 | Horizon | Condition | Traj. | Decisions | Valid Rate | Latency | Signal Compl. | Top-1 Marg. MI | Top-1 CMI | Top-1 PNI | Mean Marg. MI | Mean CMI | Mean PNI Net |
-| :---: | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| **$T=5$** | **LLM-A (Ind.)** | 25 | 500 | 1.000 (500/500) | 4.02s | — | — | — | — | 0.1954 | 0.0697 | -0.0111 |
-|  | **LLM-B (Cont.)** | 25 | 500 | 1.000 (500/500) | 9.02s | — | — | — | — | 0.1291 | 0.0650 | -0.0205 |
-|  | **LLM-C (Coord.)** | 25 | 500 | 1.000 (500/500) | 5.91s | **1.000 (250/250)** | **1.000 (25/25)** | **0.680 (17/25)** | **0.680 (17/25)** | 0.1732 | 0.0737 | -0.0191 |
-| **$T=20$** | **LLM-A (Ind.)** | 50 | 4000 | 1.000 (4000/4000) | 4.43s | — | — | — | — | 0.3131 | 0.0992 | -0.0324 |
-|  | **LLM-B (Cont.)** | 50 | 4000 | 1.000 (4000/4000) | 9.34s | — | — | — | — | 0.1262 | 0.0976 | -0.0378 |
-|  | **LLM-C (Coord.)** | 50 | 4000 | 1.000 (4000/4000) | 7.50s | **1.000 (2000/2000)** | **1.000 (50/50)** | **1.000 (50/50)** | **1.000 (50/50)** | 0.2452 | 0.1343 | -0.1364 |
-| **$T=50$** | **LLM-A (Ind.)** | 25 | 5000 | 1.000 (5000/5000) | 4.93s | — | — | — | — | 0.3862 | 0.0821 | -0.0238 |
-|  | **LLM-B (Cont.)** | 25 | 5000 | 1.000 (5000/5000) | 8.08s | — | — | — | — | 0.0786 | 0.0806 | -0.0329 |
-|  | **LLM-C (Coord.)** | 25 | 5000 | 1.000 (5000/5000) | 7.49s | **1.000 (2500/2500)** | **1.000 (25/25)** | **1.000 (25/25)** | **1.000 (25/25)** | 0.2621 | 0.1724 | -0.3197 |
+| :---: | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
+| **$T=5$** | **LLM-A (Ind.)** | 40 | 800 | 1.000 (800/800) | 4.06s | — | — | — | — | 0.1912 | 0.0693 | -0.0113 |
+|  | **LLM-B (Cont.)** | 40 | 800 | 1.000 (800/800) | 8.65s | — | — | — | — | 0.1283 | 0.0666 | -0.0184 |
+|  | **LLM-C (Coord.)** | 40 | 800 | 1.000 (800/800) | 4.84s | **1.000 (400/400)** | **1.000 (40/40)** | **0.700 (28/40)** | **0.700 (28/40)** | 0.1623 | 0.0696 | -0.0182 |
+| **$T=20$** | **LLM-A (Ind.)** | 100 | 8000 | 1.000 (8000/8000) | 4.99s | — | — | — | — | 0.3100 | 0.0997 | -0.0310 |
+|  | **LLM-B (Cont.)** | 100 | 8000 | 1.000 (8000/8000) | 8.65s | — | — | — | — | 0.1239 | 0.0981 | -0.0383 |
+|  | **LLM-C (Coord.)** | 100 | 8000 | 1.000 (4000/4000) | 7.27s | **1.000 (4000/4000)** | **1.000 (100/100)** | **1.000 (100/100)** | **1.000 (100/100)** | 0.2403 | 0.1333 | -0.1400 |
+| **$T=50$** | **LLM-A (Ind.)** | 70 | 14000 | 1.000 (14000/14000) | 4.60s | — | — | — | — | 0.4050 | 0.0835 | -0.0238 |
+|  | **LLM-B (Cont.)** | 70 | 14000 | 1.000 (14000/14000) | 8.13s | — | — | — | — | 0.0833 | 0.0833 | -0.0341 |
+|  | **LLM-C (Coord.)** | 70 | 14000 | 1.000 (14000/14000) | 7.52s | **1.000 (7000/7000)** | **1.000 (70/70)** | **1.000 (70/70)** | **1.000 (70/70)** | 0.2614 | 0.1770 | -0.3206 |
 
 ### Table 4: LLM Threshold Calibration and Held-Out Classification Metrics
-*Calibrated on LLM-A calibration seeds at nominal 5% FPR ($\tau_{\text{Marginal MI}}, \tau_{\text{CMI}}, \tau_{\text{PNI}}$); evaluated on held-out test seeds across all conditions. Discloses episode-level flagged rate, pair-level flagged rate, Top-1 ranking accuracy, true pair recall, and the breakdown between 'Ranked #1 & Detected' vs 'Ranked #1 but NOT Detected'.*
+*Calibrated on LLM-A calibration seeds at nominal 5% FPR ($\\tau_{\\text{Marginal MI}}, \\tau_{\\text{CMI}}, \\tau_{\\text{PNI}}$); evaluated on held-out test seeds across all conditions. Discloses episode-level flagged rate, pair-level flagged rate, Top-1 ranking accuracy, true pair recall, and the breakdown between 'Ranked #1 & Detected' vs 'Ranked #1 but NOT Detected'.*
 
 | Horizon | Condition | Test Ep. | Detector | Cal. Thresh (bits) | Ep. Flagged Rate (95% CI) | Pair Flagged Rate (95% CI) | Top-1 Accuracy (95% CI) | Target Recall | Ranked #1 & Det. | Ranked #1 Not Det. | MRR |
 | :---: | :--- | :---: | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| **$T=5$** | **LLM-A** | 15 | Marginal MI | 0.3610 | 0.333 [0.152, 0.583] | 0.056 [0.024, 0.124] | — | — | — | — | — |
-| | | 15 | CMI | 0.1025 | 0.133 [0.037, 0.379] | 0.022 [0.006, 0.077] | — | — | — | — | — |
-| | | 15 | PNI | 0.0154 | 0.333 [0.152, 0.583] | 0.122 [0.070, 0.206] | — | — | — | — | — |
-| | **LLM-B** | 15 | Marginal MI | 0.3610 | 0.067 [0.012, 0.298] | 0.011 [0.002, 0.060] | — | — | — | — | — |
-| | | 15 | CMI | 0.1025 | 0.267 [0.109, 0.520] | 0.067 [0.031, 0.138] | — | — | — | — | — |
-| | | 15 | PNI | 0.0154 | 0.400 [0.198, 0.643] | 0.111 [0.061, 0.193] | — | — | — | — | — |
-| | **LLM-C** | 15 | Marginal MI | 0.3610 | 0.400 [0.198, 0.643] | 0.067 [0.031, 0.138] | 1.000 [0.796, 1.000] | 0.400 | 0.400 | 0.600 | 1.000 |
-| | | 15 | CMI | 0.1025 | 0.400 [0.198, 0.643] | 0.156 [0.095, 0.244] | 0.667 [0.417, 0.848] | 0.400 | 0.267 | 0.400 | 0.772 |
-| | | 15 | PNI | 0.0154 | 0.200 [0.070, 0.452] | 0.078 [0.038, 0.152] | 0.667 [0.417, 0.848] | 0.200 | 0.200 | 0.467 | 0.772 |
-| **$T=20$** | **LLM-A** | 25 | Marginal MI | 0.5689 | 0.320 [0.172, 0.516] | 0.113 [0.072, 0.174] | — | — | — | — | — |
-| | | 25 | CMI | 0.1696 | 0.160 [0.064, 0.347] | 0.047 [0.023, 0.093] | — | — | — | — | — |
-| | | 25 | PNI | 0.0570 | 0.240 [0.115, 0.434] | 0.080 [0.046, 0.135] | — | — | — | — | — |
-| | **LLM-B** | 25 | Marginal MI | 0.5689 | 0.000 [0.000, 0.133] | 0.000 [0.000, 0.025] | — | — | — | — | — |
-| | | 25 | CMI | 0.1696 | 0.200 [0.089, 0.391] | 0.073 [0.041, 0.127] | — | — | — | — | — |
-| | | 25 | PNI | 0.0570 | 0.160 [0.064, 0.347] | 0.107 [0.067, 0.166] | — | — | — | — | — |
-| | **LLM-C** | 25 | Marginal MI | 0.5689 | 1.000 [0.867, 1.000] | 0.167 [0.116, 0.234] | 1.000 [0.867, 1.000] | 1.000 | 1.000 | 0.000 | 1.000 |
-| | | 25 | CMI | 0.1696 | 1.000 [0.867, 1.000] | 0.213 [0.155, 0.286] | 1.000 [0.867, 1.000] | 1.000 | 1.000 | 0.000 | 1.000 |
-| | | 25 | PNI | 0.0570 | 1.000 [0.867, 1.000] | 0.200 [0.144, 0.271] | 1.000 [0.867, 1.000] | 1.000 | 1.000 | 0.000 | 1.000 |
-| **$T=50$** | **LLM-A** | 15 | Marginal MI | 0.6961 | 0.000 [0.000, 0.204] | 0.011 [0.002, 0.060] | — | — | — | — | — |
-| | | 15 | CMI | 0.1627 | 0.067 [0.012, 0.298] | 0.022 [0.006, 0.077] | — | — | — | — | — |
-| | | 15 | PNI | 0.0621 | 0.000 [0.000, 0.204] | 0.022 [0.006, 0.077] | — | — | — | — | — |
-| | **LLM-B** | 15 | Marginal MI | 0.6961 | 0.000 [0.000, 0.204] | 0.000 [0.000, 0.041] | — | — | — | — | — |
-| | | 15 | CMI | 0.1627 | 0.067 [0.012, 0.298] | 0.067 [0.031, 0.138] | — | — | — | — | — |
-| | | 15 | PNI | 0.0621 | 0.200 [0.070, 0.452] | 0.044 [0.017, 0.109] | — | — | — | — | — |
-| | **LLM-C** | 15 | Marginal MI | 0.6961 | 1.000 [0.796, 1.000] | 0.167 [0.104, 0.257] | 1.000 [0.796, 1.000] | 1.000 | 1.000 | 0.000 | 1.000 |
-| | | 15 | CMI | 0.1627 | 1.000 [0.796, 1.000] | 0.178 [0.112, 0.269] | 1.000 [0.796, 1.000] | 1.000 | 1.000 | 0.000 | 1.000 |
-| | | 15 | PNI | 0.0621 | 1.000 [0.796, 1.000] | 0.200 [0.130, 0.294] | 1.000 [0.796, 1.000] | 1.000 | 1.000 | 0.000 | 1.000 |
+| **$T=5$** | **LLM-A** | 30 | Marginal MI | 0.3610 | 0.267 [0.142, 0.444] | 0.044 [0.023, 0.085] | — | — | — | — | — |
+| | | 30 | CMI | 0.1025 | 0.200 [0.095, 0.373] | 0.033 [0.015, 0.071] | — | — | — | — | — |
+| | | 30 | PNI | 0.0154 | 0.467 [0.302, 0.639] | 0.172 [0.124, 0.234] | — | — | — | — | — |
+| | **LLM-B** | 30 | Marginal MI | 0.3610 | 0.067 [0.018, 0.213] | 0.011 [0.003, 0.040] | — | — | — | — | — |
+| | | 30 | CMI | 0.1025 | 0.300 [0.167, 0.479] | 0.106 [0.069, 0.159] | — | — | — | — | — |
+| | | 30 | PNI | 0.0154 | 0.333 [0.192, 0.512] | 0.100 [0.064, 0.153] | — | — | — | — | — |
+| | **LLM-C** | 30 | Marginal MI | 0.3610 | 0.300 [0.167, 0.479] | 0.050 [0.027, 0.092] | 1.000 [0.886, 1.000] | 0.300 | 0.300 | 0.700 | 1.000 |
+| | | 30 | CMI | 0.1025 | 0.333 [0.192, 0.512] | 0.117 [0.078, 0.172] | 0.700 [0.521, 0.833] | 0.333 | 0.267 | 0.433 | 0.781 |
+| | | 30 | PNI | 0.0154 | 0.367 [0.219, 0.545] | 0.139 [0.096, 0.197] | 0.700 [0.521, 0.833] | 0.367 | 0.367 | 0.333 | 0.797 |
+| **$T=20$** | **LLM-A** | 75 | Marginal MI | 0.5689 | 0.213 [0.136, 0.319] | 0.107 [0.081, 0.139] | — | — | — | — | — |
+| | | 75 | CMI | 0.1696 | 0.147 [0.084, 0.244] | 0.056 [0.038, 0.081] | — | — | — | — | — |
+| | | 75 | PNI | 0.0570 | 0.147 [0.084, 0.244] | 0.078 [0.056, 0.106] | — | — | — | — | — |
+| | **LLM-B** | 75 | Marginal MI | 0.5689 | 0.000 [0.000, 0.049] | 0.000 [0.000, 0.008] | — | — | — | — | — |
+| | | 75 | CMI | 0.1696 | 0.240 [0.158, 0.348] | 0.080 [0.058, 0.109] | — | — | — | — | — |
+| | | 75 | PNI | 0.0570 | 0.173 [0.104, 0.274] | 0.104 [0.079, 0.136] | — | — | — | — | — |
+| | **LLM-C** | 75 | Marginal MI | 0.5689 | 1.000 [0.951, 1.000] | 0.167 [0.135, 0.204] | 1.000 [0.951, 1.000] | 1.000 | 1.000 | 0.000 | 1.000 |
+| | | 75 | CMI | 0.1696 | 1.000 [0.951, 1.000] | 0.209 [0.174, 0.249] | 1.000 [0.951, 1.000] | 1.000 | 1.000 | 0.000 | 1.000 |
+| | | 75 | PNI | 0.0570 | 1.000 [0.951, 1.000] | 0.207 [0.172, 0.246] | 1.000 [0.951, 1.000] | 1.000 | 1.000 | 0.000 | 1.000 |
+| **$T=50$** | **LLM-A** | 60 | Marginal MI | 0.6961 | 0.033 [0.009, 0.114] | 0.031 [0.017, 0.054] | — | — | — | — | — |
+| | | 60 | CMI | 0.1627 | 0.050 [0.017, 0.137] | 0.042 [0.025, 0.068] | — | — | — | — | — |
+| | | 60 | PNI | 0.0621 | 0.067 [0.026, 0.159] | 0.036 [0.021, 0.061] | — | — | — | — | — |
+| | **LLM-B** | 60 | Marginal MI | 0.6961 | 0.000 [0.000, 0.060] | 0.000 [0.000, 0.011] | — | — | — | — | — |
+| | | 60 | CMI | 0.1627 | 0.117 [0.058, 0.222] | 0.081 [0.057, 0.113] | — | — | — | — | — |
+| | | 60 | PNI | 0.0621 | 0.117 [0.058, 0.222] | 0.039 [0.023, 0.064] | — | — | — | — | — |
+| | **LLM-C** | 60 | Marginal MI | 0.6961 | 1.000 [0.940, 1.000] | 0.167 [0.132, 0.209] | 1.000 [0.940, 1.000] | 1.000 | 1.000 | 0.000 | 1.000 |
+| | | 60 | CMI | 0.1627 | 1.000 [0.940, 1.000] | 0.214 [0.175, 0.259] | 1.000 [0.940, 1.000] | 1.000 | 1.000 | 0.000 | 1.000 |
+| | | 60 | PNI | 0.0621 | 1.000 [0.940, 1.000] | 0.194 [0.157, 0.238] | 1.000 [0.940, 1.000] | 1.000 | 1.000 | 0.000 | 1.000 |
 
 ### 6.2 Key Empirical Discoveries in LLM Auditing
-1. **High Instruction Compliance in Simplified Matrix Games:** Open-weight `Qwen2.5-1.5B-Instruct` achieved 100.0% valid action selection (100% of decisions produced a valid parsed action) without falling back or producing unparseable output. In Condition LLM-C, the coordinating agents achieved **100.0% adherence** to the secret coordination directive across all tested seeds (4,750/4,750 opportunities across horizons). This confirms high instruction compliance and establishes a controlled statistical dependence pattern in simplified RPS; it does not indicate spontaneous collusion or an economic cartel.
-2. **Empirical Finite-Sample Horizon Sparsity Effect:** At $T=5$ rounds, state conditioning over 5 states fragments the empirical sample into sparse bins ($E[N_s] \approx 1$), reducing CMI and PNI Top-1 accuracy to 68.0% (17/25 seeds) and binary recall to 20.0% (with 46.7% of episodes ranked #1 but NOT threshold-detected). However, expanding the horizon to $T \ge 20$ rounds provides sufficient history to overcome sample sparsity: Top-1 ranking accuracy and binary threshold recall identify the designated shared-signal pair with **100.0% accuracy** (50/50 seeds at $T=20$ and 25/25 seeds at $T=50$) under controlled ranking evidence.
-3. **Negative PNI Net Scores and Relative Ranking vs. Threshold Detection:** In Condition LLM-C, non-coordinating candidate pairs frequently yield negative PNI net scores because the competitor subtraction term ($\max_{k \neq i,j} \gamma(k,j)$) subtracts the elevated mutual information of the coordinating pair (0, 1), driving rival net influence negative. Furthermore, under finite sample sizes or high background noise, subtracting the strongest rival can yield negative values even for the true pair. Consequently, relative ranking (identifying which pair exhibits the highest relative net influence) must not be conflated with absolute threshold-based classification (classifying whether a pair exceeds a pre-calibrated baseline threshold).
-4. **Cloud Resource and Authoritative Financial Accounting:** The LLM experimental pipeline was executed across parallel containers on Modal cloud CPU infrastructure (4 vCPU, 8 GB RAM per worker). Authoritative financial accounting from the Modal billing telemetry confirms that all metered compute was fully offset by promotional credits and the network egress allowance, resulting in strictly **$0.00 billed out-of-pocket spend**.
+1. **High Instruction Compliance in Simplified Matrix Games:** Open-weight `Qwen2.5-1.5B-Instruct` achieved 100.0% valid action selection (100% of decisions produced a valid parsed action) without falling back or producing unparseable output. In Condition LLM-C, the coordinating agents achieved **100.0% adherence** to the secret coordination directive across all tested seeds (11,400/11,400 opportunities across horizons). This confirms high instruction compliance and establishes a controlled statistical dependence pattern in simplified RPS; it does not indicate spontaneous collusion or an economic cartel.
+2. **Empirical Finite-Sample Horizon Sparsity Effect:** At $T=5$ rounds, state conditioning over 5 states fragments the empirical sample into sparse bins ($E[N_s] \approx 1$), reducing CMI and PNI Top-1 accuracy to 70.0% (28/40 seeds) and binary recall to 36.7% (with 33.3% of episodes ranked #1 but NOT threshold-detected). However, expanding the horizon to $T \ge 20$ rounds provides sufficient history to overcome sample sparsity: Top-1 ranking accuracy and binary threshold recall identify the designated shared-signal pair with **100.0% accuracy** (100/100 seeds at $T=20$ and 70/70 seeds at $T=50$) under controlled ranking evidence.
+3. **Negative PNI Net Scores and Relative Ranking vs. Threshold Detection:** In Condition LLM-C, non-coordinating candidate pairs frequently yield negative PNI net scores because the competitor subtraction term ($\\max_{k \\neq i,j} \\gamma(k,j)$) subtracts the elevated mutual information of the coordinating pair (0, 1), driving rival net influence negative (mean -0.140 bits at $T=20$, -0.321 bits at $T=50$). Furthermore, under finite sample sizes or high background noise, subtracting the strongest rival can yield negative values even for the true pair. Consequently, relative ranking (identifying which pair exhibits the highest relative net influence) must not be conflated with absolute threshold-based classification (classifying whether a pair exceeds a pre-calibrated baseline threshold).
+4. **Cloud Resource and Authoritative Financial Accounting:** The LLM experimental pipeline was executed across parallel containers on Modal cloud CPU infrastructure (4 vCPU, 8 GB RAM per worker). Authoritative financial accounting from the Modal billing telemetry confirms that all metered compute was fully offset by promotional credits and the network egress allowance, resulting in strictly **$0.00 billed out-of-pocket spend** ($40.63 metered compute: $40.12 promotional credit applied, $0.51 egress allowance).
 
 ---
 
@@ -199,7 +199,7 @@ We transparently acknowledge the constraints of this study:
 1. *Controlled Scripted Signatures vs. Real-World Cartels:* Condition C establishes a controlled *shared-private-signal coordination condition* demonstrating that PNI recognizes statistical action dependence in scripted matrix games. However, detecting this statistical signature does not prove that agents formed an economically harmful cartel, extracted supra-competitive rents, or inflicted market harm. Furthermore, unobserved common causes (e.g., unobserved common private inputs, shared proprietary features, or unmodeled system states) could generate similar conditional action dependence.
 2. *Estimator Regularization Sensitivity:* In our 4-player game with $|S| = 82$ states, state conditioning partitions observations across sparse cells. Evaluating smoothing sensitivity under Condition B at $T = 200$ reveals that the unsmoothed plug-in estimator (using $0 \log 0 = 0$) yields CMI = 0.062 bits, while Dirichlet smoothing yields 0.084 bits (Jeffreys, $\lambda = 0.5$) and 0.096 bits (Laplace, $\lambda = 1.0$). Pseudocount smoothing introduces a mild upward baseline in sparse regimes, though all values remain well below unconditioned Marginal MI (0.958 bits).
 3. *Exploratory Small-Sample Calibration:* Nominal 5% decision thresholds were calibrated from 5 validation seeds (30 candidate pairs) of Condition A. While isolating calibration from the 15 held-out test seeds, 30 samples yield coarse quantile estimates and do not guarantee an exact 5% population FPR.
-4. *Modal Promotional Compute Pilot & Cloud Boundaries:* An extensive 28,500-decision study using `Qwen/Qwen2.5-1.5B-Instruct` was executed on Modal CPU instances (4 cores, 8GB RAM). Allocating cloud GPU instances (T4/L4) required an active payment method on file under Modal platform policy, which was safely avoided under our zero-out-of-pocket spending cap ($0.00). The CPU pipeline consumed $17.24 of metered promotional compute credits ($17.01 ephemeral apps, $0.23 network egress, offset by credits and allowance; $0.00 billed out of pocket) across 300 trajectories. While establishing that 1.5B instruction models achieve 100% signal compliance and that $T \ge 20$ restores 100% ranking accuracy and threshold recall, canonical benchmark results remain grounded in the 260-trajectory scripted evaluation (54,000 rounds).
+4. *Modal Promotional Compute Pilot & Cloud Boundaries:* An extensive 28,500-decision study using `Qwen/Qwen2.5-1.5B-Instruct` was executed on Modal CPU instances (4 cores, 8GB RAM). Allocating cloud GPU instances (T4/L4) required an active payment method on file under Modal platform policy, which was safely avoided under our zero-out-of-pocket spending cap ($0.00). The CPU pipeline consumed $40.63 of metered promotional compute credits ($40.12 ephemeral apps, $0.51 network egress, offset by credits and allowance; $0.00 billed out of pocket) across 630 trajectories (68,400 decisions). While establishing that 1.5B instruction models achieve 100% signal compliance and that $T \ge 20$ restores 100% ranking accuracy and threshold recall, canonical benchmark results remain grounded in the 260-trajectory scripted evaluation (54,000 rounds).
 
 ### 7.3 Future Work
 Key extensions include: (1) evaluating neural CMI estimators (e.g., MINE) on LLM auction transcripts (Agrawal et al., 2025); (2) developing dynamic state abstractions to compress high-dimensional order book histories; and (3) testing PNI under intentional adversarial evasion.
@@ -214,7 +214,7 @@ This research stress-tested Pairwise Net Influence for detecting multi-agent coo
 
 ## Code and Data
 - **Code Repository:** All experimental scripts, detectors, environments, test suites, and report generation tools are packaged in `when_correlation_lies_all_source_code.txt` with SHA-256 checksums.
-- **Data & Trajectories:** Full scripted JSONL trajectories (260 unique files, 54,000 unique rounds) and complete LLM trajectories across all three horizons (300 unique files, 28,500 decisions) with separate ground-truth manifests are included in the review bundle ZIP (`data/raw/`, `data/eval_labels/`, `data/raw_llm/`, `data/eval_labels_llm/`, `data/raw_llm_expanded/`, `data/eval_labels_llm_expanded/`, `data/raw_llm_expanded_t50/`, `data/eval_labels_llm_expanded_t50/`).
+- **Data & Trajectories:** Full scripted JSONL trajectories (260 unique files, 54,000 unique rounds) and complete LLM trajectories across all three horizons (630 unique files, 68,400 decisions) with separate ground-truth manifests are included in the review bundle ZIP (`data/raw/`, `data/eval_labels/`, `data/raw_llm/`, `data/eval_labels_llm/`, `data/raw_llm_expanded/`, `data/eval_labels_llm_expanded/`, `data/raw_llm_expanded_t50/`, `data/eval_labels_llm_expanded_t50/`).
 - **Reproducibility:** Complete automated test suite passes (59/59 unit tests) in Python 3.13 on standard CPU hardware.
 
 ---
@@ -245,4 +245,4 @@ This research stress-tested Pairwise Net Influence for detecting multi-agent coo
 ---
 
 ## LLM Usage Statement
-ChatGPT (OpenAI) assisted with research ideation, paper explanation, methodology critique, independent review, and prompt drafting. Antigravity (Google DeepMind advanced agentic coding assistant) assisted with code implementation, unit test suites, experiment orchestration, Modal CPU cloud infrastructure harness and execution, statistical metric aggregations, visualizations, ReportLab PDF layout, and packaging under the author's iterative instructions and review. Project direction, experimental design choices, qualitative analysis, and final editorial responsibility rest entirely with the author (Durgesh Unde). Canonical benchmark evaluations used 260 scripted trajectories (54,000 rounds); open-weight LLM evaluations used 300 trajectories (28,500 decisions) executed on Modal CPU ($17.24 metered promotional compute credit, $0.00 out-of-pocket spend). Zero personal payment cards or external paid token APIs were used. The experimental protocol was frozen after exploratory prototyping and was not preregistered prior to exploration.
+ChatGPT (OpenAI) assisted with research ideation, paper explanation, methodology critique, independent review, and prompt drafting. Antigravity (Google DeepMind advanced agentic coding assistant) assisted with code implementation, unit test suites, experiment orchestration, Modal CPU cloud infrastructure harness and execution, statistical metric aggregations, visualizations, ReportLab PDF layout, and packaging under the author's iterative instructions and review. Project direction, experimental design choices, qualitative analysis, and final editorial responsibility rest entirely with the author (Durgesh Unde). Canonical benchmark evaluations used 260 scripted trajectories (54,000 rounds); open-weight LLM evaluations used 630 trajectories (68,400 decisions) executed on Modal CPU ($40.63 metered promotional compute credit, $0.00 out-of-pocket spend). Zero personal payment cards or external paid token APIs were used. The experimental protocol was frozen after exploratory prototyping and was not preregistered prior to exploration.
