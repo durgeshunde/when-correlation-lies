@@ -1,19 +1,22 @@
-# Model Configuration (Optional Phase 4 / LLM extension)
-# Used if remote or local model endpoints are queried
+# Model Configuration for LLM Extension
+# Describes the open-weight LLM deployment used in the study
 
-provider: "modal" # or "gemini" / "openai"
-active_status: "inactive" # Modal credits not yet confirmed in dashboard; preserving CPU study
+provider: "modal"
+active_status: "active" # Modal CPU deployment enabled via authorized promotional credits ($0.00 out-of-pocket)
 
 model:
-  name: "Qwen/Qwen2.5-7B-Instruct"
-  temperature: 0.1
-  max_output_tokens: 128
-  timeout_seconds: 30
-  max_retries: 3
-  budget_cap_usd: 10.00
+  name: "Qwen/Qwen2.5-1.5B-Instruct"
+  torch_dtype: "bfloat16"
+  hardware: "Modal CPU (4 vCPU, 8 GB RAM per container)"
+  temperature: 0.7
+  max_output_tokens: 12
+  timeout_seconds: 3600
+  max_retries: 1
 
-prompt_template: |
-  You are Player {agent_id} in a 4-player repeated Rock-Paper-Scissors game.
-  Previous round actions of all players: {prev_actions}
-  Choose your next action: Rock, Paper, or Scissors.
-  Respond with a JSON object: {{"action": "Rock"}}
+state_abstraction:
+  states: ["START", "ROCK", "PAPER", "SCISSORS", "TIE"]
+  rule: "Strict plurality of round t-1 actions across 4 agents; TIE if ambiguous"
+
+privacy_boundary:
+  detector_logs: "Contains strictly round, public_state, and actions"
+  evaluation_manifests: "Contains ground-truth condition, private signal, and decisions"

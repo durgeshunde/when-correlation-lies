@@ -21,8 +21,8 @@ def plot_llm_scaling():
     # ----------------------------------------------------
     horizons = [5, 20, 50]
     top1_marg_mi = [1.0, 1.0, 1.0]
-    top1_cmi = [0.667, 1.0, 1.0]
-    top1_pni = [0.667, 1.0, 1.0]
+    top1_cmi = [0.680, 1.0, 1.0]
+    top1_pni = [0.680, 1.0, 1.0]
 
     ax1.plot(horizons, top1_marg_mi, 'o--', color='#1565C0', label='Marginal MI', linewidth=1.8, markersize=6)
     ax1.plot(horizons, top1_cmi, 's-', color='#2E7D32', label='Conditional MI (CMI)', linewidth=2.0, markersize=6)
@@ -38,19 +38,19 @@ def plot_llm_scaling():
     ax1.legend(loc='lower right', fontsize=7.5, framealpha=0.9)
 
     # Add annotation for horizon sparsity effect
-    ax1.annotate('Sample Sparsity\nHorizon Effect\n(66.7% Top-1)', xy=(5, 0.667), xytext=(8, 0.42),
+    ax1.annotate('Sample Sparsity\nHorizon Effect\n(68.0% Top-1)', xy=(5, 0.680), xytext=(8, 0.42),
                  arrowprops=dict(facecolor='black', shrink=0.08, width=1, headwidth=4),
                  fontsize=7.5, fontweight='semibold')
-    ax1.annotate('100% Recovery\n(25/25 & 5/5)', xy=(20, 1.0), xytext=(24, 0.82),
+    ax1.annotate('100% Recovery\n(50/50 & 25/25)', xy=(20, 1.0), xytext=(24, 0.82),
                  arrowprops=dict(facecolor='black', shrink=0.08, width=1, headwidth=4),
                  fontsize=7.5, fontweight='semibold')
 
     # ----------------------------------------------------
     # Panel B: Mean CMI (bits) Across Conditions vs Horizon
     # ----------------------------------------------------
-    cmi_llm_a = [0.0768, 0.0979, 0.0838]
-    cmi_llm_b = [0.0706, 0.0983, 0.0797]
-    cmi_llm_c = [0.0678, 0.1332, 0.1723]
+    cmi_llm_a = [0.0697, 0.0992, 0.0821]
+    cmi_llm_b = [0.0650, 0.0976, 0.0806]
+    cmi_llm_c = [0.0737, 0.1343, 0.1724]
 
     ax2.plot(horizons, cmi_llm_a, 'o--', color='#757575', label='LLM-A (Independent)', linewidth=1.5, markersize=5)
     ax2.plot(horizons, cmi_llm_b, 'd--', color='#E65100', label='LLM-B (Shared Context)', linewidth=1.5, markersize=5)

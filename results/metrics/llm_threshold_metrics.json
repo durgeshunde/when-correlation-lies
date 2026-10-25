@@ -1,0 +1,927 @@
+{
+  "5": {
+    "horizon": 5,
+    "cal_seeds": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9
+    ],
+    "test_seeds": [
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      22,
+      23,
+      24
+    ],
+    "thresholds": {
+      "marginal_mi": {
+        "episode_threshold": 0.36103012841993054,
+        "pair_threshold": 0.36103012841993054,
+        "n_calibration_episodes": 10,
+        "n_calibration_pairs": 60,
+        "target_nominal_fpr": 0.05
+      },
+      "cmi": {
+        "episode_threshold": 0.1025151718602994,
+        "pair_threshold": 0.09665881578777143,
+        "n_calibration_episodes": 10,
+        "n_calibration_pairs": 60,
+        "target_nominal_fpr": 0.05
+      },
+      "pni": {
+        "episode_threshold": 0.01544695244089968,
+        "pair_threshold": 1.457167719820514e-17,
+        "n_calibration_episodes": 10,
+        "n_calibration_pairs": 60,
+        "target_nominal_fpr": 0.05
+      }
+    },
+    "test_evaluation": {
+      "LLM-A": {
+        "marginal_mi": {
+          "n_episodes": 15,
+          "threshold_used_episode": 0.36103012841993054,
+          "threshold_used_pair": 0.36103012841993054,
+          "episode_level_flagged": 5,
+          "episode_level_rate": 0.3333333333333333,
+          "episode_level_wilson_ci": [
+            0.1517632443971473,
+            0.5828645226148023
+          ],
+          "pair_level_flagged": 5,
+          "pair_level_total": 90,
+          "pair_level_rate": 0.05555555555555555,
+          "pair_level_wilson_ci": [
+            0.023960971616961965,
+            0.12353736221799518
+          ]
+        },
+        "cmi": {
+          "n_episodes": 15,
+          "threshold_used_episode": 0.1025151718602994,
+          "threshold_used_pair": 0.09665881578777143,
+          "episode_level_flagged": 2,
+          "episode_level_rate": 0.13333333333333333,
+          "episode_level_wilson_ci": [
+            0.03736125910306537,
+            0.37881982832322364
+          ],
+          "pair_level_flagged": 2,
+          "pair_level_total": 90,
+          "pair_level_rate": 0.022222222222222223,
+          "pair_level_wilson_ci": [
+            0.006115441986325208,
+            0.07744526688625372
+          ]
+        },
+        "pni": {
+          "n_episodes": 15,
+          "threshold_used_episode": 0.01544695244089968,
+          "threshold_used_pair": 1.457167719820514e-17,
+          "episode_level_flagged": 5,
+          "episode_level_rate": 0.3333333333333333,
+          "episode_level_wilson_ci": [
+            0.1517632443971473,
+            0.5828645226148023
+          ],
+          "pair_level_flagged": 11,
+          "pair_level_total": 90,
+          "pair_level_rate": 0.12222222222222222,
+          "pair_level_wilson_ci": [
+            0.06963615965482382,
+            0.2057374241048897
+          ]
+        }
+      },
+      "LLM-B": {
+        "marginal_mi": {
+          "n_episodes": 15,
+          "threshold_used_episode": 0.36103012841993054,
+          "threshold_used_pair": 0.36103012841993054,
+          "episode_level_flagged": 1,
+          "episode_level_rate": 0.06666666666666667,
+          "episode_level_wilson_ci": [
+            0.011866895493268553,
+            0.2981652987378003
+          ],
+          "pair_level_flagged": 1,
+          "pair_level_total": 90,
+          "pair_level_rate": 0.011111111111111112,
+          "pair_level_wilson_ci": [
+            0.0019640841009183445,
+            0.06028408311753451
+          ]
+        },
+        "cmi": {
+          "n_episodes": 15,
+          "threshold_used_episode": 0.1025151718602994,
+          "threshold_used_pair": 0.09665881578777143,
+          "episode_level_flagged": 4,
+          "episode_level_rate": 0.26666666666666666,
+          "episode_level_wilson_ci": [
+            0.10897453325692374,
+            0.5195043405598057
+          ],
+          "pair_level_flagged": 6,
+          "pair_level_total": 90,
+          "pair_level_rate": 0.06666666666666667,
+          "pair_level_wilson_ci": [
+            0.030909927745827924,
+            0.13790094774325526
+          ]
+        },
+        "pni": {
+          "n_episodes": 15,
+          "threshold_used_episode": 0.01544695244089968,
+          "threshold_used_pair": 1.457167719820514e-17,
+          "episode_level_flagged": 6,
+          "episode_level_rate": 0.4,
+          "episode_level_wilson_ci": [
+            0.1982449614134158,
+            0.6425316987937539
+          ],
+          "pair_level_flagged": 10,
+          "pair_level_total": 90,
+          "pair_level_rate": 0.1111111111111111,
+          "pair_level_wilson_ci": [
+            0.06148319189297713,
+            0.19257785021261037
+          ]
+        }
+      },
+      "LLM-C": {
+        "marginal_mi": {
+          "n_episodes": 15,
+          "threshold_used_episode": 0.36103012841993054,
+          "threshold_used_pair": 0.36103012841993054,
+          "episode_level_flagged": 6,
+          "episode_level_rate": 0.4,
+          "episode_level_wilson_ci": [
+            0.1982449614134158,
+            0.6425316987937539
+          ],
+          "pair_level_flagged": 6,
+          "pair_level_total": 90,
+          "pair_level_rate": 0.06666666666666667,
+          "pair_level_wilson_ci": [
+            0.030909927745827924,
+            0.13790094774325526
+          ],
+          "top1_count": 15,
+          "top1_accuracy": 1.0,
+          "top1_wilson_ci": [
+            0.7961166989641515,
+            1.0
+          ],
+          "mrr": 1.0,
+          "target_detected_count": 6,
+          "target_recall_at_threshold": 0.4,
+          "target_recall_wilson_ci": [
+            0.1982449614134158,
+            0.6425316987937539
+          ],
+          "ranked1_and_detected_count": 6,
+          "ranked1_and_detected_rate": 0.4,
+          "ranked1_not_detected_count": 9,
+          "ranked1_not_detected_rate": 0.6,
+          "target_pair_mean_score": 0.323361914022043,
+          "non_target_flagged_count": 0,
+          "non_target_total_count": 75,
+          "non_target_fpr": 0.0,
+          "non_target_fpr_wilson_ci": [
+            3.469446951953614e-18,
+            0.04872384248280587
+          ]
+        },
+        "cmi": {
+          "n_episodes": 15,
+          "threshold_used_episode": 0.1025151718602994,
+          "threshold_used_pair": 0.09665881578777143,
+          "episode_level_flagged": 6,
+          "episode_level_rate": 0.4,
+          "episode_level_wilson_ci": [
+            0.1982449614134158,
+            0.6425316987937539
+          ],
+          "pair_level_flagged": 14,
+          "pair_level_total": 90,
+          "pair_level_rate": 0.15555555555555556,
+          "pair_level_wilson_ci": [
+            0.09498275594910817,
+            0.24432845277298365
+          ],
+          "top1_count": 10,
+          "top1_accuracy": 0.6666666666666666,
+          "top1_wilson_ci": [
+            0.41713547738519774,
+            0.8482367556028526
+          ],
+          "mrr": 0.7722222222222223,
+          "target_detected_count": 6,
+          "target_recall_at_threshold": 0.4,
+          "target_recall_wilson_ci": [
+            0.1982449614134158,
+            0.6425316987937539
+          ],
+          "ranked1_and_detected_count": 4,
+          "ranked1_and_detected_rate": 0.26666666666666666,
+          "ranked1_not_detected_count": 6,
+          "ranked1_not_detected_rate": 0.4,
+          "target_pair_mean_score": 0.09614553532737785,
+          "non_target_flagged_count": 8,
+          "non_target_total_count": 75,
+          "non_target_fpr": 0.10666666666666667,
+          "non_target_fpr_wilson_ci": [
+            0.055049127621743174,
+            0.19661362846473074
+          ]
+        },
+        "pni": {
+          "n_episodes": 15,
+          "threshold_used_episode": 0.01544695244089968,
+          "threshold_used_pair": 1.457167719820514e-17,
+          "episode_level_flagged": 3,
+          "episode_level_rate": 0.2,
+          "episode_level_wilson_ci": [
+            0.07047549346981563,
+            0.45185448715169363
+          ],
+          "pair_level_flagged": 7,
+          "pair_level_total": 90,
+          "pair_level_rate": 0.07777777777777778,
+          "pair_level_wilson_ci": [
+            0.038184815317289005,
+            0.15193860182592028
+          ],
+          "top1_count": 10,
+          "top1_accuracy": 0.6666666666666666,
+          "top1_wilson_ci": [
+            0.41713547738519774,
+            0.8482367556028526
+          ],
+          "mrr": 0.7722222222222223,
+          "target_detected_count": 3,
+          "target_recall_at_threshold": 0.2,
+          "target_recall_wilson_ci": [
+            0.07047549346981563,
+            0.45185448715169363
+          ],
+          "ranked1_and_detected_count": 3,
+          "ranked1_and_detected_rate": 0.2,
+          "ranked1_not_detected_count": 7,
+          "ranked1_not_detected_rate": 0.4666666666666667,
+          "target_pair_mean_score": 0.007677733392939893,
+          "non_target_flagged_count": 1,
+          "non_target_total_count": 75,
+          "non_target_fpr": 0.013333333333333334,
+          "non_target_fpr_wilson_ci": [
+            0.002357551139048661,
+            0.07173365554421572
+          ]
+        }
+      }
+    }
+  },
+  "20": {
+    "horizon": 20,
+    "cal_seeds": [
+      100,
+      101,
+      102,
+      103,
+      104,
+      105,
+      106,
+      107,
+      108,
+      109,
+      110,
+      111,
+      112,
+      113,
+      114,
+      115,
+      116,
+      117,
+      118,
+      119,
+      120,
+      121,
+      122,
+      123,
+      124
+    ],
+    "test_seeds": [
+      125,
+      126,
+      127,
+      128,
+      129,
+      130,
+      131,
+      132,
+      133,
+      134,
+      135,
+      136,
+      137,
+      138,
+      139,
+      140,
+      141,
+      142,
+      143,
+      144,
+      145,
+      146,
+      147,
+      148,
+      149
+    ],
+    "thresholds": {
+      "marginal_mi": {
+        "episode_threshold": 0.568928059583359,
+        "pair_threshold": 0.5052916602176338,
+        "n_calibration_episodes": 25,
+        "n_calibration_pairs": 150,
+        "target_nominal_fpr": 0.05
+      },
+      "cmi": {
+        "episode_threshold": 0.16962849760363038,
+        "pair_threshold": 0.15433553271130185,
+        "n_calibration_episodes": 25,
+        "n_calibration_pairs": 150,
+        "target_nominal_fpr": 0.05
+      },
+      "pni": {
+        "episode_threshold": 0.056949847069728984,
+        "pair_threshold": 0.023425999699870234,
+        "n_calibration_episodes": 25,
+        "n_calibration_pairs": 150,
+        "target_nominal_fpr": 0.05
+      }
+    },
+    "test_evaluation": {
+      "LLM-A": {
+        "marginal_mi": {
+          "n_episodes": 25,
+          "threshold_used_episode": 0.568928059583359,
+          "threshold_used_pair": 0.5052916602176338,
+          "episode_level_flagged": 8,
+          "episode_level_rate": 0.32,
+          "episode_level_wilson_ci": [
+            0.17205190306907978,
+            0.5158973072689775
+          ],
+          "pair_level_flagged": 17,
+          "pair_level_total": 150,
+          "pair_level_rate": 0.11333333333333333,
+          "pair_level_wilson_ci": [
+            0.0719742391403741,
+            0.17400274983760514
+          ]
+        },
+        "cmi": {
+          "n_episodes": 25,
+          "threshold_used_episode": 0.16962849760363038,
+          "threshold_used_pair": 0.15433553271130185,
+          "episode_level_flagged": 4,
+          "episode_level_rate": 0.16,
+          "episode_level_wilson_ci": [
+            0.0640345145667644,
+            0.3465362160717886
+          ],
+          "pair_level_flagged": 7,
+          "pair_level_total": 150,
+          "pair_level_rate": 0.04666666666666667,
+          "pair_level_wilson_ci": [
+            0.022786549161261972,
+            0.09318647239912747
+          ]
+        },
+        "pni": {
+          "n_episodes": 25,
+          "threshold_used_episode": 0.056949847069728984,
+          "threshold_used_pair": 0.023425999699870234,
+          "episode_level_flagged": 6,
+          "episode_level_rate": 0.24,
+          "episode_level_wilson_ci": [
+            0.11496313693401444,
+            0.4342968335542908
+          ],
+          "pair_level_flagged": 12,
+          "pair_level_total": 150,
+          "pair_level_rate": 0.08,
+          "pair_level_wilson_ci": [
+            0.04635364151865291,
+            0.13462136375053146
+          ]
+        }
+      },
+      "LLM-B": {
+        "marginal_mi": {
+          "n_episodes": 25,
+          "threshold_used_episode": 0.568928059583359,
+          "threshold_used_pair": 0.5052916602176338,
+          "episode_level_flagged": 0,
+          "episode_level_rate": 0.0,
+          "episode_level_wilson_ci": [
+            1.3877787807814457e-17,
+            0.13319225093904846
+          ],
+          "pair_level_flagged": 0,
+          "pair_level_total": 150,
+          "pair_level_rate": 0.0,
+          "pair_level_wilson_ci": [
+            1.734723475976807e-18,
+            0.0249702443680766
+          ]
+        },
+        "cmi": {
+          "n_episodes": 25,
+          "threshold_used_episode": 0.16962849760363038,
+          "threshold_used_pair": 0.15433553271130185,
+          "episode_level_flagged": 5,
+          "episode_level_rate": 0.2,
+          "episode_level_wilson_ci": [
+            0.08860584686802572,
+            0.3913095036954033
+          ],
+          "pair_level_flagged": 11,
+          "pair_level_total": 150,
+          "pair_level_rate": 0.07333333333333333,
+          "pair_level_wilson_ci": [
+            0.041438815160384994,
+            0.12653579336704038
+          ]
+        },
+        "pni": {
+          "n_episodes": 25,
+          "threshold_used_episode": 0.056949847069728984,
+          "threshold_used_pair": 0.023425999699870234,
+          "episode_level_flagged": 4,
+          "episode_level_rate": 0.16,
+          "episode_level_wilson_ci": [
+            0.0640345145667644,
+            0.3465362160717886
+          ],
+          "pair_level_flagged": 16,
+          "pair_level_total": 150,
+          "pair_level_rate": 0.10666666666666667,
+          "pair_level_wilson_ci": [
+            0.06673036965207342,
+            0.16624622258414684
+          ]
+        }
+      },
+      "LLM-C": {
+        "marginal_mi": {
+          "n_episodes": 25,
+          "threshold_used_episode": 0.568928059583359,
+          "threshold_used_pair": 0.5052916602176338,
+          "episode_level_flagged": 25,
+          "episode_level_rate": 1.0,
+          "episode_level_wilson_ci": [
+            0.8668077490609515,
+            0.9999999999999999
+          ],
+          "pair_level_flagged": 25,
+          "pair_level_total": 150,
+          "pair_level_rate": 0.16666666666666666,
+          "pair_level_wilson_ci": [
+            0.115514298743043,
+            0.23446586416900808
+          ],
+          "top1_count": 25,
+          "top1_accuracy": 1.0,
+          "top1_wilson_ci": [
+            0.8668077490609515,
+            0.9999999999999999
+          ],
+          "mrr": 1.0,
+          "target_detected_count": 25,
+          "target_recall_at_threshold": 1.0,
+          "target_recall_wilson_ci": [
+            0.8668077490609515,
+            0.9999999999999999
+          ],
+          "ranked1_and_detected_count": 25,
+          "ranked1_and_detected_rate": 1.0,
+          "ranked1_not_detected_count": 0,
+          "ranked1_not_detected_rate": 0.0,
+          "target_pair_mean_score": 0.8813054876249053,
+          "non_target_flagged_count": 0,
+          "non_target_total_count": 125,
+          "non_target_fpr": 0.0,
+          "non_target_fpr_wilson_ci": [
+            1.734723475976807e-18,
+            0.029815393708326456
+          ]
+        },
+        "cmi": {
+          "n_episodes": 25,
+          "threshold_used_episode": 0.16962849760363038,
+          "threshold_used_pair": 0.15433553271130185,
+          "episode_level_flagged": 25,
+          "episode_level_rate": 1.0,
+          "episode_level_wilson_ci": [
+            0.8668077490609515,
+            0.9999999999999999
+          ],
+          "pair_level_flagged": 32,
+          "pair_level_total": 150,
+          "pair_level_rate": 0.21333333333333335,
+          "pair_level_wilson_ci": [
+            0.15536236119471125,
+            0.28562057890965276
+          ],
+          "top1_count": 25,
+          "top1_accuracy": 1.0,
+          "top1_wilson_ci": [
+            0.8668077490609515,
+            0.9999999999999999
+          ],
+          "mrr": 1.0,
+          "target_detected_count": 25,
+          "target_recall_at_threshold": 1.0,
+          "target_recall_wilson_ci": [
+            0.8668077490609515,
+            0.9999999999999999
+          ],
+          "ranked1_and_detected_count": 25,
+          "ranked1_and_detected_rate": 1.0,
+          "ranked1_not_detected_count": 0,
+          "ranked1_not_detected_rate": 0.0,
+          "target_pair_mean_score": 0.3505455466805136,
+          "non_target_flagged_count": 4,
+          "non_target_total_count": 125,
+          "non_target_fpr": 0.032,
+          "non_target_fpr_wilson_ci": [
+            0.01251313913869348,
+            0.07939406937230009
+          ]
+        },
+        "pni": {
+          "n_episodes": 25,
+          "threshold_used_episode": 0.056949847069728984,
+          "threshold_used_pair": 0.023425999699870234,
+          "episode_level_flagged": 25,
+          "episode_level_rate": 1.0,
+          "episode_level_wilson_ci": [
+            0.8668077490609515,
+            0.9999999999999999
+          ],
+          "pair_level_flagged": 30,
+          "pair_level_total": 150,
+          "pair_level_rate": 0.2,
+          "pair_level_wilson_ci": [
+            0.14384081582284963,
+            0.27114133079799635
+          ],
+          "top1_count": 25,
+          "top1_accuracy": 1.0,
+          "top1_wilson_ci": [
+            0.8668077490609515,
+            0.9999999999999999
+          ],
+          "mrr": 1.0,
+          "target_detected_count": 25,
+          "target_recall_at_threshold": 1.0,
+          "target_recall_wilson_ci": [
+            0.8668077490609515,
+            0.9999999999999999
+          ],
+          "ranked1_and_detected_count": 25,
+          "ranked1_and_detected_rate": 1.0,
+          "ranked1_not_detected_count": 0,
+          "ranked1_not_detected_rate": 0.0,
+          "target_pair_mean_score": 0.2412764369953499,
+          "non_target_flagged_count": 1,
+          "non_target_total_count": 125,
+          "non_target_fpr": 0.008,
+          "non_target_fpr_wilson_ci": [
+            0.0014135951039980256,
+            0.04392475230499521
+          ]
+        }
+      }
+    }
+  },
+  "50": {
+    "horizon": 50,
+    "cal_seeds": [
+      100,
+      101,
+      102,
+      103,
+      104,
+      105,
+      106,
+      107,
+      108,
+      109
+    ],
+    "test_seeds": [
+      110,
+      111,
+      112,
+      113,
+      114,
+      115,
+      116,
+      117,
+      118,
+      119,
+      120,
+      121,
+      122,
+      123,
+      124
+    ],
+    "thresholds": {
+      "marginal_mi": {
+        "episode_threshold": 0.6960678722037985,
+        "pair_threshold": 0.6462764173502769,
+        "n_calibration_episodes": 10,
+        "n_calibration_pairs": 60,
+        "target_nominal_fpr": 0.05
+      },
+      "cmi": {
+        "episode_threshold": 0.1626911632616274,
+        "pair_threshold": 0.12769095892471932,
+        "n_calibration_episodes": 10,
+        "n_calibration_pairs": 60,
+        "target_nominal_fpr": 0.05
+      },
+      "pni": {
+        "episode_threshold": 0.06211784082989671,
+        "pair_threshold": 0.041402667313451595,
+        "n_calibration_episodes": 10,
+        "n_calibration_pairs": 60,
+        "target_nominal_fpr": 0.05
+      }
+    },
+    "test_evaluation": {
+      "LLM-A": {
+        "marginal_mi": {
+          "n_episodes": 15,
+          "threshold_used_episode": 0.6960678722037985,
+          "threshold_used_pair": 0.6462764173502769,
+          "episode_level_flagged": 0,
+          "episode_level_rate": 0.0,
+          "episode_level_wilson_ci": [
+            0.0,
+            0.20388330103584862
+          ],
+          "pair_level_flagged": 1,
+          "pair_level_total": 90,
+          "pair_level_rate": 0.011111111111111112,
+          "pair_level_wilson_ci": [
+            0.0019640841009183445,
+            0.06028408311753451
+          ]
+        },
+        "cmi": {
+          "n_episodes": 15,
+          "threshold_used_episode": 0.1626911632616274,
+          "threshold_used_pair": 0.12769095892471932,
+          "episode_level_flagged": 1,
+          "episode_level_rate": 0.06666666666666667,
+          "episode_level_wilson_ci": [
+            0.011866895493268553,
+            0.2981652987378003
+          ],
+          "pair_level_flagged": 2,
+          "pair_level_total": 90,
+          "pair_level_rate": 0.022222222222222223,
+          "pair_level_wilson_ci": [
+            0.006115441986325208,
+            0.07744526688625372
+          ]
+        },
+        "pni": {
+          "n_episodes": 15,
+          "threshold_used_episode": 0.06211784082989671,
+          "threshold_used_pair": 0.041402667313451595,
+          "episode_level_flagged": 0,
+          "episode_level_rate": 0.0,
+          "episode_level_wilson_ci": [
+            0.0,
+            0.20388330103584862
+          ],
+          "pair_level_flagged": 2,
+          "pair_level_total": 90,
+          "pair_level_rate": 0.022222222222222223,
+          "pair_level_wilson_ci": [
+            0.006115441986325208,
+            0.07744526688625372
+          ]
+        }
+      },
+      "LLM-B": {
+        "marginal_mi": {
+          "n_episodes": 15,
+          "threshold_used_episode": 0.6960678722037985,
+          "threshold_used_pair": 0.6462764173502769,
+          "episode_level_flagged": 0,
+          "episode_level_rate": 0.0,
+          "episode_level_wilson_ci": [
+            0.0,
+            0.20388330103584862
+          ],
+          "pair_level_flagged": 0,
+          "pair_level_total": 90,
+          "pair_level_rate": 0.0,
+          "pair_level_wilson_ci": [
+            0.0,
+            0.04093562556432678
+          ]
+        },
+        "cmi": {
+          "n_episodes": 15,
+          "threshold_used_episode": 0.1626911632616274,
+          "threshold_used_pair": 0.12769095892471932,
+          "episode_level_flagged": 1,
+          "episode_level_rate": 0.06666666666666667,
+          "episode_level_wilson_ci": [
+            0.011866895493268553,
+            0.2981652987378003
+          ],
+          "pair_level_flagged": 6,
+          "pair_level_total": 90,
+          "pair_level_rate": 0.06666666666666667,
+          "pair_level_wilson_ci": [
+            0.030909927745827924,
+            0.13790094774325526
+          ]
+        },
+        "pni": {
+          "n_episodes": 15,
+          "threshold_used_episode": 0.06211784082989671,
+          "threshold_used_pair": 0.041402667313451595,
+          "episode_level_flagged": 3,
+          "episode_level_rate": 0.2,
+          "episode_level_wilson_ci": [
+            0.07047549346981563,
+            0.45185448715169363
+          ],
+          "pair_level_flagged": 4,
+          "pair_level_total": 90,
+          "pair_level_rate": 0.044444444444444446,
+          "pair_level_wilson_ci": [
+            0.01741724185270873,
+            0.10876855032812233
+          ]
+        }
+      },
+      "LLM-C": {
+        "marginal_mi": {
+          "n_episodes": 15,
+          "threshold_used_episode": 0.6960678722037985,
+          "threshold_used_pair": 0.6462764173502769,
+          "episode_level_flagged": 15,
+          "episode_level_rate": 1.0,
+          "episode_level_wilson_ci": [
+            0.7961166989641515,
+            1.0
+          ],
+          "pair_level_flagged": 15,
+          "pair_level_total": 90,
+          "pair_level_rate": 0.16666666666666666,
+          "pair_level_wilson_ci": [
+            0.10368488734312978,
+            0.2569388630330881
+          ],
+          "top1_count": 15,
+          "top1_accuracy": 1.0,
+          "top1_wilson_ci": [
+            0.7961166989641515,
+            1.0
+          ],
+          "mrr": 1.0,
+          "target_detected_count": 15,
+          "target_recall_at_threshold": 1.0,
+          "target_recall_wilson_ci": [
+            0.7961166989641515,
+            1.0
+          ],
+          "ranked1_and_detected_count": 15,
+          "ranked1_and_detected_rate": 1.0,
+          "ranked1_not_detected_count": 0,
+          "ranked1_not_detected_rate": 0.0,
+          "target_pair_mean_score": 1.2048031386903415,
+          "non_target_flagged_count": 0,
+          "non_target_total_count": 75,
+          "non_target_fpr": 0.0,
+          "non_target_fpr_wilson_ci": [
+            3.469446951953614e-18,
+            0.04872384248280587
+          ]
+        },
+        "cmi": {
+          "n_episodes": 15,
+          "threshold_used_episode": 0.1626911632616274,
+          "threshold_used_pair": 0.12769095892471932,
+          "episode_level_flagged": 15,
+          "episode_level_rate": 1.0,
+          "episode_level_wilson_ci": [
+            0.7961166989641515,
+            1.0
+          ],
+          "pair_level_flagged": 16,
+          "pair_level_total": 90,
+          "pair_level_rate": 0.17777777777777778,
+          "pair_level_wilson_ci": [
+            0.11249737158330352,
+            0.26943892044704043
+          ],
+          "top1_count": 15,
+          "top1_accuracy": 1.0,
+          "top1_wilson_ci": [
+            0.7961166989641515,
+            1.0
+          ],
+          "mrr": 1.0,
+          "target_detected_count": 15,
+          "target_recall_at_threshold": 1.0,
+          "target_recall_wilson_ci": [
+            0.7961166989641515,
+            1.0
+          ],
+          "ranked1_and_detected_count": 15,
+          "ranked1_and_detected_rate": 1.0,
+          "ranked1_not_detected_count": 0,
+          "ranked1_not_detected_rate": 0.0,
+          "target_pair_mean_score": 0.7045632479548687,
+          "non_target_flagged_count": 0,
+          "non_target_total_count": 75,
+          "non_target_fpr": 0.0,
+          "non_target_fpr_wilson_ci": [
+            3.469446951953614e-18,
+            0.04872384248280587
+          ]
+        },
+        "pni": {
+          "n_episodes": 15,
+          "threshold_used_episode": 0.06211784082989671,
+          "threshold_used_pair": 0.041402667313451595,
+          "episode_level_flagged": 15,
+          "episode_level_rate": 1.0,
+          "episode_level_wilson_ci": [
+            0.7961166989641515,
+            1.0
+          ],
+          "pair_level_flagged": 18,
+          "pair_level_total": 90,
+          "pair_level_rate": 0.2,
+          "pair_level_wilson_ci": [
+            0.13042401182717056,
+            0.29413736351142555
+          ],
+          "top1_count": 15,
+          "top1_accuracy": 1.0,
+          "top1_wilson_ci": [
+            0.7961166989641515,
+            1.0
+          ],
+          "mrr": 1.0,
+          "target_detected_count": 15,
+          "target_recall_at_threshold": 1.0,
+          "target_recall_wilson_ci": [
+            0.7961166989641515,
+            1.0
+          ],
+          "ranked1_and_detected_count": 15,
+          "ranked1_and_detected_rate": 1.0,
+          "ranked1_not_detected_count": 0,
+          "ranked1_not_detected_rate": 0.0,
+          "target_pair_mean_score": 0.632995259077728,
+          "non_target_flagged_count": 1,
+          "non_target_total_count": 75,
+          "non_target_fpr": 0.013333333333333334,
+          "non_target_fpr_wilson_ci": [
+            0.002357551139048661,
+            0.07173365554421572
+          ]
+        }
+      }
+    }
+  }
+}

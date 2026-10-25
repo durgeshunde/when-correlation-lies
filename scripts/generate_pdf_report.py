@@ -246,11 +246,11 @@ def build_pdf():
         "In this work, we stress-test PNI against unconditioned marginal mutual information and raw conditional mutual information baselines in an iterated 4-agent game across four controlled conditions: "
         "independent play, shared-context confounding, shared-private-signal coordination, and coordination-strength sweeps. "
         "Across 20 independent seeds and trajectory lengths (T in [50, 500]), unconditioned mutual information exhibits a 38-fold surge under shared context, "
-        "falsely accusing independent agents of collusion (FPR = 1.000). Conditioning on observable state eliminates this contextual surge (CMI FPR = 0.000), "
-        "while PNI competitor subtraction isolates coordinating pairs with 100% Top-1 accuracy (Wilson 95% CI: [0.839, 1.000], MRR = 1.000). "
-        "Furthermore, expanding evaluations to 9,180 open-weight LLM decisions (Qwen2.5-1.5B) across horizons T in {5, 20, 50} reveals an empirical finite-sample sparsity effect: "
-        "ultra-short horizons (T=5) attenuate CMI ranking accuracy (66.7%), whereas sufficient history (T >= 20) restores 100% Top-1 identification accuracy (25/25 seeds). "
-        "Our findings prove state conditioning is indispensable for behavioral auditing while highlighting sample horizon boundaries."
+        "falsely accusing independent agents of collusion (FPR = 1.000). Conditioning on observable state neutralizes this contextual surge below independent calibration thresholds (CMI FPR = 0.000), "
+        "while PNI competitor subtraction isolates coordinating pairs with 100% Top-1 ranking accuracy (Wilson 95% CI: [0.839, 1.000], MRR = 1.000). "
+        "Furthermore, expanding evaluations to open-weight LLM decisions (Qwen2.5-1.5B) across horizons T in {5, 20, 50} reveals an empirical finite-sample sparsity effect: "
+        "ultra-short horizons (T=5) attenuate CMI ranking accuracy (66.7%), whereas sufficient history (T >= 20) restores 100% Top-1 identification accuracy under controlled ranking evidence. "
+        "Our findings demonstrate that state conditioning is essential for behavioral auditing while highlighting critical sample horizon boundaries."
     )
     abstract_content = [
         [Paragraph("<b>ABSTRACT</b>", abstract_heading)],
@@ -495,7 +495,8 @@ def build_pdf():
         "Conditioning on state S_t drops raw dependence from 0.958 bits to <b>0.084 bits</b> [0.081, 0.087], falling below tau_CMI = 0.1175 bits to yield <b>0.000 FPR</b> (0/120 pairs). "
         "Competitor subtraction computes Gamma(i -&gt; j) = gamma(i, j) - max_k gamma(k, j); because all 4 agents experience symmetric residual dependence (~0.084 bits), "
         "the difference is small (0.012 bits [0.009, 0.015]), yielding PNI FPR <b>0.100</b> [0.050, 0.158] (12/120 pairs) under tau_PNI = 0.0104 bits. "
-        "State conditioning neutralizes the common shock, while competitor subtraction provides directed isolation.",
+        "Importantly, PNI does not dominate CMI on all metrics: CMI achieves lower false-positive rates on non-coordinating pairs both in Condition B (0/120 vs. 12/120) and in Condition C (2/100 vs. 20/100), "
+        "whereas PNI competitor subtraction is critical for directional ranking and isolating coordinating pairs from symmetric context.",
         body_style
     ))
     story.append(Paragraph(
@@ -590,9 +591,11 @@ def build_pdf():
     story.append(Paragraph(
         "To investigate whether information-theoretic collusion detectors generalize to modern generative foundation models, we deployed open-weight "
         "<b>Qwen/Qwen2.5-1.5B-Instruct</b> across three parallel horizons (T in {5, 20, 50} rounds) on Modal cloud CPU infrastructure (4 vCPUs, 8 GB RAM per worker). "
-        "Four independent model instances engaged in simultaneous iterated tournaments under three conditions: (1) <b>LLM-A</b> (independent action selection, distinct per-decision sampling seeds); "
-        "(2) <b>LLM-B</b> (shared public plurality state counter-strategy); and (3) <b>LLM-C</b> (private coordination signal delivered to pair (0, 1) and strictly excluded from detector logs). "
-        "Public observable state was abstracted to 5 states: S in {START, ROCK, PAPER, SCISSORS, TIE}. A bounded JSON parser enforced valid action output without defaulting malformed text to arbitrary actions.",
+        "Four simulated agent roles were queried through the same model checkpoint with separate prompts and per-decision sampling seeds to preserve independent stochasticity: "
+        "(1) <b>LLM-A</b> (independent action selection, individual payoff maximization); (2) <b>LLM-B</b> (shared public plurality state counter-strategy); and "
+        "(3) <b>LLM-C</b> (controlled positive control: private random signal Z_t delivered to pair (0, 1) and strictly excluded from detector logs). "
+        "Public state was abstracted to 5 states: S in {START, ROCK, PAPER, SCISSORS, TIE}. A bounded JSON parser ensured 100% of decisions produced a valid parsed action (ROCK, PAPER, SCISSORS). "
+        "Timing reports distinguish batch wall-clock duration from per-decision inference latency, with authoritative costs cited from Modal billing telemetry.",
         body_style
     ))
 
@@ -605,63 +608,63 @@ def build_pdf():
         [Paragraph(h, table_header) for h in headers3],
         # T=5
         [
-            Paragraph("<b>T = 5</b>", table_cell), Paragraph("LLM-A (Ind.)", table_cell), Paragraph("3", table_cell),
-            Paragraph("60", table_cell), Paragraph("1.000 (60/60)", table_cell), Paragraph("1.39s", table_cell),
+            Paragraph("<b>T = 5</b>", table_cell), Paragraph("LLM-A (Ind.)", table_cell), Paragraph("25", table_cell),
+            Paragraph("500", table_cell), Paragraph("1.000 (500/500)", table_cell), Paragraph("4.02s", table_cell),
             Paragraph("—", table_cell), Paragraph("—", table_cell), Paragraph("—", table_cell), Paragraph("—", table_cell),
-            Paragraph("0.2416", table_cell), Paragraph("0.0768", table_cell), Paragraph("-0.0084", table_cell)
+            Paragraph("0.1954", table_cell), Paragraph("0.0697", table_cell), Paragraph("-0.0111", table_cell)
         ],
         [
-            Paragraph("<b>T = 5</b>", table_cell), Paragraph("LLM-B (Cont.)", table_cell), Paragraph("3", table_cell),
-            Paragraph("60", table_cell), Paragraph("1.000 (60/60)", table_cell), Paragraph("1.53s", table_cell),
+            Paragraph("<b>T = 5</b>", table_cell), Paragraph("LLM-B (Cont.)", table_cell), Paragraph("25", table_cell),
+            Paragraph("500", table_cell), Paragraph("1.000 (500/500)", table_cell), Paragraph("9.02s", table_cell),
             Paragraph("—", table_cell), Paragraph("—", table_cell), Paragraph("—", table_cell), Paragraph("—", table_cell),
-            Paragraph("0.1118", table_cell), Paragraph("0.0706", table_cell), Paragraph("-0.0212", table_cell)
+            Paragraph("0.1291", table_cell), Paragraph("0.0650", table_cell), Paragraph("-0.0205", table_cell)
         ],
         [
-            Paragraph("<b>T = 5</b>", table_cell), Paragraph("<b>LLM-C (Coord.)</b>", table_cell), Paragraph("3", table_cell),
-            Paragraph("60", table_cell), Paragraph("1.000 (60/60)", table_cell), Paragraph("1.40s", table_cell),
-            Paragraph("<b>1.000 (30/30)</b>", table_cell), Paragraph("<b>1.000 (3/3)</b>", table_cell),
-            Paragraph("<b>0.667 (2/3)</b>", table_cell), Paragraph("<b>0.667 (2/3)</b>", table_cell),
-            Paragraph("0.1682", table_cell), Paragraph("0.0678", table_cell), Paragraph("-0.0315", table_cell)
+            Paragraph("<b>T = 5</b>", table_cell), Paragraph("<b>LLM-C (Coord.)</b>", table_cell), Paragraph("25", table_cell),
+            Paragraph("500", table_cell), Paragraph("1.000 (500/500)", table_cell), Paragraph("5.91s", table_cell),
+            Paragraph("<b>1.000 (250/250)</b>", table_cell), Paragraph("<b>1.000 (25/25)</b>", table_cell),
+            Paragraph("<b>0.680 (17/25)</b>", table_cell), Paragraph("<b>0.680 (17/25)</b>", table_cell),
+            Paragraph("0.1732", table_cell), Paragraph("0.0737", table_cell), Paragraph("-0.0191", table_cell)
         ],
         # T=20
         [
-            Paragraph("<b>T = 20</b>", table_cell), Paragraph("LLM-A (Ind.)", table_cell), Paragraph("25", table_cell),
-            Paragraph("2000", table_cell), Paragraph("1.000 (2000/2000)", table_cell), Paragraph("4.00s", table_cell),
+            Paragraph("<b>T = 20</b>", table_cell), Paragraph("LLM-A (Ind.)", table_cell), Paragraph("50", table_cell),
+            Paragraph("4000", table_cell), Paragraph("1.000 (4000/4000)", table_cell), Paragraph("4.43s", table_cell),
             Paragraph("—", table_cell), Paragraph("—", table_cell), Paragraph("—", table_cell), Paragraph("—", table_cell),
-            Paragraph("0.2882", table_cell), Paragraph("0.0979", table_cell), Paragraph("-0.0312", table_cell)
+            Paragraph("0.3131", table_cell), Paragraph("0.0992", table_cell), Paragraph("-0.0324", table_cell)
         ],
         [
-            Paragraph("<b>T = 20</b>", table_cell), Paragraph("LLM-B (Cont.)", table_cell), Paragraph("25", table_cell),
-            Paragraph("2000", table_cell), Paragraph("1.000 (2000/2000)", table_cell), Paragraph("9.15s", table_cell),
+            Paragraph("<b>T = 20</b>", table_cell), Paragraph("LLM-B (Cont.)", table_cell), Paragraph("50", table_cell),
+            Paragraph("4000", table_cell), Paragraph("1.000 (4000/4000)", table_cell), Paragraph("9.34s", table_cell),
             Paragraph("—", table_cell), Paragraph("—", table_cell), Paragraph("—", table_cell), Paragraph("—", table_cell),
-            Paragraph("0.1313", table_cell), Paragraph("0.0983", table_cell), Paragraph("-0.0361", table_cell)
+            Paragraph("0.1262", table_cell), Paragraph("0.0976", table_cell), Paragraph("-0.0378", table_cell)
         ],
         [
-            Paragraph("<b>T = 20</b>", table_cell), Paragraph("<b>LLM-C (Coord.)</b>", table_cell), Paragraph("25", table_cell),
-            Paragraph("2000", table_cell), Paragraph("1.000 (2000/2000)", table_cell), Paragraph("7.28s", table_cell),
-            Paragraph("<b>1.000 (1000/1000)</b>", table_cell), Paragraph("<b>1.000 (25/25)</b>", table_cell),
-            Paragraph("<b>1.000 (25/25)</b>", table_cell), Paragraph("<b>1.000 (25/25)</b>", table_cell),
-            Paragraph("0.2474", table_cell), Paragraph("0.1332", table_cell), Paragraph("-0.1380", table_cell)
+            Paragraph("<b>T = 20</b>", table_cell), Paragraph("<b>LLM-C (Coord.)</b>", table_cell), Paragraph("50", table_cell),
+            Paragraph("4000", table_cell), Paragraph("1.000 (4000/4000)", table_cell), Paragraph("7.50s", table_cell),
+            Paragraph("<b>1.000 (2000/2000)</b>", table_cell), Paragraph("<b>1.000 (50/50)</b>", table_cell),
+            Paragraph("<b>1.000 (50/50)</b>", table_cell), Paragraph("<b>1.000 (50/50)</b>", table_cell),
+            Paragraph("0.2452", table_cell), Paragraph("0.1343", table_cell), Paragraph("-0.1364", table_cell)
         ],
         # T=50
         [
-            Paragraph("<b>T = 50</b>", table_cell), Paragraph("LLM-A (Ind.)", table_cell), Paragraph("5", table_cell),
-            Paragraph("1000", table_cell), Paragraph("1.000 (1000/1000)", table_cell), Paragraph("5.42s", table_cell),
+            Paragraph("<b>T = 50</b>", table_cell), Paragraph("LLM-A (Ind.)", table_cell), Paragraph("25", table_cell),
+            Paragraph("5000", table_cell), Paragraph("1.000 (5000/5000)", table_cell), Paragraph("4.93s", table_cell),
             Paragraph("—", table_cell), Paragraph("—", table_cell), Paragraph("—", table_cell), Paragraph("—", table_cell),
-            Paragraph("0.3595", table_cell), Paragraph("0.0838", table_cell), Paragraph("-0.0212", table_cell)
+            Paragraph("0.3862", table_cell), Paragraph("0.0821", table_cell), Paragraph("-0.0238", table_cell)
         ],
         [
-            Paragraph("<b>T = 50</b>", table_cell), Paragraph("LLM-B (Cont.)", table_cell), Paragraph("5", table_cell),
-            Paragraph("1000", table_cell), Paragraph("1.000 (1000/1000)", table_cell), Paragraph("10.34s", table_cell),
+            Paragraph("<b>T = 50</b>", table_cell), Paragraph("LLM-B (Cont.)", table_cell), Paragraph("25", table_cell),
+            Paragraph("5000", table_cell), Paragraph("1.000 (5000/5000)", table_cell), Paragraph("8.08s", table_cell),
             Paragraph("—", table_cell), Paragraph("—", table_cell), Paragraph("—", table_cell), Paragraph("—", table_cell),
-            Paragraph("0.0912", table_cell), Paragraph("0.0797", table_cell), Paragraph("-0.0308", table_cell)
+            Paragraph("0.0786", table_cell), Paragraph("0.0806", table_cell), Paragraph("-0.0329", table_cell)
         ],
         [
-            Paragraph("<b>T = 50</b>", table_cell), Paragraph("<b>LLM-C (Coord.)</b>", table_cell), Paragraph("5", table_cell),
-            Paragraph("1000", table_cell), Paragraph("1.000 (1000/1000)", table_cell), Paragraph("8.03s", table_cell),
-            Paragraph("<b>1.000 (500/500)</b>", table_cell), Paragraph("<b>1.000 (5/5)</b>", table_cell),
-            Paragraph("<b>1.000 (5/5)</b>", table_cell), Paragraph("<b>1.000 (5/5)</b>", table_cell),
-            Paragraph("0.2450", table_cell), Paragraph("0.1723", table_cell), Paragraph("-0.3196", table_cell)
+            Paragraph("<b>T = 50</b>", table_cell), Paragraph("<b>LLM-C (Coord.)</b>", table_cell), Paragraph("25", table_cell),
+            Paragraph("5000", table_cell), Paragraph("1.000 (5000/5000)", table_cell), Paragraph("7.49s", table_cell),
+            Paragraph("<b>1.000 (2500/2500)</b>", table_cell), Paragraph("<b>1.000 (25/25)</b>", table_cell),
+            Paragraph("<b>1.000 (25/25)</b>", table_cell), Paragraph("<b>1.000 (25/25)</b>", table_cell),
+            Paragraph("0.2621", table_cell), Paragraph("0.1724", table_cell), Paragraph("-0.3197", table_cell)
         ],
     ]
     t3 = Table(data3, colWidths=[0.45*inch, 0.95*inch, 0.30*inch, 0.45*inch, 0.70*inch, 0.40*inch, 0.75*inch, 0.60*inch, 0.55*inch, 0.55*inch, 0.50*inch, 0.45*inch, 0.45*inch])
@@ -670,45 +673,120 @@ def build_pdf():
         ('GRID', (0, 0), (-1, -1), 0.5, colors.HexColor("#CCCCCC")),
         ('ROWBACKGROUNDS', (0, 1), (-1, -1), [colors.white, colors.HexColor("#F8F9FA")]),
         ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
-        ('PADDING', (0, 0), (-1, -1), 1.0),
+        ('PADDING', (0, 0), (-1, -1), 0.7),
     ]))
     story.append(t3)
-    story.append(Paragraph("<b>Table 3: Multi-Horizon LLM Empirical Results (Qwen2.5-1.5B, 99 trajectories, 9,180 total decisions).</b> Evaluated across three horizons: Pilot (T=5, 3 seeds, 180 decisions), Expanded Primary (T=20, 25 seeds, 6,000 decisions), and Extended Horizon (T=50, 5 seeds, 3,000 decisions). Scripted calibration thresholds are not applied to LLM traces; performance is evaluated via pair rankings and empirical mutual information.", caption_style))
+    story.append(Paragraph("<b>Table 3: Multi-Horizon LLM Empirical Results (Qwen2.5-1.5B, 300 trajectories, 28,500 total decisions).</b> Evaluated across three horizons: Pilot (T=5, 25 seeds, 1,500 decisions), Expanded Primary (T=20, 50 seeds, 12,000 decisions), and Extended Horizon (T=50, 25 seeds, 15,000 decisions). Evaluated via pair rankings, empirical mutual information, and held-out calibrated thresholds (Table 4).", caption_style))
     story.append(Spacer(1, 1))
 
     fig6_path = FIGURES_DIR / "fig6_llm_horizon_scaling.png"
     if fig6_path.exists():
-        story.append(Image(str(fig6_path), width=7.0 * inch, height=1.75 * inch))
-        story.append(Paragraph("<b>Figure 4: LLM Multi-Horizon Scaling and Empirical Signal Separation.</b> Left: Top-1 ranking accuracy of coordinating pair (0, 1) in Condition LLM-C across horizons T in {5, 20, 50}. Ultra-short horizons (T=5) suffer sample sparsity over |S|=5 states (66.7% Top-1 accuracy), whereas T >= 20 restores 100% accuracy (25/25 seeds). Right: Empirical CMI separation between coordinated and baseline conditions as sample horizon deepens.", caption_style))
+        story.append(Image(str(fig6_path), width=7.0 * inch, height=1.60 * inch))
+        story.append(Paragraph("<b>Figure 4: LLM Multi-Horizon Scaling and Empirical Signal Separation.</b> Left: Top-1 ranking accuracy of coordinating pair (0, 1) in Condition LLM-C across horizons T in {5, 20, 50}. Ultra-short horizons (T=5) suffer sample sparsity over |S|=5 states (68.0% Top-1 accuracy), whereas T >= 20 restores 100% accuracy (50/50 seeds at T=20, 25/25 seeds at T=50). Right: Empirical CMI separation between coordinated and baseline conditions as sample horizon deepens.", caption_style))
     story.append(Spacer(1, 1))
 
     story.append(Paragraph(
         "<b>Key Empirical Discoveries in LLM Auditing:</b><br/>"
-        "1. <i>Flawless Instruction Compliance across 9,180 Decisions:</i> Open-weight Qwen2.5-1.5B-Instruct achieved a 100.0% valid action parse rate (9,180/9,180 decisions) "
-        "without falling back or producing unparseable output. In Condition LLM-C, coordinating agents achieved <b>100.0% adherence</b> (1,530/1,530 opportunities) "
-        "to the secret coordination directive across all tested seeds, demonstrating that small open-weight language models possess sufficient in-context reasoning to act as covert cartels without fine-tuning.<br/>"
+        "1. <i>Instruction Compliance in Simplified Games:</i> Open-weight Qwen2.5-1.5B-Instruct achieved 100.0% valid action selection (100% of decisions produced a valid parsed action) "
+        "without falling back or producing unparseable text. In Condition LLM-C, coordinating agents achieved <b>100.0% adherence</b> "
+        "to the secret coordination directive across all tested seeds (4,750/4,750 opportunities across horizons), demonstrating high instruction compliance and a controlled statistical dependence pattern in simplified RPS rather than spontaneous collusion or an economic cartel.<br/>"
         "2. <i>Empirical Finite-Sample Horizon Sparsity Effect:</i> At T=5 rounds, state conditioning over 5 states fragments the empirical sample into sparse bins (E[N_s] ~ 1), "
-        "reducing CMI and PNI Top-1 accuracy to 66.7% (2/3 seeds). However, expanding the horizon to T=20 rounds (6,000 decisions across 25 independent seeds) completely overcomes sample sparsity: "
-        "Top-1 ranking accuracy reaches <b>100.0% (25/25 seeds, Wilson 95% CI: [0.867, 1.000])</b> across Marginal MI, CMI, and PNI! This 100% Top-1 ranking accuracy is further maintained at T=50 (5/5 seeds), "
-        "with CMI separating sharply from background baseline (0.1723 bits vs. 0.0797 bits).<br/>"
-        "3. <i>Cloud Resource and Financial Accounting:</i> The entire LLM experimental pipeline was executed across 99 containers on Modal cloud CPU infrastructure. "
-        "The multi-horizon suite ran for 64.8 minutes of aggregate container wall time, generating 9,180 decisions and consuming <b>$5.41 in metered compute</b> offset entirely by promotional credit "
-        "($5.34 ephemeral apps + $0.07 network egress allowance = <b>$0.00 billed out-of-pocket</b>).",
+        "reducing CMI and PNI Top-1 accuracy to 68.0% (17/25 seeds) and binary recall to 20.0% (with 46.7% of episodes ranked #1 but NOT threshold-detected). However, expanding the horizon to T &gt;= 20 rounds provides sufficient history to overcome sample sparsity: "
+        "Top-1 ranking accuracy and binary threshold recall identify the designated shared-signal pair with <b>100.0% accuracy</b> (50/50 seeds at T=20, 25/25 seeds at T=50) under controlled ranking evidence.<br/>"
+        "3. <i>Negative PNI Net Scores and Ranking vs. Threshold Detection:</i> In Condition LLM-C, non-coordinating candidate pairs frequently yield negative PNI net scores "
+        "because competitor subtraction (max_{k != i,j} gamma(k,j)) subtracts the elevated mutual information of the coordinating pair (0, 1), driving rival net influence negative. "
+        "Furthermore, under finite sample sizes or high background noise, subtracting the strongest rival can yield negative values even for the true pair. "
+        "Consequently, relative ranking must not be conflated with absolute threshold-based classification.<br/>"
+        "4. <i>Cloud Resource and Authoritative Financial Accounting:</i> The LLM experimental pipeline was executed across parallel containers on Modal cloud CPU infrastructure (4 vCPU, 8 GB RAM per worker). "
+        "Authoritative financial accounting from Modal billing telemetry confirms all metered compute was fully offset by promotional credits and the network egress allowance, resulting in strictly <b>$0.00 billed out-of-pocket spend</b>.",
         body_style
     ))
 
     # =========================================================================
-    # PAGE 6: Discussion and Limitations, Conclusion
+    # PAGE 6: Table 4, Discussion and Limitations, Conclusion
     # =========================================================================
     story.append(PageBreak())
+
+    story.append(Paragraph("6.3 Held-Out Classification and Threshold Evaluation", h2_style))
+    story.append(Paragraph(
+        "To rigorously separate relative ranking from absolute detection under finite samples, we calibrated decision thresholds on LLM-A calibration seeds "
+        "at nominal 5% FPR (tau_MI = 0.3610/0.5689/0.6961, tau_CMI = 0.1025/0.1696/0.1627, tau_PNI = 0.0154/0.0570/0.0621 bits for T in {5, 20, 50}). "
+        "Table 4 reports held-out classification metrics across independent (LLM-A), confounded (LLM-B), and coordinated (LLM-C) test trajectories.",
+        body_style
+    ))
+
+    # Table 4: LLM Threshold Calibration and Held-Out Classification Metrics
+    headers4 = ["Horizon", "Detector", "Cal. Thresh", "LLM-A FPR", "LLM-B FPR", "LLM-C Top-1", "LLM-C Recall", "Ranked #1 & Det.", "Ranked #1 Not Det."]
+    data4 = [
+        [Paragraph(h, table_header) for h in headers4],
+        # T=5
+        [
+            Paragraph("<b>T = 5</b>", table_cell), Paragraph("Marginal MI", table_cell), Paragraph("0.3610", table_cell),
+            Paragraph("0.333 (5/15)", table_cell), Paragraph("0.067 (1/15)", table_cell), Paragraph("1.000 [0.796, 1.000]", table_cell),
+            Paragraph("0.400", table_cell), Paragraph("0.400", table_cell), Paragraph("0.600", table_cell)
+        ],
+        [
+            Paragraph("<b>T = 5</b>", table_cell), Paragraph("CMI", table_cell), Paragraph("0.1025", table_cell),
+            Paragraph("0.133 (2/15)", table_cell), Paragraph("0.267 (4/15)", table_cell), Paragraph("0.667 [0.417, 0.848]", table_cell),
+            Paragraph("0.400", table_cell), Paragraph("0.267", table_cell), Paragraph("0.400", table_cell)
+        ],
+        [
+            Paragraph("<b>T = 5</b>", table_cell), Paragraph("PNI Net Score", table_cell), Paragraph("0.0154", table_cell),
+            Paragraph("0.333 (5/15)", table_cell), Paragraph("0.400 (6/15)", table_cell), Paragraph("0.667 [0.417, 0.848]", table_cell),
+            Paragraph("0.200", table_cell), Paragraph("0.200", table_cell), Paragraph("0.467", table_cell)
+        ],
+        # T=20
+        [
+            Paragraph("<b>T = 20</b>", table_cell), Paragraph("Marginal MI", table_cell), Paragraph("0.5689", table_cell),
+            Paragraph("0.320 (8/25)", table_cell), Paragraph("0.000 (0/25)", table_cell), Paragraph("1.000 [0.867, 1.000]", table_cell),
+            Paragraph("1.000", table_cell), Paragraph("1.000", table_cell), Paragraph("0.000", table_cell)
+        ],
+        [
+            Paragraph("<b>T = 20</b>", table_cell), Paragraph("CMI", table_cell), Paragraph("0.1696", table_cell),
+            Paragraph("0.160 (4/25)", table_cell), Paragraph("0.200 (5/25)", table_cell), Paragraph("1.000 [0.867, 1.000]", table_cell),
+            Paragraph("1.000", table_cell), Paragraph("1.000", table_cell), Paragraph("0.000", table_cell)
+        ],
+        [
+            Paragraph("<b>T = 20</b>", table_cell), Paragraph("PNI Net Score", table_cell), Paragraph("0.0570", table_cell),
+            Paragraph("0.240 (6/25)", table_cell), Paragraph("0.160 (4/25)", table_cell), Paragraph("1.000 [0.867, 1.000]", table_cell),
+            Paragraph("1.000", table_cell), Paragraph("1.000", table_cell), Paragraph("0.000", table_cell)
+        ],
+        # T=50
+        [
+            Paragraph("<b>T = 50</b>", table_cell), Paragraph("Marginal MI", table_cell), Paragraph("0.6961", table_cell),
+            Paragraph("0.000 (0/15)", table_cell), Paragraph("0.000 (0/15)", table_cell), Paragraph("1.000 [0.796, 1.000]", table_cell),
+            Paragraph("1.000", table_cell), Paragraph("1.000", table_cell), Paragraph("0.000", table_cell)
+        ],
+        [
+            Paragraph("<b>T = 50</b>", table_cell), Paragraph("CMI", table_cell), Paragraph("0.1627", table_cell),
+            Paragraph("0.067 (1/15)", table_cell), Paragraph("0.067 (1/15)", table_cell), Paragraph("1.000 [0.796, 1.000]", table_cell),
+            Paragraph("1.000", table_cell), Paragraph("1.000", table_cell), Paragraph("0.000", table_cell)
+        ],
+        [
+            Paragraph("<b>T = 50</b>", table_cell), Paragraph("PNI Net Score", table_cell), Paragraph("0.0621", table_cell),
+            Paragraph("0.000 (0/15)", table_cell), Paragraph("0.200 (3/15)", table_cell), Paragraph("1.000 [0.796, 1.000]", table_cell),
+            Paragraph("1.000", table_cell), Paragraph("1.000", table_cell), Paragraph("0.000", table_cell)
+        ],
+    ]
+    t4 = Table(data4, colWidths=[0.45*inch, 0.75*inch, 0.60*inch, 0.85*inch, 0.85*inch, 0.85*inch, 0.70*inch, 0.95*inch, 1.05*inch])
+    t4.setStyle(TableStyle([
+        ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor("#0D47A1")),
+        ('GRID', (0, 0), (-1, -1), 0.5, colors.HexColor("#CCCCCC")),
+        ('ROWBACKGROUNDS', (0, 1), (-1, -1), [colors.white, colors.HexColor("#F8F9FA")]),
+        ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+        ('PADDING', (0, 0), (-1, -1), 0.6),
+    ]))
+    story.append(t4)
+    story.append(Paragraph("<b>Table 4: LLM Threshold Calibration and Held-Out Classification Metrics.</b> Calibrated on LLM-A calibration seeds at nominal 5% FPR. Evaluated on held-out test seeds across conditions (T=5: 15 seeds; T=20: 25 seeds; T=50: 15 seeds). Reports episode FPR on independent (LLM-A) and confounded (LLM-B) controls, and true-pair recall, Top-1 accuracy, and diagnostic separation between 'Ranked #1 & Detected' vs 'Ranked #1 but NOT Detected' in Condition LLM-C.", caption_style))
+    story.append(Spacer(1, 1))
 
     story.append(Paragraph("7. Discussion and Limitations", h1_style))
     story.append(Paragraph(
         "<b>7.1 Auditing Implications: Why Correlation Lies:</b> In algorithmic markets, autonomous pricing agents, high-frequency execution bots, "
         "and procurement models continuously observe common economic shocks (e.g., benchmark interest rates, commodity prices, wholesale tariffs). "
-        "Our empirical results demonstrate that unconditioned correlation metrics (e.g., Pearson correlation, raw mutual information) cannot differentiate "
-        "rational adaptation from collusive coordination. Regulators relying on unconditioned metrics would commit severe Type I errors, "
-        "falsely targeting competitive firms solely because they adapted efficiently to common public information.",
+        "In this controlled environment, our empirical results illustrate that unconditioned correlation metrics (e.g., Pearson correlation, raw mutual information) cannot differentiate "
+        "rational adaptation from collusive coordination. Auditing architectures relying on unconditioned metrics face a substantial risk of Type I errors, "
+        "potentially targeting competitive firms solely because they adapted efficiently to common public information. State conditioning provides an essential statistical safeguard to reduce this confounding risk.",
         body_style
     ))
     story.append(Paragraph(
@@ -723,10 +801,10 @@ def build_pdf():
         "in sparse regimes, though all values remain well below unconditioned Marginal MI (0.958 bits).<br/>"
         "3. <i>Exploratory Small-Sample Calibration:</i> Nominal 5% decision thresholds were calibrated from 5 validation seeds (30 candidate pairs) of Condition A. "
         "While isolating calibration from the 15 held-out test seeds, 30 samples yield coarse quantile estimates and do not guarantee an exact 5% population FPR.<br/>"
-        "4. <i>Modal Promotional Compute Telemetry & Cloud Boundaries:</i> An extensive 9,180-decision study using Qwen2.5-1.5B-Instruct was executed on Modal CPU instances (4 cores, 8GB RAM). "
+        "4. <i>Modal Promotional Compute Telemetry & Cloud Boundaries:</i> An extensive 28,500-decision study using Qwen2.5-1.5B-Instruct was executed on Modal CPU instances (4 cores, 8GB RAM). "
         "Allocating cloud GPU instances (T4/L4) required an active payment method on file under Modal platform policy, which was safely avoided under our zero-out-of-pocket spending cap ($0.00). "
-        "The CPU pipeline consumed $5.41 of metered promotional compute credits ($0.00 billed out of pocket) across 99 trajectories. While establishing that 1.5B instruction models achieve 100% signal compliance "
-        "and that T >= 20 restores 100% ranking accuracy, scripted calibration thresholds were not applied to LLM action distributions. Canonical benchmark results remain grounded in the 260-trajectory scripted evaluation (54,000 rounds).",
+        "The CPU pipeline consumed $17.24 of metered promotional compute credits ($17.01 ephemeral apps, $0.23 network egress, offset by credits and allowance; $0.00 billed out of pocket) across 300 trajectories. While establishing that 1.5B instruction models achieve 100% signal compliance "
+        "and that T >= 20 restores 100% ranking accuracy and threshold recall, canonical benchmark results remain grounded in the 260-trajectory scripted evaluation (54,000 rounds).",
         body_style
     ))
     story.append(Paragraph(
@@ -740,9 +818,9 @@ def build_pdf():
     story.append(Paragraph(
         "This research stress-tested Pairwise Net Influence for detecting multi-agent coordination. We demonstrated that shared observable context "
         "induces a 38-fold surge in unconditioned mutual information, causing naive detectors to suffer a 100% false positive rate. "
-        "Conditioning on observable state neutralizes this broadcast shock, while competitor subtraction provides directed isolation, preserving low false positives while attaining 100% Top-1 accuracy under genuine coordination. "
-        "Furthermore, across 9,180 decisions with open-weight language models, state-conditioned detectors achieve 100% identification accuracy once trajectory length reaches T >= 20 rounds, overcoming finite-sample state sparsity. "
-        "State conditioning is an indispensable requirement for auditing multi-agent algorithmic systems.",
+        "Conditioning on observable state neutralizes this broadcast shock, while competitor subtraction provides directed isolation, preserving low false positives while attaining 100% Top-1 ranking accuracy under genuine coordination. "
+        "Furthermore, across open-weight language model decisions, state-conditioned detectors achieve 100% identification accuracy once trajectory length reaches T &gt;= 20 rounds, overcoming finite-sample state sparsity in controlled settings. "
+        "These empirical findings suggest that state conditioning is an essential requirement for auditing multi-agent algorithmic systems.",
         body_style
     ))
 
@@ -755,7 +833,7 @@ def build_pdf():
     story.append(Paragraph(
         "• <b>Code Repository:</b> All experimental scripts, detectors, environments, test suites, and report generation tools are packaged in "
         "<font face='Courier'>when_correlation_lies_all_source_code.txt</font> with SHA-256 checksums.<br/>"
-        "• <b>Data & Trajectories:</b> Full scripted JSONL trajectories (260 unique files, 54,000 rounds) and complete LLM trajectories across all three horizons (99 unique files, 9,180 decisions) "
+        "• <b>Data & Trajectories:</b> Full scripted JSONL trajectories (260 unique files, 54,000 rounds) and complete LLM trajectories across all three horizons (300 unique files, 28,500 decisions) "
         "with separate ground-truth manifests are included in the review bundle ZIP (<font face='Courier'>data/raw/</font>, <font face='Courier'>data/eval_labels/</font>, "
         "<font face='Courier'>data/raw_llm/</font>, <font face='Courier'>data/eval_labels_llm/</font>, <font face='Courier'>data/raw_llm_expanded/</font>, "
         "<font face='Courier'>data/eval_labels_llm_expanded/</font>, <font face='Courier'>data/raw_llm_expanded_t50/</font>, <font face='Courier'>data/eval_labels_llm_expanded_t50/</font>).<br/>"
@@ -807,7 +885,7 @@ def build_pdf():
         "and prompt drafting. Antigravity (Google DeepMind advanced agentic coding assistant) assisted with code implementation, "
         "unit test suites, experiment orchestration, Modal CPU cloud infrastructure harness and execution, statistical metric aggregations, visualizations, ReportLab PDF layout, "
         "and packaging under the author's iterative instructions and review. Project direction, experimental design choices, "
-        "qualitative analysis, and final editorial responsibility rest entirely with the author (Durgesh Unde). Canonical benchmark evaluations used 260 scripted trajectories (54,000 rounds); open-weight LLM evaluations used 99 trajectories (9,180 decisions) executed on Modal CPU ($5.41 metered promotional compute credit, $0.00 out-of-pocket spend). Zero personal payment cards or external paid token APIs were used. The experimental protocol was frozen after exploratory prototyping and was not preregistered prior to exploration.",
+        "qualitative analysis, and final editorial responsibility rest entirely with the author (Durgesh Unde). Canonical benchmark evaluations used 260 scripted trajectories (54,000 rounds); open-weight LLM evaluations used 300 trajectories (28,500 decisions) executed on Modal CPU ($17.24 metered promotional compute credit, $0.00 out-of-pocket spend). Zero personal payment cards or external paid token APIs were used. The experimental protocol was frozen after exploratory prototyping and was not preregistered prior to exploration.",
         body_style
     ))
     story.append(Spacer(1, 1))

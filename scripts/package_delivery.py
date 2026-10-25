@@ -61,8 +61,8 @@ def generate_manifest_text(target_pdf: Path, concat_path: Path, zip_path: Path =
         "unit test suites, experiment orchestration, Modal CPU cloud infrastructure harness and execution, statistical metric aggregations, visualizations, ReportLab PDF layout,\n"
         "and packaging under the author's iterative instructions and review. Project direction, experimental design choices,\n"
         "qualitative analysis, and final editorial responsibility rest entirely with the author (Durgesh Unde). Canonical benchmark\n"
-        "evaluations used 260 scripted trajectories (54,000 rounds); open-weight LLM evaluations used 99 trajectories (9,180 decisions)\n"
-        "executed on Modal CPU ($5.41 metered promotional compute credit, $0.00 out-of-pocket spend). Zero personal payment cards or external paid token APIs were used.\n"
+        "evaluations used 260 scripted trajectories (54,000 rounds); open-weight LLM evaluations used 300 trajectories (28,500 decisions)\n"
+        "executed on Modal CPU ($17.24 metered promotional compute credit, $0.00 out-of-pocket spend). Zero personal payment cards or external paid token APIs were used.\n"
         "The experimental protocol was frozen after exploratory prototyping and was not preregistered prior to exploration.\n"
     )
 
@@ -101,6 +101,7 @@ def generate_manifest_text(target_pdf: Path, concat_path: Path, zip_path: Path =
         PROJECT_ROOT / "results" / "tables" / "llm_pilot_summary.csv",
         PROJECT_ROOT / "results" / "tables" / "llm_expanded_summary.csv",
         PROJECT_ROOT / "results" / "tables" / "llm_expanded_t50_summary.csv",
+        PROJECT_ROOT / "results" / "tables" / "llm_threshold_summary.csv",
     ]:
         if tab.exists():
             h = sha256_file(tab)
@@ -112,23 +113,23 @@ def generate_manifest_text(target_pdf: Path, concat_path: Path, zip_path: Path =
     lines.append("• Canonical Scripted Trajectories: 260 unique JSONL files (140 primary T=200 + 120 sensitivity T in {50, 100, 500})")
     lines.append("• Total Scripted Rounds: 54,000 unique rounds (140 * 200 = 28,000; 40 * 50 = 2,000; 40 * 100 = 4,000; 40 * 500 = 20,000)")
     lines.append("• Total Evaluations: 300 evaluations across 4 experimental conditions and sensitivity sweeps")
-    lines.append("• Open-Weight LLM Agent Trajectories: 99 unique JSONL files (9,180 total decisions across T in {5, 20, 50} rounds)")
-    lines.append("  - Pilot (T=5): 9 files (180 decisions across 3 seeds)")
-    lines.append("  - Expanded Primary (T=20): 75 files (6,000 decisions across 25 seeds)")
-    lines.append("  - Extended Horizon (T=50): 15 files (3,000 decisions across 5 seeds)")
+    lines.append("• Open-Weight LLM Agent Trajectories: 300 unique JSONL files (28,500 total decisions across T in {5, 20, 50} rounds)")
+    lines.append("  - Pilot (T=5): 75 files (1,500 decisions across 25 seeds)")
+    lines.append("  - Expanded Primary (T=20): 150 files (12,000 decisions across 50 seeds)")
+    lines.append("  - Extended Horizon (T=50): 75 files (15,000 decisions across 25 seeds)")
     lines.append("• Automated Unit Test Suite: 59 / 59 tests passed (pytest 9.1.1, Python 3.13.7)")
-    lines.append("• Cloud Compute & Billing: Modal CPU execution consumed $5.41 in metered compute, offset by $5.34 promotional credits and $0.07 egress allowance; $0.00 billed out-of-pocket")
+    lines.append("• Cloud Compute & Billing: Modal CPU execution consumed $17.24 in metered compute, offset by $17.01 promotional credits and $0.23 network egress allowance; $0.00 billed out-of-pocket")
     lines.append("• Decision Threshold Calibration: Small-sample exploratory calibration on Condition A validation seeds (seeds 0-4, 30 candidate pairs) targeting nominal 5% FPR")
     lines.append("  - Calibrated PNI Threshold (tau_PNI): 0.010427 bits")
     lines.append("  - Calibrated Conditional MI Threshold (tau_CMI): 0.117454 bits")
     lines.append("  - Calibrated Marginal MI Threshold (tau_MI): 0.030751 bits")
-    lines.append("• Open-Weight LLM Empirical Results (Qwen2.5-1.5B on Modal CPU, 9,180 decisions):")
-    lines.append("  - Valid Action Generation Rate: 100.0% (9,180/9,180 decisions valid JSON across all horizons)")
-    lines.append("  - Condition LLM-C Signal Compliance: 100.0% (1,530/1,530 opportunities adhered to secret directive)")
+    lines.append("• Open-Weight LLM Empirical Results (Qwen2.5-1.5B on Modal CPU, 28,500 decisions):")
+    lines.append("  - Valid Action Generation Rate: 100.0% (28,500/28,500 decisions valid parsed actions across all horizons)")
+    lines.append("  - Condition LLM-C Signal Compliance: 100.0% (4,750/4,750 opportunities adhered to secret directive)")
     lines.append("  - Finite-Sample Horizon Sparsity Effect:")
-    lines.append("      * T = 5 rounds: Top-1 Marginal MI = 1.000 (3/3), Top-1 CMI = 0.667 (2/3), Top-1 PNI = 0.667 (2/3)")
-    lines.append("      * T = 20 rounds: Top-1 Marginal MI = 1.000 (25/25), Top-1 CMI = 1.000 (25/25), Top-1 PNI = 1.000 (25/25), Mean CMI = 0.1332 bits")
-    lines.append("      * T = 50 rounds: Top-1 Marginal MI = 1.000 (5/5), Top-1 CMI = 1.000 (5/5), Top-1 PNI = 1.000 (5/5), Mean CMI = 0.1723 bits")
+    lines.append("      * T = 5 rounds: Top-1 Marginal MI = 1.000 (25/25), Top-1 CMI = 0.680 (17/25), Top-1 PNI = 0.680 (17/25), Mean CMI = 0.0737 bits")
+    lines.append("      * T = 20 rounds: Top-1 Marginal MI = 1.000 (50/50), Top-1 CMI = 1.000 (50/50), Top-1 PNI = 1.000 (50/50), Mean CMI = 0.1343 bits")
+    lines.append("      * T = 50 rounds: Top-1 Marginal MI = 1.000 (25/25), Top-1 CMI = 1.000 (25/25), Top-1 PNI = 1.000 (25/25), Mean CMI = 0.1724 bits")
     lines.append("• Canonical Scripted Benchmark Key Results (T=200 rounds, 20 seeds):")
     lines.append("  - Condition A (Independent Play, Held-Out Test n=15): PNI Top = 0.005 bits, PNI FPR = 0.022 [0.000, 0.056] (2/90 pairs flagged); CMI FPR = 0.111 (10/90); Marginal MI FPR = 0.033 (3/90)")
     lines.append("  - Condition A (Calibration n=5): PNI FPR = 0.067 (2/30), CMI FPR = 0.067 (2/30), Marginal MI FPR = 0.067 (2/30)")
@@ -180,6 +181,7 @@ def main():
         "src/metrics.py",
         "src/run_experiments.py",
         "src/analyze_results.py",
+        "src/llm_helpers.py",
         "tests/__init__.py",
         "tests/test_analytical_cmi.py",
         "tests/test_detectors.py",
@@ -189,6 +191,7 @@ def main():
         "scripts/modal_llm_pilot.py",
         "scripts/modal_llm_expanded.py",
         "scripts/evaluate_llm_pilot.py",
+        "scripts/evaluate_llm_thresholds.py",
         "scripts/plot_llm_results.py",
         "scripts/run_sensitivity.py",
         "scripts/plot_setup_diagram.py",
@@ -206,6 +209,7 @@ def main():
         "results/tables/llm_pilot_summary.csv",
         "results/tables/llm_expanded_summary.csv",
         "results/tables/llm_expanded_t50_summary.csv",
+        "results/tables/llm_threshold_summary.csv",
         "results/llm_pilot/billing_audit.json",
     ]
 

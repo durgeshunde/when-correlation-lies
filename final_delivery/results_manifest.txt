@@ -19,23 +19,23 @@ and prompt drafting. Antigravity (Google DeepMind advanced agentic coding assist
 unit test suites, experiment orchestration, Modal CPU cloud infrastructure harness and execution, statistical metric aggregations, visualizations, ReportLab PDF layout,
 and packaging under the author's iterative instructions and review. Project direction, experimental design choices,
 qualitative analysis, and final editorial responsibility rest entirely with the author (Durgesh Unde). Canonical benchmark
-evaluations used 260 scripted trajectories (54,000 rounds); open-weight LLM evaluations used 99 trajectories (9,180 decisions)
-executed on Modal CPU ($5.41 metered promotional compute credit, $0.00 out-of-pocket spend). Zero personal payment cards or external paid token APIs were used.
+evaluations used 260 scripted trajectories (54,000 rounds); open-weight LLM evaluations used 300 trajectories (28,500 decisions)
+executed on Modal CPU ($17.24 metered promotional compute credit, $0.00 out-of-pocket spend). Zero personal payment cards or external paid token APIs were used.
 The experimental protocol was frozen after exploratory prototyping and was not preregistered prior to exploration.
 
 PRIMARY DELIVERABLES:
 --------------------------------------------------------------------------------
 File: when_correlation_lies_report.pdf
-  Size: 705,502 bytes
-  SHA-256: f27796c06df6504ff0d8740ec226242398f0f211662b86e95247b67324559665
+  Size: 709,810 bytes
+  SHA-256: 6451f18776f35bbad7e1312de713047563d6b1d43c7d4ff6a49a01c9a9ae160b
 
 File: when_correlation_lies_all_source_code.txt
-  Size: 372,755 bytes
-  SHA-256: b48a6c141125aeefa32d1b2b58d3e6b061976f35daa3ec355692b329a106db01
+  Size: 417,938 bytes
+  SHA-256: ee8141bfe7a570d853e2aed3df51dcc34dfa876057cb1dbac0d82fe2ca2a8fa3
 
 File: when_correlation_lies_review_bundle.zip
-  Size: 2,742,048 bytes
-  SHA-256: 51fb760efe5cf4d79e31becf22662c407d8c3d5b73ebca86f94055417ae099fc
+  Size: 3,452,392 bytes
+  SHA-256: aa2afa04a10f9b64707aacfcad56f32b6ff9e81b30a0be536fd1e520b294de08
 
 
 CORE BENCHMARK FIGURES:
@@ -52,8 +52,8 @@ Figure: fig4_score_distributions.png (43,572 bytes)
   SHA-256: 1566f9425fc747d0590719fb82b568b3ba313b0cdd40f5f3e6b9a99d68aaa7a6
 Figure: fig5_trajectory_length_sensitivity.png (88,517 bytes)
   SHA-256: f648d6ee431fa3faa90bfc5a771b8b5350f62921df52baf7d0c1707ed4e8a35d
-Figure: fig6_llm_horizon_scaling.png (204,999 bytes)
-  SHA-256: fcea851b49cdc41e626afb229fcd25c9777422b5158f23a481b9a09b5ebe8cc6
+Figure: fig6_llm_horizon_scaling.png (207,199 bytes)
+  SHA-256: 1517313b9de0d49ac3c08c63df858cbc4447e9a82f6b7305ed70935bc0da4df1
 
 KEY BENCHMARK CSV TABLES:
 --------------------------------------------------------------------------------
@@ -61,35 +61,37 @@ Table: summary.csv (5,645 bytes)
   SHA-256: af7041f99b67755130a6e135a9f2e87c29e5c1f9251f2906f4abd00277e4ded3
 Table: sensitivity_trajectory_length.csv (1,811 bytes)
   SHA-256: 46e81f8dbccfafbbb32783f4c40c5827b1ab84f5b71a80381f05c4e99423b77c
-Table: llm_pilot_summary.csv (354 bytes)
-  SHA-256: 631d441fa97daae4678b672a72051e1a31815351403705e8f4a44435c7efed22
+Table: llm_pilot_summary.csv (360 bytes)
+  SHA-256: 1427571f4eea1fd8b84b0c2e48a2414c07af8e0212d057a1f2f2df04cf2fc9ca
 Table: llm_expanded_summary.csv (363 bytes)
-  SHA-256: c7e65f887e287d2c329349a53d50544f27d257439b262c597706e6d940cb36ba
-Table: llm_expanded_t50_summary.csv (361 bytes)
-  SHA-256: cadbb9c994b081a5250ca6373ef275f0cd47ccd60d7d77a75d15057b2ce5eb81
+  SHA-256: 1808bf29bc89e19ce27ebcc3ea5779ba1fdb3bcaea5c688ba59dc0da83a52cb2
+Table: llm_expanded_t50_summary.csv (363 bytes)
+  SHA-256: f739f637183bd2751509bbea40d380fe3666ee9d6535c386d8f9c4143987ffdd
+Table: llm_threshold_summary.csv (2,978 bytes)
+  SHA-256: 26cfa05713ba03966cf804bc6f5a0e904f11e22456fb059a9374820e77dc40cb
 
 EXPERIMENTAL TELEMETRY & AUDIT SUMMARY:
 --------------------------------------------------------------------------------
 • Canonical Scripted Trajectories: 260 unique JSONL files (140 primary T=200 + 120 sensitivity T in {50, 100, 500})
 • Total Scripted Rounds: 54,000 unique rounds (140 * 200 = 28,000; 40 * 50 = 2,000; 40 * 100 = 4,000; 40 * 500 = 20,000)
 • Total Evaluations: 300 evaluations across 4 experimental conditions and sensitivity sweeps
-• Open-Weight LLM Agent Trajectories: 99 unique JSONL files (9,180 total decisions across T in {5, 20, 50} rounds)
-  - Pilot (T=5): 9 files (180 decisions across 3 seeds)
-  - Expanded Primary (T=20): 75 files (6,000 decisions across 25 seeds)
-  - Extended Horizon (T=50): 15 files (3,000 decisions across 5 seeds)
+• Open-Weight LLM Agent Trajectories: 300 unique JSONL files (28,500 total decisions across T in {5, 20, 50} rounds)
+  - Pilot (T=5): 75 files (1,500 decisions across 25 seeds)
+  - Expanded Primary (T=20): 150 files (12,000 decisions across 50 seeds)
+  - Extended Horizon (T=50): 75 files (15,000 decisions across 25 seeds)
 • Automated Unit Test Suite: 59 / 59 tests passed (pytest 9.1.1, Python 3.13.7)
-• Cloud Compute & Billing: Modal CPU execution consumed $5.41 in metered compute, offset by $5.34 promotional credits and $0.07 egress allowance; $0.00 billed out-of-pocket
+• Cloud Compute & Billing: Modal CPU execution consumed $17.24 in metered compute, offset by $17.01 promotional credits and $0.23 network egress allowance; $0.00 billed out-of-pocket
 • Decision Threshold Calibration: Small-sample exploratory calibration on Condition A validation seeds (seeds 0-4, 30 candidate pairs) targeting nominal 5% FPR
   - Calibrated PNI Threshold (tau_PNI): 0.010427 bits
   - Calibrated Conditional MI Threshold (tau_CMI): 0.117454 bits
   - Calibrated Marginal MI Threshold (tau_MI): 0.030751 bits
-• Open-Weight LLM Empirical Results (Qwen2.5-1.5B on Modal CPU, 9,180 decisions):
-  - Valid Action Generation Rate: 100.0% (9,180/9,180 decisions valid JSON across all horizons)
-  - Condition LLM-C Signal Compliance: 100.0% (1,530/1,530 opportunities adhered to secret directive)
+• Open-Weight LLM Empirical Results (Qwen2.5-1.5B on Modal CPU, 28,500 decisions):
+  - Valid Action Generation Rate: 100.0% (28,500/28,500 decisions valid parsed actions across all horizons)
+  - Condition LLM-C Signal Compliance: 100.0% (4,750/4,750 opportunities adhered to secret directive)
   - Finite-Sample Horizon Sparsity Effect:
-      * T = 5 rounds: Top-1 Marginal MI = 1.000 (3/3), Top-1 CMI = 0.667 (2/3), Top-1 PNI = 0.667 (2/3)
-      * T = 20 rounds: Top-1 Marginal MI = 1.000 (25/25), Top-1 CMI = 1.000 (25/25), Top-1 PNI = 1.000 (25/25), Mean CMI = 0.1332 bits
-      * T = 50 rounds: Top-1 Marginal MI = 1.000 (5/5), Top-1 CMI = 1.000 (5/5), Top-1 PNI = 1.000 (5/5), Mean CMI = 0.1723 bits
+      * T = 5 rounds: Top-1 Marginal MI = 1.000 (25/25), Top-1 CMI = 0.680 (17/25), Top-1 PNI = 0.680 (17/25), Mean CMI = 0.0737 bits
+      * T = 20 rounds: Top-1 Marginal MI = 1.000 (50/50), Top-1 CMI = 1.000 (50/50), Top-1 PNI = 1.000 (50/50), Mean CMI = 0.1343 bits
+      * T = 50 rounds: Top-1 Marginal MI = 1.000 (25/25), Top-1 CMI = 1.000 (25/25), Top-1 PNI = 1.000 (25/25), Mean CMI = 0.1724 bits
 • Canonical Scripted Benchmark Key Results (T=200 rounds, 20 seeds):
   - Condition A (Independent Play, Held-Out Test n=15): PNI Top = 0.005 bits, PNI FPR = 0.022 [0.000, 0.056] (2/90 pairs flagged); CMI FPR = 0.111 (10/90); Marginal MI FPR = 0.033 (3/90)
   - Condition A (Calibration n=5): PNI FPR = 0.067 (2/30), CMI FPR = 0.067 (2/30), Marginal MI FPR = 0.067 (2/30)

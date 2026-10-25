@@ -1,9 +1,10 @@
 """
-Unit tests for the exploratory Modal LLM pilot helper functions and state abstraction.
+Unit tests for the exploratory LLM pilot helper functions and state abstraction.
+Imports pure logic from src.llm_helpers with zero cloud dependencies.
 """
 
 import pytest
-from scripts.modal_llm_pilot import determine_public_state, parse_action, VALID_ACTIONS, COUNTER_ACTIONS
+from src.llm_helpers import determine_public_state, parse_action, VALID_ACTIONS, COUNTER_ACTIONS
 
 
 def test_determine_public_state_start():
