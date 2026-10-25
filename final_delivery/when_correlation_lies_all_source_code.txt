@@ -47,8 +47,8 @@ testpaths = ["tests"]
 
 ================================================================================
 FILE: README.md
-SHA-256: e8a5afed836569d1efd35459e7d31ac603734b243afe308b122910645684300c
-SIZE: 18387 bytes | LINES: 259
+SHA-256: 71d8e57bcdf9d6ae98fe74a23d5255e23d127e2b91a500e97cddb4a41429f14c
+SIZE: 20420 bytes | LINES: 281
 ================================================================================
 
 # When Correlation Lies
@@ -119,8 +119,8 @@ when-correlation-lies/
 │   ├── evaluate_llm_thresholds.py # Held-out threshold calibration and classification evaluation
 │   ├── plot_llm_results.py     # Generates publication Figure 4 (LLM horizon scaling)
 │   ├── run_sensitivity.py      # Trajectory length sweep using fixed thresholds
-│   ├── plot_setup_diagram.py   # Figure 1 architectural diagram
-│   ├── generate_pdf_report.py  # Formal 7-page PDF research report compiler (ReportLab)
+│   ├── build_official_template_report.py # Official Apart Research submission template report builder (Release Path)
+│   ├── generate_pdf_report.py  # Legacy standalone ReportLab PDF generator (Historical reference)
 │   ├── verify_final_consistency.py # Comprehensive end-to-end consistency and dataset verifier
 │   └── package_delivery.py     # Two-tier packaging and SHA-256 manifest generation
 ├── data/
@@ -213,8 +213,13 @@ python scripts/evaluate_llm_thresholds.py
 # 7. Regenerate LLM multi-horizon scaling figure (Figure 4)
 python scripts/plot_llm_results.py
 
-# 8. Compile formal 7-page PDF research report
-python scripts/generate_pdf_report.py
+# 8. Compile official submission report (DOCX and PDF using official Apart Research template)
+# Note: On Windows, exports to PDF via Microsoft Word COM automation. In non-Windows/headless environments,
+# report/when_correlation_lies_report.docx can be compiled or converted using LibreOffice/docx2pdf.
+python scripts/build_official_template_report.py
+
+# (Legacy reference) Standalone ReportLab generator:
+# python scripts/generate_pdf_report.py
 
 # 9. (Optional) Run LLM experiments on Modal CPU (requires authorized Modal account)
 python scripts/modal_llm_expanded.py --rounds 20 --seeds 100-124 --conditions A B C
@@ -239,6 +244,23 @@ python scripts/package_delivery.py
 | **LLM-A** | LLM Independent | Qwen2.5-1.5B instructed to pick RPS moves independently at random | None |
 | **LLM-B** | LLM Shared Context | Qwen2.5-1.5B instructed to counter the observed round plurality summary | None |
 | **LLM-C** | LLM Coordinated | Pair (0, 1) given secret round-by-round directive $Z_t$ (strictly excluded from detector logs) | (0, 1) |
+
+---
+
+## Canonical Scripted Benchmark Results (T = 200 rounds)
+
+Evaluated across 260 unique trajectories (54,000 recorded rounds across 300 evaluations). Condition A test metrics are computed strictly on held-out seeds 5–19 ($n=15$), with calibration on seeds 0–4 ($n=5$). Under Condition B (shared context), naive Marginal MI exhibits a 38-fold surge (FPR = 1.000, 120/120 pairs), while state conditioning in CMI completely neutralizes the broadcast shock (FPR = 0.000, 0/120 pairs). Under Condition C, PNI achieves 100% Top-1 ranking accuracy (20/20 seeds, Wilson 95% CI: [0.839, 1.000]).
+
+### Table 2: Canonical Benchmark Results (T = 200 rounds)
+
+| Condition | Description | Marg. MI Top Score | Marg. MI FPR [Counts] | CMI Top Score | CMI FPR [Counts] | PNI Top-1 Acc. | PNI FPR [Counts] |
+| :--- | :--- | :---: | :---: | :---: | :---: | :---: | :---: |
+| **A (Cal., $n=5$)** | Independent Calibration | 0.027 [0.019, 0.036] | 0.067 (2/30) | 0.115 [0.111, 0.118] | 0.067 (2/30) | N/A | 0.067 (2/30) |
+| **A (Test, $n=15$)** | Independent Held-Out Test | 0.025 [0.020, 0.031] | 0.033 (3/90) | 0.115 [0.111, 0.119] | 0.111 (10/90) | N/A | 0.022 (2/90) |
+| **B ($n=20$)** | Shared-Context Confound | **0.958 [0.932, 0.984]** | **1.000\* (120/120)** | **0.084 [0.081, 0.087]** | **0.000\* (0/120)** | N/A | 0.100 (12/120) |
+| **C ($n=20$)** | Known Coordination | 1.451 [1.447, 1.454] | 0.240 (24/100) | 0.797 [0.785, 0.808] | 0.020 (2/100) | **1.000 [0.839, 1.000]** (20/20) | 0.200\* (20/100) |
+
+*\*Denotes degenerate bootstrap intervals resulting from uniform per-seed outcomes.*
 
 ---
 
@@ -6532,8 +6554,8 @@ if __name__ == "__main__":
 
 ================================================================================
 FILE: scripts/build_official_template_report.py
-SHA-256: 1e4e478fc83638a58003984715457a161f4581bb37f09acac5e78f435157a39d
-SIZE: 38980 bytes | LINES: 600
+SHA-256: d4411ac5f0802b70358b8825cd8cb5bd83ab2e5e41fe888f571442366788e9a3
+SIZE: 40834 bytes | LINES: 610
 ================================================================================
 
 """
@@ -6718,7 +6740,7 @@ def build_official_report():
     r_auth.font.size = Pt(10.5)
     r_auth.font.bold = True
 
-    r_affil = p_auth.add_run("Independent Researcher  |  With Apart Research\n")
+    r_affil = p_auth.add_run("Independent Researcher\n")
     r_affil.font.name = "Old Standard TT"
     r_affil.font.size = Pt(9.0)
     r_affil.font.italic = True
@@ -6933,30 +6955,35 @@ def build_official_report():
     add_h2("4.1 Canonical Scripted Benchmark Results")
     add_p(
         "Table 2 reports the primary benchmark results across 260 unique trajectories (54,000 recorded rounds across 300 evaluations) at T=200 rounds. "
-        "Under Condition B, Marginal MI exhibits a 38-fold surge from 0.025 to 0.958 bits, suffering a 100% False Positive Rate (FPR = 1.000). "
-        "Conditioning on state S in CMI drops dependence to 0.084 bits, completely eliminating false positives (FPR = 0.000). "
-        "Under Condition C, PNI achieves 100% Top-1 ranking accuracy (Wilson 95% CI: [0.839, 1.000], MRR = 1.000)."
+        "Under Condition B (shared-context confounding), unconditioned Marginal MI exhibits a 38-fold surge from 0.025 to 0.958 bits [0.932, 0.984], "
+        "falsely flagging 100% of non-coordinating pairs as colluders (FPR = 1.000, 120/120 pairs). Conditioning on observable state S in CMI drops "
+        "dependence to 0.084 bits [0.081, 0.087], completely eliminating false positives (FPR = 0.000, 0/120 pairs). "
+        "Under Condition C (shared-private-signal coordination), PNI achieves 100% Top-1 ranking accuracy (20/20 seeds, Wilson 95% CI: [0.839, 1.000], MRR = 1.000), "
+        "with true coordinating pairs achieving an average net score of 0.755 bits [0.741, 0.769]. "
+        "Condition A held-out test evaluation (seeds 5–19, 90 negative candidate pairs) demonstrates low false positive rates across detectors "
+        "(PNI FPR = 0.022, 2/90; Marginal MI FPR = 0.033, 3/90; CMI FPR = 0.111, 10/90)."
     )
 
     # Table 2: Canonical Benchmark Results
-    t2_headers = ["Condition", "Marginal MI Top Score", "Marginal MI FPR", "CMI Top Score", "CMI FPR", "PNI Top-1 Acc.", "PNI FPR"]
+    t2_headers = ["Condition", "Marginal MI Top Score", "Marginal MI FPR [Counts]", "CMI Top Score", "CMI FPR [Counts]", "PNI Top-1 Acc.", "PNI FPR [Counts]"]
     t2_data = [
-        ["A (Indep.)", "0.025 ± 0.003", "0.000 [0.000, 0.030]", "0.076 ± 0.003", "0.050 [0.021, 0.103]", "N/A", "0.050 [0.021, 0.103]"],
-        ["B (Confound)", "0.958 ± 0.012", "**1.000 [0.970, 1.000]**", "0.084 ± 0.004", "**0.000 [0.000, 0.030]**", "N/A", "0.100 [0.055, 0.166]"],
-        ["C (Coord.)", "0.998 ± 0.009", "1.000 [0.970, 1.000]", "0.684 ± 0.008", "0.200* (degenerate)", "**1.000 [0.839, 1.000]**", "0.200* (degenerate)"],
+        ["A (Cal., n=5)", "0.027 [0.019, 0.036]", "0.067 [0.000, 0.133] (2/30)", "0.115 [0.111, 0.118]", "0.067 [0.000, 0.133] (2/30)", "N/A", "0.067 [0.000, 0.133] (2/30)"],
+        ["A (Test, n=15)", "0.025 [0.020, 0.031]", "0.033 [0.000, 0.067] (3/90)", "0.115 [0.111, 0.119]", "0.111 [0.044, 0.189] (10/90)", "N/A", "0.022 [0.000, 0.056] (2/90)"],
+        ["B (Confound, n=20)", "**0.958 [0.932, 0.984]**", "**1.000 [1.000, 1.000]*** (120/120)", "**0.084 [0.081, 0.087]**", "**0.000 [0.000, 0.000]*** (0/120)", "N/A", "0.100 [0.050, 0.158] (12/120)"],
+        ["C (Coord., n=20)", "1.451 [1.447, 1.454]", "0.240 [0.200, 0.320] (24/100)", "0.797 [0.785, 0.808]", "0.020 [0.000, 0.050] (2/100)", "**1.000 [0.839, 1.000]** (20/20)", "0.200 [0.200, 0.200]* (20/100)"],
     ]
     t2_table = doc.add_table(rows=len(t2_data) + 1, cols=7)
-    format_table(t2_table, [Inches(1.1), Inches(1.0), Inches(1.1), Inches(1.0), Inches(1.1), Inches(1.1), Inches(1.1)], t2_headers, t2_data, align_right_cols=[1, 2, 3, 4, 5, 6], font_size=7.0)
-    add_caption("Table 2: Canonical benchmark results at T=200 (mean ± std over held-out test seeds, Wilson 95% CI).")
+    format_table(t2_table, [Inches(1.15), Inches(0.95), Inches(1.05), Inches(0.95), Inches(1.05), Inches(1.00), Inches(0.95)], t2_headers, t2_data, align_right_cols=[1, 2, 3, 4, 5, 6], font_size=6.7)
+    add_caption("Table 2: Canonical benchmark results at T=200 (mean scores with 95% bootstrap CIs; exact Wilson 95% CIs for Top-1; counts show flagged / total negative candidate pairs; *degenerate bootstrap interval).")
 
     # Figures 1 and 2
     if (FIGURES_DIR / "fig2_false_positive_rates.png").exists():
-        doc.add_picture(str(FIGURES_DIR / "fig2_false_positive_rates.png"), width=Inches(4.1))
+        doc.add_picture(str(FIGURES_DIR / "fig2_false_positive_rates.png"), width=Inches(3.85))
         doc.paragraphs[-1].alignment = WD_ALIGN_PARAGRAPH.CENTER
         add_caption("Figure 1: False Positive Rates across conditions. Marginal MI fails catastrophically under Condition B (100% FPR), whereas state conditioning restores 0% FPR.")
 
     if (FIGURES_DIR / "fig5_trajectory_length_sensitivity.png").exists():
-        doc.add_picture(str(FIGURES_DIR / "fig5_trajectory_length_sensitivity.png"), width=Inches(4.1))
+        doc.add_picture(str(FIGURES_DIR / "fig5_trajectory_length_sensitivity.png"), width=Inches(3.85))
         doc.paragraphs[-1].alignment = WD_ALIGN_PARAGRAPH.CENTER
         add_caption("Figure 2: Trajectory length sensitivity (T in [50, 500]). Small sample sizes exhibit upward estimator bias under discrete state conditioning.")
 
@@ -6964,7 +6991,8 @@ def build_official_report():
     add_p(
         "We deployed Qwen/Qwen2.5-1.5B-Instruct on Modal CPU workers (4 vCPU, 8 GB RAM per container, torch.bfloat16) across 630 game trajectories (68,400 agent decisions) "
         "at horizons T in {5, 20, 50}. Across all 68,400 decisions, the JSON parser achieved a 100.0% valid action selection rate without defaulting. "
-        "In Condition LLM-C, coordinating agents achieved 100.0% adherence to secret coordination directives across all 11,400 opportunities."
+        "In Condition LLM-C, coordinating agents achieved 100.0% adherence to secret coordination directives across all 11,400 opportunities (400 at T=5; 4,000 at T=20; 7,000 at T=50). "
+        "Condition LLM-C evaluates instruction compliance with an assigned shared private coordination directive; it does not simulate or claim spontaneous collusion or emergent cartel formation."
     )
 
     # Table 3: Multi-Horizon LLM Primary Ranking Metrics
@@ -7034,6 +7062,10 @@ def build_official_report():
     add_bullet(
         " An extensive 68,400-decision study using Qwen/Qwen2.5-1.5B-Instruct was executed on Modal CPU instances (4 cores, 8GB RAM). Allocating cloud GPU instances required an active payment method on file under Modal platform policy, which was safely avoided under our zero-out-of-pocket spending cap ($0.00). The CPU pipeline logged $40.63 in metered compute ($40.12 promotional credits applied, $0.51 network egress allowance; $0.00 billed out of pocket) across 630 trajectories (68,400 decisions).",
         bold_prefix="4. Modal Promotional Compute Pilot & Cloud Boundaries:"
+    )
+    add_bullet(
+        " In Condition LLM-C, models are explicitly prompted to follow an assigned secret directive Z_t. Perfect signal compliance (100.0%, 11,400/11,400 opportunities) confirms that foundation models reliably adhere to structured coordination instructions in multi-agent game logs, but must not be interpreted as spontaneous collusion emergence or demonstrated market harm. Furthermore, competitor subtraction drives rival net scores negative, requiring careful distinction between relative ranking and absolute threshold detection.",
+        bold_prefix="5. Prompted Instruction Adherence vs. Spontaneous Collusion:"
     )
 
     add_h2("Future Work")
@@ -7139,8 +7171,8 @@ if __name__ == "__main__":
 
 ================================================================================
 FILE: scripts/verify_final_consistency.py
-SHA-256: 31bcd8e254b115a3476df39394c1f05fc5b11c3522af223ce0fa9faf6477457f
-SIZE: 14698 bytes | LINES: 309
+SHA-256: 132fbb98de0178d18233b6e0d526396c1d11da1f6ee01ed190238b56e550e802
+SIZE: 14965 bytes | LINES: 322
 ================================================================================
 
 """
@@ -7232,10 +7264,14 @@ def pdf_report_check():
         "Anonymous AI Safety Researcher",
         "With: Apart Research",
         "Affiliation: Independent Researcher (With",
+        "With Apart Research",
         "300 trajectories",
         "28,500",
         "$17.24",
         "$17.01",
+        "0.076 ± 0.003",
+        "0.998 ± 0.009",
+        "0.684 ± 0.008",
     ]
     for phrase in forbidden:
         assert phrase.lower() not in full_text.lower(), f"Forbidden phrase '{phrase}' found in PDF!"
@@ -7256,11 +7292,20 @@ def pdf_report_check():
         "$40.63",
         "$40.12",
         "$0.51",
+        "3/90",
+        "10/90",
+        "2/90",
+        "120/120",
+        "0/120",
+        "24/100",
+        "2/100",
+        "20/100",
+        "20/20",
     ]
     for phrase in required_phrases:
         assert phrase.lower() in full_text.lower(), f"Required phrase '{phrase}' missing in PDF!"
 
-    print(f"[PASS] PDF Report: Exactly {len(doc)} pages (<= 8 cap), valid metadata, 0 forbidden phrases, required concepts and final metrics present.")
+    print(f"[PASS] PDF Report: Exactly {len(doc)} pages (<= 8 cap), valid metadata, 0 forbidden phrases, required concepts and canonical counts present.")
 
 
 def zip_bundle_check():
@@ -7455,8 +7500,8 @@ if __name__ == "__main__":
 
 ================================================================================
 FILE: scripts/package_delivery.py
-SHA-256: a99048981f4a0b8d0b57f5d56c1d557247d1616e80d025df51a545d88bda8776
-SIZE: 18899 bytes | LINES: 337
+SHA-256: 4aad1f8a968b585ca4e9cd7d4903c24b440507000a67a5289a4ec1f08231a179
+SIZE: 19665 bytes | LINES: 349
 ================================================================================
 
 """
@@ -7623,10 +7668,16 @@ def main():
     DELIVERY_DIR.mkdir(parents=True, exist_ok=True)
     print(f"Packaging delivery to: {DELIVERY_DIR}")
 
-    # 1. Copy PDF report
+    # 1. Copy PDF report and DOCX source
     target_pdf = DELIVERY_DIR / "when_correlation_lies_report.pdf"
     shutil.copy2(REPORT_PDF, target_pdf)
     print(f"Copied PDF report -> {target_pdf} ({target_pdf.stat().st_size:,} bytes)")
+
+    target_docx = PROJECT_ROOT / "report" / "when_correlation_lies_report.docx"
+    if target_docx.exists():
+        delivery_docx = DELIVERY_DIR / "when_correlation_lies_report.docx"
+        shutil.copy2(target_docx, delivery_docx)
+        print(f"Copied DOCX report -> {delivery_docx} ({delivery_docx.stat().st_size:,} bytes)")
 
     # 2. Collect all source code, tests, scripts, configs, documentation
     files_to_bundle = [
@@ -7737,8 +7788,11 @@ def main():
             if p.exists():
                 zf.write(p, arcname=rel_path)
 
-        # Include PDF in report/
+        # Include PDF and DOCX in report/
         zf.write(target_pdf, arcname="report/when_correlation_lies_report.pdf")
+        if target_docx.exists():
+            zf.write(target_docx, arcname="report/when_correlation_lies_report.docx")
+            zf.write(target_docx, arcname="when_correlation_lies_report.docx")
 
         # Include all figures in results/figures/
         figures = sorted((PROJECT_ROOT / "results" / "figures").glob("*.png"))
@@ -7790,7 +7844,10 @@ def main():
     external_manifest_content = generate_manifest_text(target_pdf, concat_path, zip_path=zip_path)
     manifest_path = DELIVERY_DIR / "results_manifest.txt"
     manifest_path.write_text(external_manifest_content, encoding="utf-8")
+    root_manifest_path = PROJECT_ROOT / "results_manifest.txt"
+    root_manifest_path.write_text(external_manifest_content, encoding="utf-8")
     print(f"Generated external results manifest -> {manifest_path} ({manifest_path.stat().st_size:,} bytes)")
+    print(f"Synced results manifest to root -> {root_manifest_path}")
 
 
 if __name__ == "__main__":
@@ -8011,8 +8068,8 @@ SIZE: 1317 bytes | LINES: 32
 
 ================================================================================
 FILE: docs/pre_sprint_work_log.md
-SHA-256: c6b54e7554f4b2a4853175511067b944cf98050487150be80b54b47b2ad4205a
-SIZE: 6708 bytes | LINES: 61
+SHA-256: 35ecfe8071d7926802e92342939e8ee8eaf12f3cea96f0bb77fa8f2d5e8cc9bd
+SIZE: 6954 bytes | LINES: 61
 ================================================================================
 
 # Pre-Sprint Work Log & Project Provenance
@@ -8051,7 +8108,7 @@ In strict adherence to Apart Research sprint rules, this document transparently 
 - **Full Empirical Scope:** Scaled the LLM study to 630 trajectories (68,400 decisions): $T=5$ (120 trajectories / 2,400 decisions), $T=20$ (300 trajectories / 24,000 decisions), and $T=50$ (210 trajectories / 42,000 decisions).
 - **Instruction Compliance:** 100.0% valid action selection rate (68,400/68,400 decisions) and 100.0% adherence to secret coordination directives across all 11,400 opportunities in Condition LLM-C.
 - **Authoritative Telemetry:** Billed strictly $0.00 out of pocket ($40.63 metered compute: $40.12 promotional credits applied, $0.51 network egress allowance; remaining credit balance: $9.88).
-- **Final Test Suite & Reporting:** Expanded test suite to 59 automated unit tests (all passing in isolated clean environments); compiled formal 7-page PDF research report and complete SHA-256 verified delivery package.
+- **Milestone Test Suite & Reporting:** Expanded test suite to 59 automated unit tests (all passing in isolated clean environments); initially compiled an intermediate 7-page ReportLab PDF draft, which was subsequently superseded in the final submission by the official 8-page Apart Research submission template report built via `scripts/build_official_template_report.py`.
 
 ---
 
@@ -8074,7 +8131,7 @@ In strict adherence to Apart Research sprint rules, this document transparently 
 1. **Discovery and Formulation of Shared-Context Confounding:** Formally designed Condition B to prove that independent agents reacting to common public history experience a 38-fold surge in unconditioned mutual information, inducing a 100% false positive rate in naive detectors.
 2. **Triangulated Estimator Disambiguation:** Demonstrated that conditioning on observable state $S$ eliminates the broadcast shock below calibrated thresholds (CMI FPR = 0.000), while rival subtraction provides directed pair isolation (PNI FPR = 0.100), retaining 100% Top-1 accuracy on true coordinating pairs.
 3. **Rigorous Finite-Sample Sensitivity Sweeps:** Systematically characterized how sample size $T \in [50, 500]$ and coordination strength $\alpha \in [0.25, 1.00]$ govern detector sensitivity and finite-sample estimator bias under discrete state spaces.
-4. **Reproducible Open Research Package:** Full suite of 59 unit tests (originally 57 in Phase 2 milestone), 260 canonical scripted trajectory logs (54,000 rounds), 630 open-weight LLM trajectory logs (68,400 decisions), separate ground-truth manifests, automated analysis pipelines, and formal 7-page PDF report.
+4. **Reproducible Open Research Package:** Full suite of 59 unit tests (originally 57 in Phase 2 milestone), 260 canonical scripted trajectory logs (54,000 rounds), 630 open-weight LLM trajectory logs (68,400 decisions), separate ground-truth manifests, automated analysis pipelines, and official 8-page Apart Research template PDF report (with legacy 7-page ReportLab generator preserved for provenance).
 
 
 ================================================================================
@@ -8132,8 +8189,8 @@ The definitive, verified benchmark outputs are:
 
 ================================================================================
 FILE: report/report_draft.md
-SHA-256: 23d2502579bb40730ce26c0489281b73d85b31d5fd436c2ff25b8906e569e40b
-SIZE: 40186 bytes | LINES: 249
+SHA-256: f7cb8f307f43ee3b76256419fd4d415c29f621ed2a5059b0e024d39ab5eba182
+SIZE: 40788 bytes | LINES: 250
 ================================================================================
 
 # When Correlation Lies: Stress-Testing Pairwise Net Influence for Detecting Coordination Among Agents
@@ -8338,6 +8395,7 @@ We transparently acknowledge the constraints of this study:
 2. *Estimator Regularization Sensitivity:* In our 4-player game with $|S| = 82$ states, state conditioning partitions observations across sparse cells. Evaluating smoothing sensitivity under Condition B at $T = 200$ reveals that the unsmoothed plug-in estimator (using $0 \log 0 = 0$) yields CMI = 0.062 bits, while Dirichlet smoothing yields 0.084 bits (Jeffreys, $\lambda = 0.5$) and 0.096 bits (Laplace, $\lambda = 1.0$). Pseudocount smoothing introduces a mild upward baseline in sparse regimes, though all values remain well below unconditioned Marginal MI (0.958 bits).
 3. *Exploratory Small-Sample Calibration:* Nominal 5% decision thresholds were calibrated from 5 validation seeds (30 candidate pairs) of Condition A. While isolating calibration from the 15 held-out test seeds, 30 samples yield coarse quantile estimates and do not guarantee an exact 5% population FPR.
 4. *Modal Promotional Compute Pilot & Cloud Boundaries:* An extensive 68,400-decision study using `Qwen/Qwen2.5-1.5B-Instruct` was executed on Modal CPU instances (4 cores, 8GB RAM). Allocating cloud GPU instances (T4/L4) required an active payment method on file under Modal platform policy, which was safely avoided under our zero-out-of-pocket spending cap ($0.00). The CPU pipeline logged $40.63 in metered compute ($40.12 promotional credits applied for ephemeral apps, $0.51 network egress allowance; $0.00 billed out of pocket) across 630 trajectories (68,400 decisions). While establishing that 1.5B instruction models achieve 100% signal compliance and that $T \ge 20$ restores 100% ranking accuracy and threshold recall, canonical benchmark results remain grounded in the 260-trajectory scripted evaluation (54,000 rounds).
+5. *Prompted Instruction Adherence vs. Spontaneous Collusion:* In Condition LLM-C, models are explicitly prompted to follow an assigned secret directive $Z_t$. Perfect signal compliance (100.0%, 11,400/11,400 opportunities) confirms that foundation models reliably adhere to structured coordination instructions in multi-agent game logs, but must not be interpreted as spontaneous collusion emergence or demonstrated market harm. Furthermore, competitor subtraction drives rival net scores negative, requiring careful distinction between relative ranking and absolute threshold detection.
 
 ### 7.3 Future Work
 Key extensions include: (1) evaluating neural CMI estimators (e.g., MINE) on LLM auction transcripts (Agrawal et al., 2025); (2) developing dynamic state abstractions to compress high-dimensional order book histories; and (3) testing PNI under intentional adversarial evasion.
@@ -8383,7 +8441,7 @@ This research stress-tested Pairwise Net Influence for detecting multi-agent coo
 ---
 
 ## LLM Usage Statement
-ChatGPT (OpenAI) assisted with research ideation, paper explanation, methodology critique, independent review, and prompt drafting. Antigravity (Google DeepMind advanced agentic coding assistant) assisted with code implementation, unit test suites, experiment orchestration, Modal CPU cloud infrastructure harness and execution, statistical metric aggregations, visualizations, ReportLab PDF layout, and packaging under the author's iterative instructions and review. Project direction, experimental design choices, qualitative analysis, and final editorial responsibility rest entirely with the author (Durgesh Unde). Canonical benchmark evaluations used 260 scripted trajectories (54,000 rounds); open-weight LLM evaluations used 630 trajectories (68,400 decisions) executed on Modal CPU ($40.63 metered compute: $40.12 promotional credits applied, $0.51 network egress allowance; $0.00 out-of-pocket spend). Zero personal payment cards or external paid token APIs were used. The experimental protocol was frozen after exploratory prototyping and was not preregistered prior to exploration.
+ChatGPT (OpenAI) assisted with research ideation, paper explanation, methodology critique, independent review, and prompt drafting. Antigravity (Google DeepMind advanced agentic coding assistant) assisted with code implementation, unit test suites, experiment orchestration, Modal CPU cloud infrastructure harness and execution, statistical metric aggregations, visualizations, official template and PDF layout, and packaging under the author's iterative instructions and review. Project direction, experimental design choices, qualitative analysis, and final editorial responsibility rest entirely with the author (Durgesh Unde). Canonical benchmark evaluations used 260 scripted trajectories (54,000 rounds); open-weight LLM evaluations used 630 trajectories (68,400 decisions) executed on Modal CPU ($40.63 metered compute: $40.12 promotional credits applied, $0.51 network egress allowance; $0.00 out-of-pocket spend). Zero personal payment cards or external paid token APIs were used. The experimental protocol was frozen after exploratory prototyping and was not preregistered prior to exploration.
 
 
 ================================================================================

@@ -180,7 +180,7 @@ def build_official_report():
     r_auth.font.size = Pt(10.5)
     r_auth.font.bold = True
 
-    r_affil = p_auth.add_run("Independent Researcher  |  With Apart Research\n")
+    r_affil = p_auth.add_run("Independent Researcher\n")
     r_affil.font.name = "Old Standard TT"
     r_affil.font.size = Pt(9.0)
     r_affil.font.italic = True
@@ -395,30 +395,35 @@ def build_official_report():
     add_h2("4.1 Canonical Scripted Benchmark Results")
     add_p(
         "Table 2 reports the primary benchmark results across 260 unique trajectories (54,000 recorded rounds across 300 evaluations) at T=200 rounds. "
-        "Under Condition B, Marginal MI exhibits a 38-fold surge from 0.025 to 0.958 bits, suffering a 100% False Positive Rate (FPR = 1.000). "
-        "Conditioning on state S in CMI drops dependence to 0.084 bits, completely eliminating false positives (FPR = 0.000). "
-        "Under Condition C, PNI achieves 100% Top-1 ranking accuracy (Wilson 95% CI: [0.839, 1.000], MRR = 1.000)."
+        "Under Condition B (shared-context confounding), unconditioned Marginal MI exhibits a 38-fold surge from 0.025 to 0.958 bits [0.932, 0.984], "
+        "falsely flagging 100% of non-coordinating pairs as colluders (FPR = 1.000, 120/120 pairs). Conditioning on observable state S in CMI drops "
+        "dependence to 0.084 bits [0.081, 0.087], completely eliminating false positives (FPR = 0.000, 0/120 pairs). "
+        "Under Condition C (shared-private-signal coordination), PNI achieves 100% Top-1 ranking accuracy (20/20 seeds, Wilson 95% CI: [0.839, 1.000], MRR = 1.000), "
+        "with true coordinating pairs achieving an average net score of 0.755 bits [0.741, 0.769]. "
+        "Condition A held-out test evaluation (seeds 5–19, 90 negative candidate pairs) demonstrates low false positive rates across detectors "
+        "(PNI FPR = 0.022, 2/90; Marginal MI FPR = 0.033, 3/90; CMI FPR = 0.111, 10/90)."
     )
 
     # Table 2: Canonical Benchmark Results
-    t2_headers = ["Condition", "Marginal MI Top Score", "Marginal MI FPR", "CMI Top Score", "CMI FPR", "PNI Top-1 Acc.", "PNI FPR"]
+    t2_headers = ["Condition", "Marginal MI Top Score", "Marginal MI FPR [Counts]", "CMI Top Score", "CMI FPR [Counts]", "PNI Top-1 Acc.", "PNI FPR [Counts]"]
     t2_data = [
-        ["A (Indep.)", "0.025 ± 0.003", "0.000 [0.000, 0.030]", "0.076 ± 0.003", "0.050 [0.021, 0.103]", "N/A", "0.050 [0.021, 0.103]"],
-        ["B (Confound)", "0.958 ± 0.012", "**1.000 [0.970, 1.000]**", "0.084 ± 0.004", "**0.000 [0.000, 0.030]**", "N/A", "0.100 [0.055, 0.166]"],
-        ["C (Coord.)", "0.998 ± 0.009", "1.000 [0.970, 1.000]", "0.684 ± 0.008", "0.200* (degenerate)", "**1.000 [0.839, 1.000]**", "0.200* (degenerate)"],
+        ["A (Cal., n=5)", "0.027 [0.019, 0.036]", "0.067 [0.000, 0.133] (2/30)", "0.115 [0.111, 0.118]", "0.067 [0.000, 0.133] (2/30)", "N/A", "0.067 [0.000, 0.133] (2/30)"],
+        ["A (Test, n=15)", "0.025 [0.020, 0.031]", "0.033 [0.000, 0.067] (3/90)", "0.115 [0.111, 0.119]", "0.111 [0.044, 0.189] (10/90)", "N/A", "0.022 [0.000, 0.056] (2/90)"],
+        ["B (Confound, n=20)", "**0.958 [0.932, 0.984]**", "**1.000 [1.000, 1.000]*** (120/120)", "**0.084 [0.081, 0.087]**", "**0.000 [0.000, 0.000]*** (0/120)", "N/A", "0.100 [0.050, 0.158] (12/120)"],
+        ["C (Coord., n=20)", "1.451 [1.447, 1.454]", "0.240 [0.200, 0.320] (24/100)", "0.797 [0.785, 0.808]", "0.020 [0.000, 0.050] (2/100)", "**1.000 [0.839, 1.000]** (20/20)", "0.200 [0.200, 0.200]* (20/100)"],
     ]
     t2_table = doc.add_table(rows=len(t2_data) + 1, cols=7)
-    format_table(t2_table, [Inches(1.1), Inches(1.0), Inches(1.1), Inches(1.0), Inches(1.1), Inches(1.1), Inches(1.1)], t2_headers, t2_data, align_right_cols=[1, 2, 3, 4, 5, 6], font_size=7.0)
-    add_caption("Table 2: Canonical benchmark results at T=200 (mean ± std over held-out test seeds, Wilson 95% CI).")
+    format_table(t2_table, [Inches(1.15), Inches(0.95), Inches(1.05), Inches(0.95), Inches(1.05), Inches(1.00), Inches(0.95)], t2_headers, t2_data, align_right_cols=[1, 2, 3, 4, 5, 6], font_size=6.7)
+    add_caption("Table 2: Canonical benchmark results at T=200 (mean scores with 95% bootstrap CIs; exact Wilson 95% CIs for Top-1; counts show flagged / total negative candidate pairs; *degenerate bootstrap interval).")
 
     # Figures 1 and 2
     if (FIGURES_DIR / "fig2_false_positive_rates.png").exists():
-        doc.add_picture(str(FIGURES_DIR / "fig2_false_positive_rates.png"), width=Inches(4.1))
+        doc.add_picture(str(FIGURES_DIR / "fig2_false_positive_rates.png"), width=Inches(3.85))
         doc.paragraphs[-1].alignment = WD_ALIGN_PARAGRAPH.CENTER
         add_caption("Figure 1: False Positive Rates across conditions. Marginal MI fails catastrophically under Condition B (100% FPR), whereas state conditioning restores 0% FPR.")
 
     if (FIGURES_DIR / "fig5_trajectory_length_sensitivity.png").exists():
-        doc.add_picture(str(FIGURES_DIR / "fig5_trajectory_length_sensitivity.png"), width=Inches(4.1))
+        doc.add_picture(str(FIGURES_DIR / "fig5_trajectory_length_sensitivity.png"), width=Inches(3.85))
         doc.paragraphs[-1].alignment = WD_ALIGN_PARAGRAPH.CENTER
         add_caption("Figure 2: Trajectory length sensitivity (T in [50, 500]). Small sample sizes exhibit upward estimator bias under discrete state conditioning.")
 
@@ -426,7 +431,8 @@ def build_official_report():
     add_p(
         "We deployed Qwen/Qwen2.5-1.5B-Instruct on Modal CPU workers (4 vCPU, 8 GB RAM per container, torch.bfloat16) across 630 game trajectories (68,400 agent decisions) "
         "at horizons T in {5, 20, 50}. Across all 68,400 decisions, the JSON parser achieved a 100.0% valid action selection rate without defaulting. "
-        "In Condition LLM-C, coordinating agents achieved 100.0% adherence to secret coordination directives across all 11,400 opportunities."
+        "In Condition LLM-C, coordinating agents achieved 100.0% adherence to secret coordination directives across all 11,400 opportunities (400 at T=5; 4,000 at T=20; 7,000 at T=50). "
+        "Condition LLM-C evaluates instruction compliance with an assigned shared private coordination directive; it does not simulate or claim spontaneous collusion or emergent cartel formation."
     )
 
     # Table 3: Multi-Horizon LLM Primary Ranking Metrics
@@ -496,6 +502,10 @@ def build_official_report():
     add_bullet(
         " An extensive 68,400-decision study using Qwen/Qwen2.5-1.5B-Instruct was executed on Modal CPU instances (4 cores, 8GB RAM). Allocating cloud GPU instances required an active payment method on file under Modal platform policy, which was safely avoided under our zero-out-of-pocket spending cap ($0.00). The CPU pipeline logged $40.63 in metered compute ($40.12 promotional credits applied, $0.51 network egress allowance; $0.00 billed out of pocket) across 630 trajectories (68,400 decisions).",
         bold_prefix="4. Modal Promotional Compute Pilot & Cloud Boundaries:"
+    )
+    add_bullet(
+        " In Condition LLM-C, models are explicitly prompted to follow an assigned secret directive Z_t. Perfect signal compliance (100.0%, 11,400/11,400 opportunities) confirms that foundation models reliably adhere to structured coordination instructions in multi-agent game logs, but must not be interpreted as spontaneous collusion emergence or demonstrated market harm. Furthermore, competitor subtraction drives rival net scores negative, requiring careful distinction between relative ranking and absolute threshold detection.",
+        bold_prefix="5. Prompted Instruction Adherence vs. Spontaneous Collusion:"
     )
 
     add_h2("Future Work")

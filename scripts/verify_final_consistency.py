@@ -87,10 +87,14 @@ def pdf_report_check():
         "Anonymous AI Safety Researcher",
         "With: Apart Research",
         "Affiliation: Independent Researcher (With",
+        "With Apart Research",
         "300 trajectories",
         "28,500",
         "$17.24",
         "$17.01",
+        "0.076 ± 0.003",
+        "0.998 ± 0.009",
+        "0.684 ± 0.008",
     ]
     for phrase in forbidden:
         assert phrase.lower() not in full_text.lower(), f"Forbidden phrase '{phrase}' found in PDF!"
@@ -111,11 +115,20 @@ def pdf_report_check():
         "$40.63",
         "$40.12",
         "$0.51",
+        "3/90",
+        "10/90",
+        "2/90",
+        "120/120",
+        "0/120",
+        "24/100",
+        "2/100",
+        "20/100",
+        "20/20",
     ]
     for phrase in required_phrases:
         assert phrase.lower() in full_text.lower(), f"Required phrase '{phrase}' missing in PDF!"
 
-    print(f"[PASS] PDF Report: Exactly {len(doc)} pages (<= 8 cap), valid metadata, 0 forbidden phrases, required concepts and final metrics present.")
+    print(f"[PASS] PDF Report: Exactly {len(doc)} pages (<= 8 cap), valid metadata, 0 forbidden phrases, required concepts and canonical counts present.")
 
 
 def zip_bundle_check():

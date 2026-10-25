@@ -66,8 +66,8 @@ when-correlation-lies/
 │   ├── evaluate_llm_thresholds.py # Held-out threshold calibration and classification evaluation
 │   ├── plot_llm_results.py     # Generates publication Figure 4 (LLM horizon scaling)
 │   ├── run_sensitivity.py      # Trajectory length sweep using fixed thresholds
-│   ├── plot_setup_diagram.py   # Figure 1 architectural diagram
-│   ├── generate_pdf_report.py  # Formal 7-page PDF research report compiler (ReportLab)
+│   ├── build_official_template_report.py # Official Apart Research submission template report builder (Release Path)
+│   ├── generate_pdf_report.py  # Legacy standalone ReportLab PDF generator (Historical reference)
 │   ├── verify_final_consistency.py # Comprehensive end-to-end consistency and dataset verifier
 │   └── package_delivery.py     # Two-tier packaging and SHA-256 manifest generation
 ├── data/
@@ -160,8 +160,13 @@ python scripts/evaluate_llm_thresholds.py
 # 7. Regenerate LLM multi-horizon scaling figure (Figure 4)
 python scripts/plot_llm_results.py
 
-# 8. Compile formal 7-page PDF research report
-python scripts/generate_pdf_report.py
+# 8. Compile official submission report (DOCX and PDF using official Apart Research template)
+# Note: On Windows, exports to PDF via Microsoft Word COM automation. In non-Windows/headless environments,
+# report/when_correlation_lies_report.docx can be compiled or converted using LibreOffice/docx2pdf.
+python scripts/build_official_template_report.py
+
+# (Legacy reference) Standalone ReportLab generator:
+# python scripts/generate_pdf_report.py
 
 # 9. (Optional) Run LLM experiments on Modal CPU (requires authorized Modal account)
 python scripts/modal_llm_expanded.py --rounds 20 --seeds 100-124 --conditions A B C
@@ -186,6 +191,23 @@ python scripts/package_delivery.py
 | **LLM-A** | LLM Independent | Qwen2.5-1.5B instructed to pick RPS moves independently at random | None |
 | **LLM-B** | LLM Shared Context | Qwen2.5-1.5B instructed to counter the observed round plurality summary | None |
 | **LLM-C** | LLM Coordinated | Pair (0, 1) given secret round-by-round directive $Z_t$ (strictly excluded from detector logs) | (0, 1) |
+
+---
+
+## Canonical Scripted Benchmark Results (T = 200 rounds)
+
+Evaluated across 260 unique trajectories (54,000 recorded rounds across 300 evaluations). Condition A test metrics are computed strictly on held-out seeds 5–19 ($n=15$), with calibration on seeds 0–4 ($n=5$). Under Condition B (shared context), naive Marginal MI exhibits a 38-fold surge (FPR = 1.000, 120/120 pairs), while state conditioning in CMI completely neutralizes the broadcast shock (FPR = 0.000, 0/120 pairs). Under Condition C, PNI achieves 100% Top-1 ranking accuracy (20/20 seeds, Wilson 95% CI: [0.839, 1.000]).
+
+### Table 2: Canonical Benchmark Results (T = 200 rounds)
+
+| Condition | Description | Marg. MI Top Score | Marg. MI FPR [Counts] | CMI Top Score | CMI FPR [Counts] | PNI Top-1 Acc. | PNI FPR [Counts] |
+| :--- | :--- | :---: | :---: | :---: | :---: | :---: | :---: |
+| **A (Cal., $n=5$)** | Independent Calibration | 0.027 [0.019, 0.036] | 0.067 (2/30) | 0.115 [0.111, 0.118] | 0.067 (2/30) | N/A | 0.067 (2/30) |
+| **A (Test, $n=15$)** | Independent Held-Out Test | 0.025 [0.020, 0.031] | 0.033 (3/90) | 0.115 [0.111, 0.119] | 0.111 (10/90) | N/A | 0.022 (2/90) |
+| **B ($n=20$)** | Shared-Context Confound | **0.958 [0.932, 0.984]** | **1.000\* (120/120)** | **0.084 [0.081, 0.087]** | **0.000\* (0/120)** | N/A | 0.100 (12/120) |
+| **C ($n=20$)** | Known Coordination | 1.451 [1.447, 1.454] | 0.240 (24/100) | 0.797 [0.785, 0.808] | 0.020 (2/100) | **1.000 [0.839, 1.000]** (20/20) | 0.200\* (20/100) |
+
+*\*Denotes degenerate bootstrap intervals resulting from uniform per-seed outcomes.*
 
 ---
 

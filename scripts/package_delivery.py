@@ -162,10 +162,16 @@ def main():
     DELIVERY_DIR.mkdir(parents=True, exist_ok=True)
     print(f"Packaging delivery to: {DELIVERY_DIR}")
 
-    # 1. Copy PDF report
+    # 1. Copy PDF report and DOCX source
     target_pdf = DELIVERY_DIR / "when_correlation_lies_report.pdf"
     shutil.copy2(REPORT_PDF, target_pdf)
     print(f"Copied PDF report -> {target_pdf} ({target_pdf.stat().st_size:,} bytes)")
+
+    target_docx = PROJECT_ROOT / "report" / "when_correlation_lies_report.docx"
+    if target_docx.exists():
+        delivery_docx = DELIVERY_DIR / "when_correlation_lies_report.docx"
+        shutil.copy2(target_docx, delivery_docx)
+        print(f"Copied DOCX report -> {delivery_docx} ({delivery_docx.stat().st_size:,} bytes)")
 
     # 2. Collect all source code, tests, scripts, configs, documentation
     files_to_bundle = [
@@ -276,8 +282,11 @@ def main():
             if p.exists():
                 zf.write(p, arcname=rel_path)
 
-        # Include PDF in report/
+        # Include PDF and DOCX in report/
         zf.write(target_pdf, arcname="report/when_correlation_lies_report.pdf")
+        if target_docx.exists():
+            zf.write(target_docx, arcname="report/when_correlation_lies_report.docx")
+            zf.write(target_docx, arcname="when_correlation_lies_report.docx")
 
         # Include all figures in results/figures/
         figures = sorted((PROJECT_ROOT / "results" / "figures").glob("*.png"))
@@ -329,7 +338,10 @@ def main():
     external_manifest_content = generate_manifest_text(target_pdf, concat_path, zip_path=zip_path)
     manifest_path = DELIVERY_DIR / "results_manifest.txt"
     manifest_path.write_text(external_manifest_content, encoding="utf-8")
+    root_manifest_path = PROJECT_ROOT / "results_manifest.txt"
+    root_manifest_path.write_text(external_manifest_content, encoding="utf-8")
     print(f"Generated external results manifest -> {manifest_path} ({manifest_path.stat().st_size:,} bytes)")
+    print(f"Synced results manifest to root -> {root_manifest_path}")
 
 
 if __name__ == "__main__":
