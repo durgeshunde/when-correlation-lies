@@ -58,7 +58,7 @@ def generate_manifest_text(target_pdf: Path, concat_path: Path, zip_path: Path =
     lines.append(
         "ChatGPT (OpenAI) assisted with research ideation, paper explanation, methodology critique, independent review,\n"
         "and prompt drafting. Antigravity (Google DeepMind advanced agentic coding assistant) assisted with code implementation,\n"
-        "unit test suites, experiment orchestration, Modal CPU cloud infrastructure harness and execution, statistical metric aggregations, visualizations, ReportLab PDF layout,\n"
+        "unit test suites, experiment orchestration, Modal CPU cloud infrastructure harness and execution, statistical metric aggregations, visualizations, document and PDF layout,\n"
         "and packaging under the author's iterative instructions and review. Project direction, experimental design choices,\n"
         "qualitative analysis, and final editorial responsibility rest entirely with the author (Durgesh Unde). Canonical benchmark\n"
         "evaluations used 260 scripted trajectories (54,000 rounds); open-weight LLM evaluations used 630 trajectories (68,400 decisions)\n"
@@ -196,6 +196,7 @@ def main():
         "scripts/run_sensitivity.py",
         "scripts/plot_setup_diagram.py",
         "scripts/generate_pdf_report.py",
+        "scripts/build_official_template_report.py",
         "scripts/verify_final_consistency.py",
         "scripts/package_delivery.py",
         "docs/scientific_audit.md",
